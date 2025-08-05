@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 const EditorLayout = ({ children }: { children: ReactNode }) => (
   <div>

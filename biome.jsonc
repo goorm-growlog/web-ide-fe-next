@@ -1,0 +1,169 @@
+{
+  // Biome 2025: 최신 웹 프론트엔드 표준 설정
+  "$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
+  // 린터: 코드 품질, 일관성, 접근성, 성능 등 종합 규칙
+  "linter": {
+    "enabled": true,
+    "domains": {
+      "next": "recommended"
+    },
+    "rules": {
+      // Biome 공식 권장 규칙 전체 활성화
+      "recommended": true,
+      // 접근성(a11y) 관련 규칙
+      "a11y": {
+        "recommended": true,
+        "useKeyWithClickEvents": "warn", // 클릭 이벤트에 키보드 접근성 권장
+        "useKeyWithMouseEvents": "warn", // 마우스 이벤트에 키보드 접근성 권장
+        "useValidAriaProps": "warn", // 올바른 ARIA 속성 사용
+        "useValidAriaValues": "warn" // 올바른 ARIA 값 사용
+      },
+      // 정확성: 변수 선언, React 의존성 등
+      "correctness": {
+        "recommended": true,
+        "noUndeclaredVariables": "error", // 미선언 변수 금지
+        "noUnusedVariables": "error", // 미사용 변수 금지
+        "useExhaustiveDependencies": "warn", // useEffect 의존성 누락 경고
+        "useJsxKeyInIterable": "error" // JSX 반복에 key 필수
+      },
+      // 의심스러운 패턴: 디버거, 콘솔, 빈 블록 등
+      "suspicious": {
+        "recommended": true,
+        "noDebugger": "error", // debugger 금지
+        "noConsole": "warn", // console 사용 경고
+        "noEmptyBlockStatements": "error" // 빈 블록 금지
+      },
+      // 코드 스타일: import, const, 템플릿 문자열 등
+      "style": {
+        "recommended": true,
+        "useImportType": "error", // 타입 import 강제
+        "useConst": "error", // const 사용 권장
+        "useTemplate": "error", // 템플릿 문자열 사용 권장
+        "useNodejsImportProtocol": "error", // Node.js import 경로 프로토콜 사용
+        // Next.js 파일명 kebab-case 권장
+        "useFilenamingConvention": {
+          "level": "warn",
+          "options": {
+            "strictCase": false,
+            "filenameCases": ["kebab-case"]
+          }
+        }
+      },
+      // 복잡도: 함수 인지적 복잡도 제한
+      "complexity": {
+        "recommended": true,
+        "noExcessiveCognitiveComplexity": "warn"
+      },
+      // 성능: 비효율적 코드 방지
+      "performance": {
+        "recommended": true
+      },
+      // 실험적(nursery): 최신 Biome 실험적 규칙
+      "nursery": {
+        "recommended": true,
+        "useSortedClasses": "error", // Tailwind CSS 클래스 자동 정렬
+        "noMisusedPromises": "error", // Promise 오용 방지
+        "noImplicitCoercion": "warn", // 암시적 타입 변환 경고
+        "noUnknownAtRule": "off", // Tailwind CSS at-rule 허용
+        // 네이밍 컨벤션: 함수, 변수, 타입 등
+        "useNamingConvention": {
+          "level": "warn",
+          "options": {
+            "strictCase": false,
+            "conventions": [
+              {
+                "selector": {
+                  "kind": "function",
+                  "scope": "global"
+                },
+                "formats": ["PascalCase", "camelCase"]
+              },
+              {
+                "selector": {
+                  "kind": "variable"
+                },
+                "formats": ["camelCase", "PascalCase", "CONSTANT_CASE"]
+              },
+              {
+                "selector": {
+                  "kind": "typeAlias"
+                },
+                "formats": ["PascalCase"]
+              },
+              {
+                "selector": {
+                  "kind": "interface"
+                },
+                "formats": ["PascalCase"]
+              },
+              {
+                "selector": {
+                  "kind": "enum"
+                },
+                "formats": ["PascalCase"]
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  // Assist: import 자동 정리 및 그룹화
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "recommended": true
+    }
+  },
+  // 포맷터: 코드 스타일 및 가독성 일관성
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false, // 구문 오류 시 포맷 중단
+    "indentStyle": "space", // 스페이스 들여쓰기
+    "indentWidth": 2, // 2칸 들여쓰기
+    "lineEnding": "lf", // LF 라인 엔딩
+    "lineWidth": 80, // 80자 기준 줄바꿈
+    "attributePosition": "auto" // JSX 속성 줄바꿈 자동
+  },
+  // JS/TS 포맷터: 함수, 객체, JSX 등 세부 스타일
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "asNeeded", // 화살표 함수 괄호 필요시만
+      "bracketSameLine": false, // JSX 닫기 괄호 다음 줄
+      "bracketSpacing": true, // 객체 중괄호 공백
+      "jsxQuoteStyle": "double", // JSX 속성 더블 쿼트
+      "quoteProperties": "asNeeded", // 객체 키 쿼트 필요시만
+      "quoteStyle": "single", // 문자열 싱글 쿼트
+      "semicolons": "asNeeded", // 세미콜론 필요시만
+      "trailingCommas": "all" // 항상 trailing comma
+    }
+  },
+  // JSON 포맷터: trailing comma 미사용(JSON 표준)
+  "json": {
+    "formatter": {
+      "enabled": true,
+      "trailingCommas": "none"
+    }
+  },
+  // CSS/SCSS 포맷터: 싱글 쿼트 스타일
+  "css": {
+    "formatter": {
+      "enabled": true,
+      "quoteStyle": "single"
+    }
+  },
+  // 적용 대상: src 및 루트 주요 파일 전체
+  "files": {
+    "includes": [
+      "src/**/*",
+      "*.ts",
+      "*.tsx",
+      "*.js",
+      "*.jsx",
+      "*.json",
+      "*.jsonc",
+      "*.css",
+      "*.scss"
+    ]
+  }
+}
