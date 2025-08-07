@@ -1,0 +1,26 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc,css,scss,md}"
+      run: pnpm lint:fix --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+      stage_fixed: true
+      fail_text: "🔧 자동 수정할 수 없는 코드 오류가 있습니다. 수동으로 수정 후 다시 커밋하세요."
+
+pre-push:
+  parallel: true
+  commands:
+    biome:
+      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc,css,scss,md}"
+      run: pnpm lint --no-errors-on-unmatched --files-ignore-unknown=true {push_files}
+      fail_text: "🔍 코드 품질 검사 실패. 'pnpm lint:fix'로 수정 후 다시 푸시하세요."
+    typecheck:
+      run: pnpm exec tsc --noEmit
+      fail_text: "⚡️ 타입 오류가 발견되었습니다. TypeScript 오류를 수정 후 다시 푸시하세요."
+
+commit-msg:
+  parallel: true
+  commands:
+    commit-lint:
+      run: pnpm exec commitlint --edit || exit 1
+      fail_text: "📝 Conventional Commit 형식에 맞지 않습니다."
