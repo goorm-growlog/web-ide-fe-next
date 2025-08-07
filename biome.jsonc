@@ -61,7 +61,7 @@
       // 실험적(nursery): 최신 Biome 실험적 규칙
       "nursery": {
         "recommended": true,
-        "useSortedClasses": "error", // Tailwind CSS 클래스 자동 정렬
+        // "useSortedClasses": "error", // Tailwind CSS 클래스 자동 정렬
         "noMisusedPromises": "error", // Promise 오용 방지
         "noImplicitCoercion": "warn", // 암시적 타입 변환 경고
         "noUnknownAtRule": "off", // Tailwind CSS at-rule 허용
