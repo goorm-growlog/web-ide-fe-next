@@ -15,7 +15,7 @@ body:
     id: summary
     attributes:
       label: 📌 작업 요약
-    description: "예: 프로젝트 목록 API에 페이징 추가"
+    placeholder: "예: 프로젝트 목록 API에 페이징 추가"
     validations:
       required: true
 
@@ -47,7 +47,7 @@ body:
     id: due
     attributes:
       label: ⏰ 목표 기한 (Optional)
-    description: "예: 2025-08-20"
+    placeholder: "예: 2025-08-20"
 
   - type: textarea
     id: dependency
@@ -76,7 +76,7 @@ body:
     id: branch_scope
     attributes:
       label: 🏷️ 스코프
-    description: "예: api, ui, infra"
+    placeholder: "예: api, ui, infra"
     validations:
       required: true
 
@@ -84,6 +84,6 @@ body:
     id: branch_slug
     attributes:
       label: ✍️ 간단 설명 (kebab-case)
-    description: "예: add-pagination-to-project-list"
+    placeholder: "예: add-pagination-to-project-list"
     validations:
       required: true
