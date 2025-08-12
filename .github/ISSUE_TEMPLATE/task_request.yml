@@ -51,7 +51,6 @@ body:
     id: dependency
     attributes:
       label: 🔗 선행 이슈/의존성 (Optional)
-    placeholder: "예: #123, #456"
 
   - type: dropdown
     id: branch_type
