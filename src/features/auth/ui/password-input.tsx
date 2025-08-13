@@ -3,6 +3,7 @@ import type { ComponentProps } from 'react'
 import { forwardRef, useState } from 'react'
 import { cn } from '@/shared/lib/utils'
 import { Input } from '@/shared/ui/shadcn/input'
+import styles from './password-input.module.css'
 
 type InputProps = ComponentProps<'input'>
 
@@ -12,10 +13,10 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
     const Icon = visible ? Eye : EyeOff
 
     return (
-      <div className="relative">
+      <div className={styles.root}>
         <Input
           type={visible ? 'text' : 'password'}
-          className={cn('pr-10', className)}
+          className={cn(className, 'pr-10')}
           ref={ref}
           {...props}
         />
@@ -23,10 +24,10 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
           type="button"
           aria-label={visible ? '비밀번호 숨기기' : '비밀번호 보기'}
           onClick={() => setVisible(v => !v)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
+          className={styles.toggle}
           tabIndex={-1}
         >
-          <Icon className="h-3 w-3" />
+          <Icon className={styles.icon} />
         </button>
       </div>
     )

@@ -10,23 +10,19 @@ import {
 import { Input } from '@/shared/ui/shadcn/input'
 
 interface FormFieldProps<
-  TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
-> extends Omit<ControllerProps<TFieldValues, TName>, 'render'> {
+  T extends FieldValues = FieldValues,
+  N extends FieldPath<T> = FieldPath<T>,
+> extends Omit<ControllerProps<T, N>, 'render'> {
   label: string
   placeholder?: string
-  type?: 'text' | 'email' | 'password' | 'number'
+  type?: string
   children?: ReactNode
   className?: string
 }
 
-/**
- * React Hook Form과 shadcn/ui Form을 연동한 FormField 컴포넌트
- * ⚠️ 반드시 FormProvider로 감싸서 사용해야 합니다
- */
 const FormField = <
-  TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  T extends FieldValues = FieldValues,
+  N extends FieldPath<T> = FieldPath<T>,
 >({
   label,
   placeholder,
@@ -34,28 +30,26 @@ const FormField = <
   children,
   className,
   ...props
-}: FormFieldProps<TFieldValues, TName>) => {
-  return (
-    <ShadcnFormField
-      {...props}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            {children ?? (
-              <Input
-                {...field}
-                type={type}
-                placeholder={placeholder}
-                className={className}
-              />
-            )}
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
-}
+}: FormFieldProps<T, N>) => (
+  <ShadcnFormField
+    {...props}
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>{label}</FormLabel>
+        <FormControl>
+          {children ?? (
+            <Input
+              {...field}
+              type={type}
+              placeholder={placeholder}
+              className={className}
+            />
+          )}
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+)
 
 export default FormField
