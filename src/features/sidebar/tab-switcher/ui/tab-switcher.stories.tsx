@@ -8,27 +8,27 @@ import {
 } from 'lucide-react'
 import { fn } from 'storybook/test'
 import IconButton from '@/shared/ui/icon-button'
-import Navigation from './navigation'
+import TabSwitcher from './tab-switcher'
 
 const meta = {
-  title: 'Features/Sidebar/Navigation',
-  component: Navigation,
+  title: 'Features/Sidebar/Tab Swticher',
+  component: TabSwitcher,
   parameters: {
     layout: 'centered',
   },
   tags: ['autodocs'],
   argTypes: {
-    topButtons: {
+    topTaps: {
       control: false,
       description: 'Array of IconButton elements to render at the top',
     },
-    bottomButtons: {
+    bottomTaps: {
       control: false,
       description: 'Array of IconButton elements to render at the bottom',
     },
   },
   args: {
-    topButtons: [
+    topTaps: [
       <IconButton
         key="files"
         Icon={FilesIcon}
@@ -55,7 +55,7 @@ const meta = {
         onClick={fn()}
       />,
     ],
-    bottomButtons: [
+    bottomTaps: [
       <IconButton
         key="setting"
         Icon={SettingsIcon}
@@ -64,7 +64,7 @@ const meta = {
       />,
     ],
   },
-} satisfies Meta<typeof Navigation>
+} satisfies Meta<typeof TabSwitcher>
 
 export default meta
 type Story = StoryObj<typeof meta>
