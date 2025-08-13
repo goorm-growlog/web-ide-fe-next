@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { Meta, StoryObj } from '@storybook/nextjs'
 import { FormProvider, useForm } from 'react-hook-form'
 import { type FormData, formSchema } from '../model/validation-schema'
-import FormField from './form-field'
+import FormField, { type FormFieldProps } from './form-field'
 import PasswordInput from './password-input'
 
 // 메타 구성 (Storybook용)
@@ -21,7 +21,8 @@ const meta: Meta<typeof FormField> = {
   tags: ['autodocs'],
   argTypes: {
     name: {
-      control: 'text',
+      control: { type: 'select' },
+      options: ['email', 'name', 'password'],
       description: 'Field name',
     },
     label: {
@@ -45,30 +46,31 @@ type Story = StoryObj<typeof meta>
 
 // 기본 예시
 export const Default: Story = {
-  render: () => {
+  args: {
+    name: 'email',
+    label: 'Email',
+    placeholder: 'your@email.com',
+    type: 'email',
+  },
+  // @ts-expect-error Storybook Controls 타입과 FormFieldProps name 타입이 완전히 일치하지 않음 (실행에는 문제 없음)
+  render: (args: Omit<FormFieldProps<FormData>, 'control'>) => {
     const methods = useForm<FormData>({
       resolver: zodResolver(formSchema),
       defaultValues: {
         email: '',
       },
     })
-
     return (
       <FormProvider {...methods}>
-        <FormField
-          name="email"
-          control={methods.control}
-          label="Email"
-          placeholder="your@email.com"
-          type="email"
-        />
+        <FormField {...args} control={methods.control} />
       </FormProvider>
     )
   },
   parameters: {
     docs: {
       description: {
-        story: 'Basic email input field.',
+        story:
+          'Basic email input field. Controls를 통해 name, label, placeholder, type을 실시간으로 변경할 수 있습니다.',
       },
     },
   },

@@ -9,7 +9,7 @@ import {
 } from '@/shared/ui/shadcn/form'
 import { Input } from '@/shared/ui/shadcn/input'
 
-interface FormFieldProps<T extends FieldValues = FieldValues> {
+export interface FormFieldProps<T extends FieldValues = FieldValues> {
   name: Path<T> // 필드 이름 (react-hook-form에서 사용)
   control: Control<T> // react-hook-form의 control 객체
   label: string
