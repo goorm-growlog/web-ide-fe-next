@@ -69,26 +69,6 @@ export const Default: CustomStoryObj = {
   },
 }
 
-export const WithCustomPlaceholder: CustomStoryObj = {
-  render: () => {
-    const [password, setPassword] = useState('')
-    return (
-      <PasswordInput
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        placeholder="Enter at least 8 characters"
-      />
-    )
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Password input field with custom placeholder text.',
-      },
-    },
-  },
-}
-
 export const Disabled: CustomStoryObj = {
   render: () => {
     const [password, setPassword] = useState('')
@@ -105,48 +85,6 @@ export const Disabled: CustomStoryObj = {
     docs: {
       description: {
         story: 'Disabled password input field.',
-      },
-    },
-  },
-}
-
-export const WithInitialValue: CustomStoryObj = {
-  render: () => {
-    const [password, setPassword] = useState('mypassword123')
-    return (
-      <PasswordInput
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        placeholder="Enter your password"
-      />
-    )
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Password input field with initial value. Test the toggle functionality.',
-      },
-    },
-  },
-}
-
-export const WithCustomStyle: CustomStoryObj = {
-  render: () => {
-    const [password, setPassword] = useState('')
-    return (
-      <PasswordInput
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        placeholder="Custom styled password"
-        className="border-2 border-blue-500 focus:border-blue-700"
-      />
-    )
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Password input field with custom CSS classes applied.',
       },
     },
   },

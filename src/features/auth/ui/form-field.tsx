@@ -1,33 +1,60 @@
-import type { InputHTMLAttributes, ReactNode } from 'react'
-import { cn } from '@/shared/lib/utils'
+import type { ReactNode } from 'react'
+import type { ControllerProps, FieldPath, FieldValues } from 'react-hook-form'
+import {
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormField as ShadcnFormField,
+} from '@/shared/ui/shadcn/form'
 import { Input } from '@/shared/ui/shadcn/input'
-import { Label } from '@/shared/ui/shadcn/label'
 
-interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
-  id: string
+interface FormFieldProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> extends Omit<ControllerProps<TFieldValues, TName>, 'render'> {
   label: string
+  placeholder?: string
+  type?: 'text' | 'email' | 'password' | 'number'
   children?: ReactNode
-  containerClassName?: string
+  className?: string
 }
 
-const FormField = ({
-  id,
+/**
+ * React Hook Form과 shadcn/ui Form을 연동한 FormField 컴포넌트
+ * ⚠️ 반드시 FormProvider로 감싸서 사용해야 합니다
+ */
+const FormField = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   label,
+  placeholder,
+  type = 'text',
   children,
   className,
-  containerClassName,
   ...props
-}: FormFieldProps) => {
+}: FormFieldProps<TFieldValues, TName>) => {
   return (
-    <div
-      className={cn(
-        'grid w-full max-w-sm items-center gap-1.5',
-        containerClassName,
+    <ShadcnFormField
+      {...props}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            {children ?? (
+              <Input
+                {...field}
+                type={type}
+                placeholder={placeholder}
+                className={className}
+              />
+            )}
+          </FormControl>
+          <FormMessage />
+        </FormItem>
       )}
-    >
-      <Label htmlFor={id}>{label}</Label>
-      {children ?? <Input id={id} className={className} {...props} />}
-    </div>
+    />
   )
 }
 
