@@ -11,7 +11,7 @@ import IconButton from '@/shared/ui/icon-button'
 import TabSwitcher from './tab-switcher'
 
 const meta = {
-  title: 'Features/Sidebar/Tab Swticher',
+  title: 'Widgets/Sidebar/TabSwitcher',
   component: TabSwitcher,
   parameters: {
     layout: 'centered',
