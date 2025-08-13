@@ -4,7 +4,7 @@ import FormField from './form-field'
 import PasswordInput from './password-input'
 
 const meta: Meta<typeof FormField> = {
-  title: 'shared/ui/FormField',
+  title: 'features/auth/FormField',
   component: FormField,
   argTypes: {
     label: { control: 'text' },
@@ -43,7 +43,9 @@ export const WithPasswordInput: Story = {
         <PasswordInput
           id="password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setPassword(e.target.value)
+          }
           placeholder="비밀번호를 입력하세요"
         />
       </FormField>

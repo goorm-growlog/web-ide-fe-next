@@ -3,7 +3,7 @@ import { useState } from 'react'
 import PasswordInput from './password-input'
 
 const meta: Meta<typeof PasswordInput> = {
-  title: 'shared/ui/PasswordInput',
+  title: 'features/auth/PasswordInput',
   component: PasswordInput,
 }
 export default meta
