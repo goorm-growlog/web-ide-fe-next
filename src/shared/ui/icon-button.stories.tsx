@@ -5,7 +5,7 @@ import { fn } from 'storybook/test'
 import IconButton from './icon-button'
 
 const meta = {
-  title: 'Features/Sidebar/TabButton',
+  title: 'Shared/IconButton',
   component: IconButton,
   parameters: {
     layout: 'centered',

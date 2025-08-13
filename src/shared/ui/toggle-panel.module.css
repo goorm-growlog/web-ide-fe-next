@@ -1,0 +1,17 @@
+.togglePanelItem {
+  border-bottom-width: 0px;
+}
+
+.togglePanelTitle {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+
+  border-bottom-width: 1px;
+  border-radius: 0px;
+
+  text-decoration: none;
+}
+
+.togglePanelContent {
+  padding: 0.5rem;
+}
