@@ -5,7 +5,7 @@ import { type FormData, formSchema } from '../model/validation-schema'
 import FormField from './form-field'
 import PasswordInput from './password-input'
 
-// Meta configuration
+// 메타 구성 (Storybook용)
 const meta: Meta<typeof FormField> = {
   title: 'Features/Auth/FormField',
   component: FormField,
@@ -14,7 +14,7 @@ const meta: Meta<typeof FormField> = {
     docs: {
       description: {
         component:
-          'React Hook Form과 shadcn/ui Form을 통합한 FormField 컴포넌트입니다. 자동 검증과 오류 처리가 포함되어 있습니다.',
+          'FormField component integrating React Hook Form and shadcn/ui Form. Includes auto validation and error handling.',
       },
     },
   },
@@ -22,20 +22,20 @@ const meta: Meta<typeof FormField> = {
   argTypes: {
     name: {
       control: 'text',
-      description: '필드 이름',
+      description: 'Field name',
     },
     label: {
       control: 'text',
-      description: '레이블 텍스트',
+      description: 'Label text',
     },
     placeholder: {
       control: 'text',
-      description: '입력 필드 힌트',
+      description: 'Input field hint',
     },
     type: {
       control: 'select',
       options: ['text', 'email', 'password', 'number'],
-      description: '입력 필드 타입',
+      description: 'Input field type',
     },
   },
 }
@@ -43,7 +43,7 @@ const meta: Meta<typeof FormField> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-// Default story
+// 기본 예시
 export const Default: Story = {
   render: () => {
     const methods = useForm<FormData>({
@@ -58,7 +58,7 @@ export const Default: Story = {
         <FormField
           name="email"
           control={methods.control}
-          label="이메일"
+          label="Email"
           placeholder="your@email.com"
           type="email"
         />
@@ -68,13 +68,13 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: '기본 이메일 입력 필드입니다.',
+        story: 'Basic email input field.',
       },
     },
   },
 }
 
-// Password input example
+// 비밀번호 입력 예시
 export const WithPasswordInput: Story = {
   render: () => {
     const methods = useForm<FormData>({
@@ -86,9 +86,9 @@ export const WithPasswordInput: Story = {
 
     return (
       <FormProvider {...methods}>
-        <FormField name="password" control={methods.control} label="비밀번호">
+        <FormField name="password" control={methods.control} label="Password">
           <PasswordInput
-            placeholder="비밀번호를 입력하세요"
+            placeholder="Enter your password"
             {...methods.register('password')}
           />
         </FormField>
@@ -98,13 +98,13 @@ export const WithPasswordInput: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'PasswordInput 컴포넌트를 children으로 사용하는 예시입니다.',
+        story: 'Example using PasswordInput as children.',
       },
     },
   },
 }
 
-// Validation demo
+// 실시간 검증 데모
 export const ValidationDemo: Story = {
   render: () => {
     const methods = useForm<FormData>({
@@ -118,7 +118,8 @@ export const ValidationDemo: Story = {
     })
 
     const onSubmit = (data: FormData) => {
-      alert(`검증 성공! 데이터: ${JSON.stringify(data, null, 2)}`)
+      // 검증 성공 시 데이터 알림
+      alert(`Validation success! Data: ${JSON.stringify(data, null, 2)}`)
     }
 
     return (
@@ -130,24 +131,20 @@ export const ValidationDemo: Story = {
           <FormField
             name="email"
             control={methods.control}
-            label="이메일 (실시간 검증)"
-            placeholder="올바른 이메일을 입력하세요"
+            label="Email"
+            placeholder="Enter a valid email"
             type="email"
           />
           <FormField
             name="name"
             control={methods.control}
-            label="이름 (2글자 이상)"
-            placeholder="이름을 입력하세요"
+            label="Name"
+            placeholder="Enter your name"
             type="text"
           />
-          <FormField
-            name="password"
-            control={methods.control}
-            label="비밀번호 (8글자 이상)"
-          >
+          <FormField name="password" control={methods.control} label="Password">
             <PasswordInput
-              placeholder="비밀번호를 입력하세요"
+              placeholder="Enter your password"
               {...methods.register('password')}
             />
           </FormField>
@@ -155,7 +152,7 @@ export const ValidationDemo: Story = {
             type="submit"
             className="w-full bg-zinc-800 text-white p-2 rounded hover:bg-zinc-700"
           >
-            제출
+            Submit
           </button>
         </form>
       </FormProvider>
@@ -165,7 +162,7 @@ export const ValidationDemo: Story = {
     docs: {
       description: {
         story:
-          '실시간 검증 데모입니다. 입력하면서 검증 오류를 확인할 수 있습니다.',
+          'Live validation demo. You can check validation errors while typing.',
       },
     },
   },
