@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs'
+import { FormProvider } from 'react-hook-form'
 import FormField from '@/features/auth/ui/form-field'
 import InputWithButton from '@/features/auth/ui/input-with-button'
-import { Form } from '@/shared/ui/shadcn/form'
+import { useEmailVerification } from '../model/use-email-verification'
 import { useEmailVerificationForm } from '../model/use-email-verification-form'
 
 const meta: Meta = {
@@ -14,7 +15,8 @@ type Story = StoryObj
 
 export const EmailVerification: Story = {
   render: () => {
-    const { form, emailVerification } = useEmailVerificationForm({
+    const form = useEmailVerificationForm()
+    const emailVerification = useEmailVerification({
       onSendCode: async email => {
         await new Promise(r => setTimeout(r, 500))
         alert(`인증코드가 ${email}로 발송되었습니다`)
@@ -26,58 +28,69 @@ export const EmailVerification: Story = {
     })
     return (
       <div style={{ width: 320 }}>
-        <Form {...form}>
-          <FormField name="email" control={form.control} label="Email">
-            <InputWithButton
-              inputProps={{
-                type: 'email',
-                placeholder: 'Enter a valid email',
-                ...form.register('email'),
-                disabled:
-                  emailVerification.isSending || emailVerification.isVerified,
-              }}
-              buttonProps={{
-                type: 'button',
-                onClick: () =>
-                  emailVerification.sendCode(form.getValues('email')),
-                disabled:
-                  emailVerification.isSending || emailVerification.isVerified,
-              }}
-              buttonText={emailVerification.isSending ? 'Sending...' : 'Send'}
-            />
-          </FormField>
-          {emailVerification.isCodeSent && (
-            <FormField name="code" control={form.control} label="인증코드">
-              <InputWithButton
-                inputProps={{
-                  placeholder: '코드 6자리',
-                  maxLength: 6,
-                  ...form.register('code'),
-                  disabled:
-                    emailVerification.isVerifying ||
-                    emailVerification.isVerified,
-                }}
-                buttonProps={{
-                  type: 'button',
-                  size: 'sm',
-                  onClick: () =>
-                    emailVerification.verifyCode(form.getValues('code')),
-                  disabled:
-                    emailVerification.isVerifying ||
-                    emailVerification.isVerified,
-                  variant: emailVerification.isVerified ? 'outline' : 'default',
-                }}
-                buttonText={
-                  emailVerification.isVerifying
-                    ? 'Verifying...'
-                    : emailVerification.isVerified
-                      ? 'Verified'
-                      : 'Confirm'
-                }
-              />
+        <FormProvider {...form}>
+          <form>
+            <FormField name="email" control={form.control} label="Email">
+              {field => (
+                <InputWithButton
+                  inputProps={{
+                    ...field,
+                    type: 'email',
+                    placeholder: 'Enter a valid email',
+                    disabled:
+                      emailVerification.isSending ||
+                      emailVerification.isVerified,
+                  }}
+                  buttonProps={{
+                    type: 'button',
+                    onClick: () =>
+                      emailVerification.sendCode(form.getValues('email')),
+                    disabled:
+                      emailVerification.isSending ||
+                      emailVerification.isVerified,
+                  }}
+                  buttonText={
+                    emailVerification.isSending ? 'Sending...' : 'Send'
+                  }
+                />
+              )}
             </FormField>
-          )}
-        </Form>
+            {emailVerification.isCodeSent && (
+              <FormField name="code" control={form.control} label="인증코드">
+                {field => (
+                  <InputWithButton
+                    inputProps={{
+                      ...field,
+                      placeholder: '코드 6자리',
+                      maxLength: 6,
+                      disabled:
+                        emailVerification.isVerifying ||
+                        emailVerification.isVerified,
+                    }}
+                    buttonProps={{
+                      type: 'button',
+                      onClick: () =>
+                        emailVerification.verifyCode(form.getValues('code')),
+                      disabled:
+                        emailVerification.isVerifying ||
+                        emailVerification.isVerified,
+                      variant: emailVerification.isVerified
+                        ? 'outline'
+                        : 'default',
+                    }}
+                    buttonText={
+                      emailVerification.isVerifying
+                        ? 'Verifying...'
+                        : emailVerification.isVerified
+                          ? 'Verified'
+                          : 'Confirm'
+                    }
+                  />
+                )}
+              </FormField>
+            )}
+          </form>
+        </FormProvider>
       </div>
     )
   },

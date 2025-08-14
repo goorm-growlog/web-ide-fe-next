@@ -1,5 +1,10 @@
 import type { ReactNode } from 'react'
-import type { ControllerProps, FieldPath, FieldValues } from 'react-hook-form'
+import type {
+  ControllerProps,
+  ControllerRenderProps,
+  FieldPath,
+  FieldValues,
+} from 'react-hook-form'
 import {
   FormControl,
   FormItem,
@@ -16,7 +21,9 @@ interface FormFieldProps<
   label: string
   placeholder?: string
   type?: 'text' | 'email' | 'password' | 'number'
-  children?: ReactNode
+  children?:
+    | ReactNode
+    | ((field: ControllerRenderProps<TFieldValues, TName>) => ReactNode)
   className?: string
 }
 
@@ -42,14 +49,16 @@ const FormField = <
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            {children ?? (
-              <Input
-                {...field}
-                type={type}
-                placeholder={placeholder}
-                className={className}
-              />
-            )}
+            {typeof children === 'function'
+              ? children(field)
+              : (children ?? (
+                  <Input
+                    {...field}
+                    type={type}
+                    placeholder={placeholder}
+                    className={className}
+                  />
+                ))}
           </FormControl>
           <FormMessage />
         </FormItem>
