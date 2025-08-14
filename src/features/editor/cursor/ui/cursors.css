@@ -1,0 +1,69 @@
+[class*='yRemoteSelectionHead'] {
+  position: absolute;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 4px;
+  margin: -2px;
+  border-left: 2px solid var(--user-color, orangered);
+}
+
+/* 라벨 */
+[class*='yRemoteSelectionHead']::after {
+  position: absolute;
+  top: -1.3em;
+  left: -2px;
+  z-index: 100;
+  padding: 2px 6px;
+  font:
+    600 8px / normal system-ui,
+    -apple-system,
+    sans-serif;
+  color: white;
+  white-space: nowrap;
+  pointer-events: auto;
+  user-select: none;
+  background: var(--user-color, orangered);
+  border: 0;
+  border-radius: 6px;
+  border-bottom-left-radius: 0;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+/* 커서에 hover 시 라벨 표시 */
+[class*='yRemoteSelectionHead']:hover::after {
+  font:
+    600 12px / normal system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+/* 호버중에 린트 미표시 */
+body:has([class*='yRemoteSelectionHead']:hover) .monaco-editor .hover-row {
+  display: none;
+}
+
+/* 전체 커서 표시 on/off */
+body.labels-hidden [class*='yRemoteSelectionHead']:after {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  [class^='yRemoteSelectionHead']::after {
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.4);
+  }
+}
+
+@media (max-width: 768px) {
+  [class^='yRemoteSelectionHead']::after {
+    left: -2px; /* 모바일에서도 정렬 유지 */
+    padding: 1px 4px;
+    font-size: 12px;
+  }
+}
+
+@media (prefers-contrast: high) {
+  [class^='yRemoteSelectionHead']::after {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.6);
+  }
+}
