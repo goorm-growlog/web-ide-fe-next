@@ -30,7 +30,7 @@ const TabsDemo = ({ tabs }: { tabs: { id: string; name: string }[] }) => {
       style={{
         display: 'flex',
         alignItems: 'center',
-        padding: '5px',
+        padding: '0.3125rem',
         borderBottom: '1px solid #333',
         backgroundColor: '#252526',
         flexWrap: 'wrap',
@@ -47,7 +47,7 @@ const TabsDemo = ({ tabs }: { tabs: { id: string; name: string }[] }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                padding: '8px 12px',
+                padding: '0.5rem 0.75rem',
                 background: isActive ? '#1e1e1e' : 'transparent',
                 borderRight: '1px solid #333',
                 cursor: 'pointer',
@@ -63,13 +63,13 @@ const TabsDemo = ({ tabs }: { tabs: { id: string; name: string }[] }) => {
                   closeTab(tab.id)
                 }}
                 style={{
-                  marginLeft: '10px',
+                  marginLeft: '0.625rem',
                   border: 'none',
                   background: 'transparent',
                   color: '#999',
                   cursor: 'pointer',
                   padding: '0',
-                  fontSize: '14px',
+                  fontSize: '0.875rem',
                 }}
               >
                 ✕

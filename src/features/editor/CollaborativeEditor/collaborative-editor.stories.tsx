@@ -15,7 +15,7 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: () => (
-    <div style={{ height: '600px', width: '100%', position: 'relative' }}>
+    <div style={{ height: '100vh', width: '100%', position: 'relative' }}>
       <Editor
         height="100%"
         width="100%"
@@ -30,7 +30,7 @@ export const Default: Story = {
 
 export const LightTheme: Story = {
   render: () => (
-    <div style={{ height: '600px', width: '100%', position: 'relative' }}>
+    <div style={{ height: '100vh', width: '100%', position: 'relative' }}>
       <Editor
         height="100%"
         width="100%"
@@ -45,7 +45,7 @@ export const LightTheme: Story = {
 
 export const TypeScript: Story = {
   render: () => (
-    <div style={{ height: '600px', width: '100%', position: 'relative' }}>
+    <div style={{ height: '100vh', width: '100%', position: 'relative' }}>
       <Editor
         height="100%"
         width="100%"
