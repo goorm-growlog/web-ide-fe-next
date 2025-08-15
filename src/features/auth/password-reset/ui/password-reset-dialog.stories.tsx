@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { useState } from 'react'
 import { Button } from '@/shared/ui/shadcn/button'
 import PasswordResetDialog from './password-reset-dialog'
@@ -45,7 +45,7 @@ const meta = {
 } satisfies Meta<typeof PasswordResetDialog>
 
 export default meta
-type Story = StoryObj<typeof meta>
+type Story = StoryObj
 
 // 버튼 클릭으로 Dialog를 여는 컴포넌트
 const DialogWithTrigger = ({ isLoading = false }: { isLoading?: boolean }) => {
