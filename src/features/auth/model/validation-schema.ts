@@ -24,5 +24,11 @@ export const emailVerificationSchema = z.object({
   code: codeSchema,
 })
 
+export const passwordResetSchema = z.object({
+  name: nameSchema,
+  email: emailSchema,
+})
+
 export type FormData = z.infer<typeof formSchema>
 export type EmailVerificationFormData = z.infer<typeof emailVerificationSchema>
+export type PasswordResetData = z.infer<typeof passwordResetSchema>

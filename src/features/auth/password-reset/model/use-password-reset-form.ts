@@ -1,17 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import {
-  emailSchema,
-  nameSchema,
+  type PasswordResetData,
+  passwordResetSchema,
 } from '@/features/auth/model/validation-schema'
-
-const passwordResetSchema = z.object({
-  name: nameSchema,
-  email: emailSchema,
-})
-
-export type PasswordResetData = z.infer<typeof passwordResetSchema>
 
 interface UsePasswordResetFormOptions {
   onSubmit: (data: PasswordResetData) => Promise<void>
