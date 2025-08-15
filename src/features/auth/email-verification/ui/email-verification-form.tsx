@@ -12,8 +12,10 @@ interface Props {
 
 const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
   const form = useEmailVerificationForm()
-  const emailSend = useEmailSend({ onSendCode })
-  const codeVerification = useCodeVerification({ onVerifyCode })
+  const emailSend = useEmailSend(onSendCode ? { onSendCode } : {})
+  const codeVerification = useCodeVerification(
+    onVerifyCode ? { onVerifyCode } : {},
+  )
 
   return (
     <FormProvider {...form}>
