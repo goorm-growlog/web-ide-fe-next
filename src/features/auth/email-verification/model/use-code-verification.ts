@@ -27,10 +27,17 @@ export const useCodeVerification = ({
     setIsVerified(false)
   }
 
+  const getButtonText = () => {
+    if (isVerifying) return 'Verifying...'
+    if (isVerified) return 'Verified'
+    return 'Confirm'
+  }
+
   return {
     isVerifying,
     isVerified,
     verifyCode,
     reset,
+    getButtonText,
   }
 }

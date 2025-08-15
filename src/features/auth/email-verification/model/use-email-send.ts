@@ -24,10 +24,17 @@ export const useEmailSend = ({ onSendCode }: UseEmailSendOptions = {}) => {
     setIsCodeSent(false)
   }
 
+  const getButtonText = () => {
+    if (isSending) return 'Sending...'
+    if (isCodeSent) return 'Sent'
+    return 'Send'
+  }
+
   return {
     isSending,
     isCodeSent,
     sendCode,
     reset,
+    getButtonText,
   }
 }

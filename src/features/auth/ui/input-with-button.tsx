@@ -10,6 +10,7 @@ export interface InputWithButtonProps extends ComponentProps<'input'> {
   buttonText?: ReactNode
   buttonWidth?: string
   className?: string
+  onButtonClick?: () => void
 }
 
 const InputWithButton = forwardRef<HTMLInputElement, InputWithButtonProps>(
@@ -20,6 +21,7 @@ const InputWithButton = forwardRef<HTMLInputElement, InputWithButtonProps>(
       buttonText,
       buttonWidth = '4.5rem',
       className,
+      onButtonClick,
       ...rest
     } = props
 
@@ -35,6 +37,7 @@ const InputWithButton = forwardRef<HTMLInputElement, InputWithButtonProps>(
           type="button"
           {...buttonProps}
           style={{ ...buttonProps?.style, width: buttonWidth }}
+          onClick={onButtonClick || buttonProps?.onClick}
         >
           {buttonText}
         </Button>

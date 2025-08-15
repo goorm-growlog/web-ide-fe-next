@@ -12,10 +12,8 @@ interface Props {
 
 const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
   const form = useEmailVerificationForm()
-  const emailSend = useEmailSend(onSendCode ? { onSendCode } : {})
-  const codeVerification = useCodeVerification(
-    onVerifyCode ? { onVerifyCode } : {},
-  )
+  const email = useEmailSend(onSendCode ? { onSendCode } : {})
+  const code = useCodeVerification(onVerifyCode ? { onVerifyCode } : {})
 
   return (
     <FormProvider {...form}>
@@ -23,20 +21,18 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
         <FormField name="email" control={form.control} label="Email">
           {field => (
             <InputWithButton
-              inputProps={{
-                ...field,
-                placeholder: 'Enter a valid email',
-                disabled: emailSend.isSending || codeVerification.isVerified,
-              }}
+              {...field}
+              placeholder="Enter a valid email"
+              disabled={email.isSending || code.isVerified}
+              buttonText={email.getButtonText()}
               buttonProps={{
-                onClick: () => emailSend.sendCode(form.getValues('email')),
-                disabled: emailSend.isSending || codeVerification.isVerified,
+                disabled: email.isSending || code.isVerified,
               }}
-              buttonText={emailSend.isSending ? 'Sending...' : 'Send'}
+              onButtonClick={() => email.sendCode(form.getValues('email'))}
             />
           )}
         </FormField>
-        {emailSend.isCodeSent && (
+        {email.isCodeSent && (
           <FormField
             name="code"
             control={form.control}
@@ -44,27 +40,15 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
           >
             {field => (
               <InputWithButton
-                inputProps={{
-                  ...field,
-                  placeholder: 'Enter code',
-                  maxLength: 6,
-                  disabled:
-                    codeVerification.isVerifying || codeVerification.isVerified,
-                }}
+                {...field}
+                placeholder="Enter code"
+                maxLength={6}
+                disabled={code.isVerifying || code.isVerified}
+                buttonText={code.getButtonText()}
                 buttonProps={{
-                  onClick: () =>
-                    codeVerification.verifyCode(form.getValues('code')),
-                  disabled:
-                    codeVerification.isVerifying || codeVerification.isVerified,
-                  variant: codeVerification.isVerified ? 'outline' : 'default',
+                  disabled: code.isVerifying || code.isVerified,
                 }}
-                buttonText={
-                  codeVerification.isVerifying
-                    ? 'Verifying...'
-                    : codeVerification.isVerified
-                      ? 'Verified'
-                      : 'Confirm'
-                }
+                onButtonClick={() => code.verifyCode(form.getValues('code'))}
               />
             )}
           </FormField>
