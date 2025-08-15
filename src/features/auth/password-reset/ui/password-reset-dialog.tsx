@@ -3,6 +3,8 @@ import { Button } from '@/shared/ui/shadcn/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/shared/ui/shadcn/dialog'
@@ -25,21 +27,25 @@ const PasswordResetDialog = ({
   onSubmit,
   isLoading,
 }: PasswordResetDialogProps) => {
-  const form = usePasswordResetForm({ onSubmit })
+  const { form, handleSubmit } = usePasswordResetForm({ onSubmit })
+  const isProcessing = isLoading || form.formState.isSubmitting
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Reset Password</DialogTitle>
+          <DialogDescription>
+            Enter your name and email to receive a temporary password.
+          </DialogDescription>
         </DialogHeader>
 
-        <p className="text-sm text-muted-foreground">
-          Enter your name and email to receive a temporary password.
-        </p>
-
         <Form {...form}>
-          <form onSubmit={form.handleSubmit} className="space-y-4">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4"
+            id="password-reset-form"
+          >
             <FormField
               name="name"
               control={form.control}
@@ -53,25 +59,26 @@ const PasswordResetDialog = ({
               type="email"
               placeholder="Enter your email"
             />
-
-            <div className="flex gap-2 justify-end pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isLoading}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={isLoading || form.formState.isSubmitting}
-              >
-                {isLoading ? 'Processing...' : 'Send Temporary Password'}
-              </Button>
-            </div>
           </form>
         </Form>
+
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isProcessing}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="password-reset-form"
+            disabled={isProcessing}
+          >
+            {isProcessing ? 'Processing...' : 'Send Temporary Password'}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

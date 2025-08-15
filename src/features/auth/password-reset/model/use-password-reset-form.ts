@@ -38,7 +38,7 @@ const usePasswordResetForm = ({ onSubmit }: UsePasswordResetFormOptions) => {
   })
 
   return {
-    ...form,
+    form,
     handleSubmit,
   }
 }
