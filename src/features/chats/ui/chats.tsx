@@ -1,7 +1,7 @@
 'use client'
 
-const ChatsPanel = () => {
-  return <div></div>
+const Chats = () => {
+  return <div>Chats</div>
 }
 
-export default ChatsPanel
+export default Chats

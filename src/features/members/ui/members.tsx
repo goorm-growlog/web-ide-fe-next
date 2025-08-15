@@ -1,3 +1,5 @@
+'use client'
+
 const Members = () => {
   return <div>Members</div>
 }

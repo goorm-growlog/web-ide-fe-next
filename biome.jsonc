@@ -1,6 +1,6 @@
 {
   // Biome 2025: 최신 웹 프론트엔드 표준 설정
-  "$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
   // 린터: 코드 품질, 일관성, 접근성, 성능 등 종합 규칙
   "linter": {
     "enabled": true,

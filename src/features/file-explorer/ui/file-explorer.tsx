@@ -1,7 +1,7 @@
 'use client'
 
 const FileExplorer = () => {
-  return <div>FileExplorer</div>
+  return <div>File Explorer</div>
 }
 
 export default FileExplorer

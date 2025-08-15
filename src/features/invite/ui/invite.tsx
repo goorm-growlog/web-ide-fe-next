@@ -1,7 +1,7 @@
 'use client'
 
 const Invite = () => {
-  return <div></div>
+  return <div>Invite</div>
 }
 
 export default Invite

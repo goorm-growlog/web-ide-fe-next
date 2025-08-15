@@ -1,0 +1,6 @@
+.container {
+  display: flex;
+  width: 25vw;
+  height: 100vh;
+  min-height: 0;
+}

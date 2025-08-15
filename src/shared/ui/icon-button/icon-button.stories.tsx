@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs'
 import { FileText, Search, Settings, Terminal, User } from 'lucide-react'
 import { fn } from 'storybook/test'
-
 import IconButton from './icon-button'
 
 const meta = {
