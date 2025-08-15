@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { useId } from 'react'
 import type {
   ControllerProps,
   ControllerRenderProps,
@@ -43,37 +42,25 @@ const FormField = <
   className,
   ...props
 }: FormFieldProps<TFieldValues, TName>) => {
-  const fieldId = useId()
-
   return (
     <ShadcnFormField
       {...props}
-      render={({ field, fieldState }) => (
+      render={({ field }) => (
         <FormItem>
-          <FormLabel htmlFor={fieldId}>{label}</FormLabel>
+          <FormLabel>{label}</FormLabel>
           <FormControl>
             {typeof children === 'function'
-              ? children({
-                  ...field,
-                  id: fieldId,
-                } as ControllerRenderProps<TFieldValues, TName> & {
-                  id: string
-                })
-              : (children ?? (
+              ? children(field)
+              : children || (
                   <Input
                     {...field}
-                    id={fieldId}
                     type={type}
                     placeholder={placeholder}
                     className={className}
-                    aria-invalid={fieldState.invalid ? 'true' : 'false'}
-                    aria-describedby={
-                      fieldState.error ? `${fieldId}-error` : undefined
-                    }
                   />
-                ))}
+                )}
           </FormControl>
-          <FormMessage id={`${fieldId}-error`} />
+          <FormMessage />
         </FormItem>
       )}
     />
