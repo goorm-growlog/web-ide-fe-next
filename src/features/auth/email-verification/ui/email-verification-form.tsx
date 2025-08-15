@@ -1,7 +1,8 @@
 import { FormProvider } from 'react-hook-form'
 import FormField from '@/features/auth/ui/form-field'
 import InputWithButton from '@/features/auth/ui/input-with-button'
-import { useEmailVerification } from '../model/use-email-verification'
+import { useCodeVerification } from '../model/use-code-verification'
+import { useEmailSend } from '../model/use-email-send'
 import { useEmailVerificationForm } from '../model/use-email-verification-form'
 
 interface Props {
@@ -11,10 +12,8 @@ interface Props {
 
 const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
   const form = useEmailVerificationForm()
-  const emailVerification = useEmailVerification({
-    ...(onSendCode && { onSendCode }),
-    ...(onVerifyCode && { onVerifyCode }),
-  })
+  const emailSend = useEmailSend({ onSendCode })
+  const codeVerification = useCodeVerification({ onVerifyCode })
 
   return (
     <FormProvider {...form}>
@@ -24,47 +23,43 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
             <InputWithButton
               inputProps={{
                 ...field,
-                type: 'email',
                 placeholder: 'Enter a valid email',
-                disabled:
-                  emailVerification.isSending || emailVerification.isVerified,
+                disabled: emailSend.isSending || codeVerification.isVerified,
               }}
               buttonProps={{
-                type: 'button',
-                onClick: () =>
-                  emailVerification.sendCode(form.getValues('email')),
-                disabled:
-                  emailVerification.isSending || emailVerification.isVerified,
+                onClick: () => emailSend.sendCode(form.getValues('email')),
+                disabled: emailSend.isSending || codeVerification.isVerified,
               }}
-              buttonText={emailVerification.isSending ? 'Sending...' : 'Send'}
+              buttonText={emailSend.isSending ? 'Sending...' : 'Send'}
             />
           )}
         </FormField>
-        {emailVerification.isCodeSent && (
-          <FormField name="code" control={form.control} label="인증코드">
+        {emailSend.isCodeSent && (
+          <FormField
+            name="code"
+            control={form.control}
+            label="Verification Code"
+          >
             {field => (
               <InputWithButton
                 inputProps={{
                   ...field,
-                  placeholder: '코드 6자리',
+                  placeholder: 'Enter code',
                   maxLength: 6,
                   disabled:
-                    emailVerification.isVerifying ||
-                    emailVerification.isVerified,
+                    codeVerification.isVerifying || codeVerification.isVerified,
                 }}
                 buttonProps={{
-                  type: 'button',
                   onClick: () =>
-                    emailVerification.verifyCode(form.getValues('code')),
+                    codeVerification.verifyCode(form.getValues('code')),
                   disabled:
-                    emailVerification.isVerifying ||
-                    emailVerification.isVerified,
-                  variant: emailVerification.isVerified ? 'outline' : 'default',
+                    codeVerification.isVerifying || codeVerification.isVerified,
+                  variant: codeVerification.isVerified ? 'outline' : 'default',
                 }}
                 buttonText={
-                  emailVerification.isVerifying
+                  codeVerification.isVerifying
                     ? 'Verifying...'
-                    : emailVerification.isVerified
+                    : codeVerification.isVerified
                       ? 'Verified'
                       : 'Confirm'
                 }
@@ -76,5 +71,4 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
     </FormProvider>
   )
 }
-
 export default EmailVerificationForm
