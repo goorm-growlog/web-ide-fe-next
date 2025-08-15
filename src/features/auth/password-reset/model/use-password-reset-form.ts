@@ -19,15 +19,7 @@ const usePasswordResetForm = ({ onSubmit }: UsePasswordResetFormOptions) => {
     mode: 'onChange',
   })
 
-  const handleSubmit = form.handleSubmit(async data => {
-    try {
-      await onSubmit(data)
-      form.reset()
-    } catch (error) {
-      // 에러 처리는 상위에서 담당
-      throw error
-    }
-  })
+  const handleSubmit = form.handleSubmit(onSubmit)
 
   return {
     form,

@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { useState } from 'react'
+import { Button } from '@/shared/ui/shadcn/button'
 import PasswordResetDialog from './password-reset-dialog'
 
 const meta = {
@@ -8,20 +10,36 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component:
-          '이름과 이메일을 입력하여 임시 비밀번호를 발급받는 다이얼로그 컴포넌트입니다.',
+        component: [
+          'A password reset dialog component following the shadcn Dialog standard structure.',
+          '',
+          '- **Dialog structure**: Dialog > DialogContent > DialogHeader > PasswordResetForm > DialogFooter',
+          '- **Separation of form fields and buttons**: Form handles only fields, buttons are managed in DialogFooter',
+          '- **Test real interaction in the Canvas tab**',
+          '- **Docs tab is for visual preview only**',
+          '',
+          '---',
+          '### Usage Example',
+          '```tsx',
+          '<PasswordResetDialog open={open} onOpenChange={setOpen} onSubmit={...} />',
+          '```',
+        ].join('\n'),
+      },
+      source: {
+        language: 'tsx',
+        type: 'dynamic',
       },
     },
   },
   tags: ['autodocs'],
   argTypes: {
-    open: {
-      control: 'boolean',
-      description: '다이얼로그 표시 여부',
-    },
     isLoading: {
       control: 'boolean',
-      description: '로딩 상태',
+      description: 'Loading state',
+    },
+    open: {
+      control: 'boolean',
+      description: 'Dialog open state',
     },
   },
 } satisfies Meta<typeof PasswordResetDialog>
@@ -29,23 +47,56 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+// 버튼 클릭으로 Dialog를 여는 컴포넌트
+const DialogWithTrigger = ({ isLoading = false }: { isLoading?: boolean }) => {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div>
+      <Button onClick={() => setOpen(true)}>비밀번호 재설정</Button>
+      <PasswordResetDialog
+        open={open}
+        onOpenChange={setOpen}
+        isLoading={isLoading}
+        onSubmit={async () => {
+          // API 호출 시뮬레이션
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        }}
+      />
+    </div>
+  )
+}
+
 export const Default: Story = {
-  args: {
-    open: true,
-    isLoading: false,
-    onOpenChange: () => {
-      // Dialog state change handler
-    },
-    onSubmit: async () => {
-      // API 호출 시뮬레이션
-      await new Promise(resolve => setTimeout(resolve, 1000))
+  render: () => <DialogWithTrigger />,
+  parameters: {
+    docs: {
+      description: {
+        story: [
+          'Click the button to open the password reset dialog.',
+          '',
+          '- **Canvas tab**: You can test the dialog by clicking the button.',
+          '- **Docs tab**: See the DocsPreview story below for a visual preview.',
+        ].join('\n'),
+      },
+      source: {
+        type: 'dynamic',
+      },
     },
   },
 }
 
 export const Loading: Story = {
-  args: {
-    ...Default.args,
-    isLoading: true,
+  render: () => <DialogWithTrigger isLoading={true} />,
+  parameters: {
+    docs: {
+      description: {
+        story: [
+          'Dialog in loading (Processing...) state.',
+          '',
+          '- **Canvas tab**: Click the button to see the loading state.',
+        ].join('\n'),
+      },
+    },
   },
 }
