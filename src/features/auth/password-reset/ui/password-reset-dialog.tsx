@@ -25,12 +25,10 @@ const PasswordResetDialog = ({
 }: PasswordResetDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showCloseButton={false}>
+      <DialogContent className="w-[420px] max-w-[85vw]" showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>Reset Password</DialogTitle>
-          <DialogDescription>
-            Enter your name and email to receive a temporary password.
-          </DialogDescription>
+          <DialogDescription>receive a temporary password.</DialogDescription>
         </DialogHeader>
 
         <PasswordResetForm onSubmit={onSubmit}>
@@ -48,7 +46,7 @@ const PasswordResetDialog = ({
               form="password-reset-form"
               disabled={isLoading}
             >
-              {isLoading ? 'Processing...' : 'Send Temporary Password'}
+              {isLoading ? 'Processing...' : 'Send Password'}
             </Button>
           </DialogFooter>
         </PasswordResetForm>
