@@ -1,10 +1,11 @@
 .item {
   display: flex;
   align-items: center;
-  gap: calc(var(--spacing) * 1);
+  gap: 0.25rem;
   cursor: pointer;
   padding: 0.2rem 0;
 }
+
 .item:focus-visible,
 .item[data-focused] {
   box-shadow: 0 0 0 2px var(--color-sidebar-ring) inset;
@@ -12,32 +13,41 @@
   z-index: 2;
   outline: none;
 }
+
 .item[data-selected] {
   background: var(--color-sidebar-accent);
   color: var(--color-sidebar-accent-foreground);
 }
+
 .item:hover:not([data-selected]) {
-  background: var(--color-secondary);
+  background: var(--color-sidebar-accent);
   color: var(--color-sidebar-foreground);
+}
+
+.dropZone {
+  background-color: var(--color-blue-50);
 }
 
 .icons {
   display: flex;
-  gap: calc(var(--spacing) * 1);
+  gap: 0.25rem;
 }
+
 .chevron {
   transition: transform 0.2s;
 }
+
 .chevron[data-state='open'] {
   transform: rotate(90deg);
 }
+
 .chevron[data-state='closed'] {
   transform: rotate(0deg);
 }
 
 .label {
   display: flex;
-  gap: calc(var(--spacing) * 1);
+  gap: 0.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

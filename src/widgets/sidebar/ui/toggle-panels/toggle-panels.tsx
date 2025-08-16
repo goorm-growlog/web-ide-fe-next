@@ -13,25 +13,9 @@ interface TogglePanelsProps {
   panels?: Panel[]
 }
 
-const mockPanels: Panel[] = [
-  {
-    type: 'files',
-    title: 'Files',
-    content: <div>Content 1</div>,
-  },
-  {
-    type: 'search',
-    title: 'Search',
-    content: <div>Content 2</div>,
-  },
-  {
-    type: 'invite',
-    title: 'Invite',
-    content: <div>Content 3</div>,
-  },
-]
+export function TogglePanels({ panels }: TogglePanelsProps) {
+  if (!panels) return null
 
-export function TogglePanels({ panels = mockPanels }: TogglePanelsProps) {
   return (
     <Accordion type="multiple" className={styles.container}>
       {panels.map(panel => {

@@ -1,7 +1,13 @@
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-type PanelType = 'files' | 'chats' | 'search' | 'invite' | 'members'
+type PanelType =
+  | 'files'
+  | 'chats'
+  | 'search'
+  | 'invite'
+  | 'members'
+  | 'settings'
 export type Panel = {
   type: PanelType
   title: string

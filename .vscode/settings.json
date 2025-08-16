@@ -4,4 +4,10 @@
     "source.fixAll": "explicit",
     "source.organizeImports.biome": "explicit"
   },
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "javascript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.suggest.autoImports": false,
+  "javascript.suggest.autoImports": false
 }
