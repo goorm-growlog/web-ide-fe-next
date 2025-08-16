@@ -1,5 +1,5 @@
 :root {
-  --panel-header-height: 3.5vh;
+  --panel-header-height: 2.5vh;
 }
 
 .container {
@@ -35,7 +35,10 @@
   display: flex;
   justify-content: start;
   flex-direction: row-reverse;
+  align-items: center;
   gap: calc(var(--spacing) * 1);
+
+  font-size: 0.8rem;
 
   width: 100%;
   height: var(--panel-header-height);
@@ -68,7 +71,6 @@
   width: 100%;
   min-height: 0;
   height: 100%;
-
-  padding: 0 0.5rem;
-  overflow: auto;
+  padding: 1px;
+  overflow-y: auto;
 }
