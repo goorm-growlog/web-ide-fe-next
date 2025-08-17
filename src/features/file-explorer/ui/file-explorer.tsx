@@ -1,13 +1,17 @@
+'use client'
+
 import {
   dragAndDropFeature,
   hotkeysCoreFeature,
+  renamingFeature,
   selectionFeature,
   syncDataLoaderFeature,
 } from '@headless-tree/core'
 import { useTree } from '@headless-tree/react'
 import { ICON_SIZE, INDENT_SIZE } from '../model/constants'
-import { handleDrop } from '../model/drop-handler'
+import { handleDrop as onDrop } from '../model/drop-handler'
 import { mockFileTree } from '../model/mock-data'
+import { handleRename as onRename } from '../model/rename-handler'
 import type { FileNode } from '../model/types'
 import styles from './file-explorer.module.css'
 import FileExplorerItem from './file-explorer-item'
@@ -21,7 +25,7 @@ const FileExplorer = ({
   rootItemId = '/',
   fileTree = mockFileTree,
 }: FileExplorerProps) => {
-  const syncDataLoader = {
+  const dataLoader = {
     getItem: (itemId: string) => fileTree[itemId] ?? { name: itemId },
     getChildren: (itemId: string) => fileTree[itemId]?.children ?? [],
   }
@@ -30,15 +34,17 @@ const FileExplorer = ({
     rootItemId,
     getItemName: item => item.getItemData().name,
     isItemFolder: item => Boolean(item.getItemData().isFolder),
-    dataLoader: syncDataLoader,
+    dataLoader,
     indent: INDENT_SIZE,
     canDrop: (_, target) => target.item.isFolder(),
-    onDrop: handleDrop,
+    onDrop,
+    onRename,
     features: [
       syncDataLoaderFeature,
       selectionFeature,
       hotkeysCoreFeature,
       dragAndDropFeature,
+      renamingFeature,
     ],
   })
 

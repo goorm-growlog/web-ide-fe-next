@@ -1,3 +1,5 @@
+'use client'
+
 import type { ItemInstance } from '@headless-tree/core'
 import {
   ChevronRightIcon,
@@ -81,7 +83,16 @@ const FileExplorerItem = ({
       className={cn(styles.item, isDropZone(item) && styles.dropZone)}
     >
       <div className={styles.icons}>{iconElement}</div>
-      <div className={styles.label}>{item.getItemName()}</div>
+      <div className={styles.label}>
+        {item.isRenaming() ? (
+          <input
+            {...item.getRenameInputProps()}
+            onFocus={e => e.target.select()}
+          />
+        ) : (
+          item.getItemName()
+        )}
+      </div>
     </button>
   )
 }

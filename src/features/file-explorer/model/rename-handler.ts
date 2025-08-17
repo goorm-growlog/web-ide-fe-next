@@ -1,0 +1,8 @@
+import type { ItemInstance } from '@headless-tree/core'
+import type { FileNode } from './types'
+
+export const handleRename = (item: ItemInstance<FileNode>, value: string) => {
+  // biome-ignore lint/suspicious/noConsole: TODO: 리네이밍 처리 로직 구현
+  console.log(`Renamed ${item.getItemName()} to ${value}`)
+  item.getItemData().name = value
+}
