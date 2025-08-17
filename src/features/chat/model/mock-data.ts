@@ -1,0 +1,121 @@
+import type { ChatMessage } from './types'
+
+export const sampleMessages: ChatMessage[] = [
+  {
+    projectId: 1,
+    messageType: 'ENTER',
+    userId: 3,
+    username: '박영희',
+    content: '박영희님이 입장했습니다.',
+    sentAt: '2025-01-15T10:00:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 1,
+    username: '김철수',
+    content: '안녕하세요! 프로젝트 진행 상황은 어떠신가요?',
+    sentAt: '2025-01-15T10:05:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 2,
+    username: '나',
+    content: '네, 잘 진행되고 있습니다.',
+    sentAt: '2025-01-15T10:10:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 1,
+    username: '김철수',
+    content: '좋습니다!',
+    sentAt: '2025-01-15T10:15:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'ENTER',
+    userId: 4,
+    username: '이민수',
+    content: '이민수님이 입장했습니다.',
+    sentAt: '2025-01-16T09:00:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 2,
+    username: '나',
+    content: '네, 모두 참여해주세요.',
+    sentAt: '2025-01-16T09:05:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 1,
+    username: '김철수',
+    content: '알겠습니다.',
+    sentAt: '2025-01-17T14:30:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 3,
+    username: '박영희',
+    content: '저도 확인했습니다.',
+    sentAt: '2025-01-17T14:35:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'LEAVE',
+    userId: 4,
+    username: '이민수',
+    content: '이민수님이 퇴장했습니다.',
+    sentAt: '2025-01-18T11:20:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 2,
+    username: '나',
+    content: '좋습니다!',
+    sentAt: '2025-01-18T11:25:00Z',
+  },
+]
+
+export const additionalMessages: ChatMessage[] = [
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 1,
+    username: '김철수',
+    content:
+      '추가 메시지 1입니다. 이 메시지는 채팅창이 길어질 때 스크롤이 생기는지 테스트하기 위한 것입니다.',
+    sentAt: '2025-01-18T12:00:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 2,
+    username: '나',
+    content: '추가 메시지 2입니다. 스크롤 테스트를 위한 긴 메시지입니다.',
+    sentAt: '2025-01-18T12:05:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 3,
+    username: '박영희',
+    content:
+      '추가 메시지 3입니다. 이제 채팅창이 충분히 길어져서 스크롤바가 나타날 것입니다.',
+    sentAt: '2025-01-18T12:10:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 1,
+    username: '김철수',
+    content: '추가 메시지 4입니다. 스크롤 테스트를 위한 마지막 메시지입니다.',
+    sentAt: '2025-01-18T12:15:00Z',
+  },
+]
