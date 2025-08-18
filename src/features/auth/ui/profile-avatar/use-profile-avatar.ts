@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { type ChangeEvent, useEffect, useRef, useState } from 'react'
 import type { ProfileAvatarProps } from './types'
 import { ALLOWED_TYPES, MAX_SIZE } from './utils'
 
@@ -28,7 +28,7 @@ export const useProfileAvatar = ({
     fileInputRef.current?.click()
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
     if (file.size > MAX_SIZE) return
