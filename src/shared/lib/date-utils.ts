@@ -50,18 +50,15 @@ export const groupByDate = <T extends { sentAt: string }>(
 
   items.forEach(item => {
     if (item && typeof item === 'object' && 'sentAt' in item) {
-      try {
-        const date = new Date(item.sentAt)
-        if (!Number.isNaN(date.getTime())) {
-          const dateKey = date.toDateString()
-          if (!groups[dateKey]) {
-            groups[dateKey] = []
-          }
-          groups[dateKey].push(item)
+      const date = new Date(item.sentAt)
+      if (!Number.isNaN(date.getTime())) {
+        const dateKey = date.toISOString().slice(0, 10) // Use stable ISO date key
+        if (!groups[dateKey]) {
+          groups[dateKey] = []
         }
-      } catch {
-        // 날짜 파싱 실패 시 무시
-        console.warn('Failed to parse date:', item.sentAt)
+        groups[dateKey].push(item)
+      } else {
+        console.warn('Invalid date:', item.sentAt)
       }
     }
   })

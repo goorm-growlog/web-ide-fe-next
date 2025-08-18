@@ -12,6 +12,7 @@ import type {
  * 예시: [Button.tsx:25](https://.../Button.tsx#L25)
  */
 const FILE_LINK_PATTERN = /\[([^:]+):(\d+)\]\(([^)]+)\)/g
+const FILE_LINK_SINGLE_PATTERN = /^\[([^:]+):(\d+)\]\(([^)]+)\)$/
 
 /**
  * 파일 링크를 파싱하는 함수
@@ -28,17 +29,15 @@ export const parseFileLink = (
   lineNumber: number
   url: string
 } | null => {
-  const match = linkText.match(FILE_LINK_PATTERN)
-  if (!match) return null
+  const singleLinkMatch = linkText.match(FILE_LINK_SINGLE_PATTERN)
+  if (!singleLinkMatch) return null
 
-  const [, fileName, lineNumberStr, url] = match
-
+  const [, fileName, lineNumberStr, url] = singleLinkMatch
   if (!fileName || !lineNumberStr || !url) {
     return null
   }
 
   const lineNumber = parseInt(lineNumberStr, 10)
-
   if (Number.isNaN(lineNumber)) {
     return null
   }
@@ -117,9 +116,7 @@ const processTextBeforeLink = (
 ): void => {
   if (matchIndex > lastIndex) {
     const textBefore = text.slice(lastIndex, matchIndex)
-    if (textBefore.trim()) {
-      parts.push(createTextPart(textBefore))
-    }
+    parts.push(createTextPart(textBefore))
   }
 }
 
@@ -146,9 +143,7 @@ const processTextAfterLinks = (
 ): void => {
   if (lastIndex < text.length) {
     const textAfter = text.slice(lastIndex)
-    if (textAfter.trim()) {
-      parts.push(createTextPart(textAfter))
-    }
+    parts.push(createTextPart(textAfter))
   }
 }
 

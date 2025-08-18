@@ -1,7 +1,6 @@
 import React from 'react';
-import type { Preview } from '@storybook/nextjs';
+import type { Preview } from '@storybook/nextjs-vite';
 import '../app/globals.css'
-import { INITIAL_VIEWPORTS } from 'storybook/viewport';
 
 const preview: Preview = {
   parameters: {
@@ -15,7 +14,6 @@ const preview: Preview = {
       test: 'todo',
     },
     viewport: {
-      viewports: INITIAL_VIEWPORTS,
       defaultViewport: 'responsive',
     },
   },

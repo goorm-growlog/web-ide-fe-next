@@ -18,6 +18,7 @@ import {
 } from '@/features/file-explorer/model/constants'
 import type { FileNode } from '@/features/file-explorer/model/types'
 import FileExplorerItem from '@/features/file-explorer/ui/file-explorer-item/file-explorer-item'
+import { cn } from '@/shared/lib/utils'
 import styles from './file-explorer-panel.module.css'
 
 interface FileExplorerPanelProps {
@@ -63,8 +64,14 @@ export const FileExplorerPanel = ({
   const treeConfig = createTreeConfig(rootItemId, fileTree)
   const tree = useTree<FileNode>(treeConfig)
 
+  const containerProps = tree.getContainerProps()
+  const { className: treeClassName, ...restContainerProps } = containerProps
+
   return (
-    <div {...tree.getContainerProps()} className={styles.container}>
+    <div
+      {...restContainerProps}
+      className={cn(styles.container, treeClassName)}
+    >
       {tree.getItems().map(item => (
         <FileExplorerItem
           key={item.getId()}

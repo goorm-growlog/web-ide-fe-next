@@ -79,22 +79,17 @@ const MessageItem = ({
 
 export const ChatMessageList = memo(
   ({ messages, currentUserId }: ChatMessageListProps) => {
-    const parsedMessages = useMemo(
-      () => parseChatMessages(messages),
-      [messages],
-    )
-
-    if (parsedMessages.length === 0) {
+    if (messages.length === 0) {
       return <EmptyState />
     }
 
     // 헬퍼 함수들을 한 번만 생성
-    const dateHeaderChecker = createDateHeaderVisibilityChecker(parsedMessages)
+    const dateHeaderChecker = createDateHeaderVisibilityChecker(messages)
     const keyGenerator = createMessageKeyGenerator()
 
     return (
       <>
-        {parsedMessages.map((message, index) => (
+        {messages.map((message, index) => (
           <MessageItem
             key={`${message.userId}-${message.sentAt}-${index}`}
             message={message}

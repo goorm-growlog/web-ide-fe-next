@@ -5,7 +5,8 @@ import type { ComponentProps } from 'react'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/shadcn/button'
 
-interface IconButtonProps extends ComponentProps<typeof Button> {
+interface IconButtonProps
+  extends Omit<ComponentProps<typeof Button>, 'children'> {
   Icon: LucideIcon
   isSelected?: boolean
 }

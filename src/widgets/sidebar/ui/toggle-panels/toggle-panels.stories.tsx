@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { TogglePanels } from './toggle-panels'
 
 const meta: Meta<typeof TogglePanels> = {

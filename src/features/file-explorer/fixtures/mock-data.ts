@@ -122,5 +122,5 @@ export const mockFileTree: Record<string, FileNode> = {
     isFolder: true,
   },
   '/dist/bundle.js': { name: 'bundle.js' },
-  '/dist/styles.css': { name: 'dist/styles.css' },
+  '/dist/styles.css': { name: 'styles.css' },
 }

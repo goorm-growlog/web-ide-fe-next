@@ -76,11 +76,22 @@ const FileExplorerItem = ({
 
   return (
     <button
-      {...item.getProps()}
+      type="button"
+      {...(() => {
+        const props = item.getProps()
+        const { className: itemClassName, ...restProps } = props
+        return {
+          ...restProps,
+          className: cn(
+            styles.item,
+            isDropZone(item) && styles.dropZone,
+            itemClassName,
+          ),
+        }
+      })()}
       style={{ paddingLeft }}
       data-selected={isSelected || undefined}
       data-focused={isFocused || undefined}
-      className={cn(styles.item, isDropZone(item) && styles.dropZone)}
     >
       <div className={styles.icons}>{iconElement}</div>
       <div className={styles.label}>

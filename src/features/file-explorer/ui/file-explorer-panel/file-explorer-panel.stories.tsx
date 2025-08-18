@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import FileExplorerPanel from './file-explorer-panel'
 
 const meta: Meta<typeof FileExplorerPanel> = {

@@ -1,6 +1,6 @@
 {
   // Biome 2025: 최신 웹 프론트엔드 표준 설정
-  "$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
   // 린터: 코드 품질, 일관성, 접근성, 성능 등 종합 규칙
   "linter": {
     "enabled": true,
@@ -47,24 +47,7 @@
             "strictCase": false,
             "filenameCases": ["kebab-case"]
           }
-        }
-      },
-      // 복잡도: 함수 인지적 복잡도 제한
-      "complexity": {
-        "recommended": true,
-        "noExcessiveCognitiveComplexity": "warn"
-      },
-      // 성능: 비효율적 코드 방지
-      "performance": {
-        "recommended": true
-      },
-      // 실험적(nursery): 최신 Biome 실험적 규칙
-      "nursery": {
-        "recommended": true,
-        // "useSortedClasses": "error", // Tailwind CSS 클래스 자동 정렬
-        "noMisusedPromises": "error", // Promise 오용 방지
-        "noImplicitCoercion": "warn", // 암시적 타입 변환 경고
-        "noUnknownAtRule": "off", // Tailwind CSS at-rule 허용
+        },
         // 네이밍 컨벤션: 함수, 변수, 타입 등
         "useNamingConvention": {
           "level": "warn",
@@ -105,6 +88,21 @@
             ]
           }
         }
+      },
+      // 복잡도: 함수 인지적 복잡도 제한
+      "complexity": {
+        "recommended": true,
+        "noExcessiveCognitiveComplexity": "warn",
+        "noImplicitCoercions": "off"
+      },
+      // 성능: 비효율적 코드 방지
+      "performance": {
+        "recommended": true
+      },
+      // 실험적(nursery): 최신 Biome 실험적 규칙
+      "nursery": {
+        "recommended": true,
+        "noMisusedPromises": "error" // Promise 오용 방지
       }
     }
   },

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { mockMessages } from '@/features/chat/fixtures/mock-data'
 import { ChatPanel } from './chat-panel'
 
