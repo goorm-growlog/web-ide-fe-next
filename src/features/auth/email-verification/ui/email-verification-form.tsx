@@ -5,7 +5,6 @@ import {
   useCodeVerification,
   useEmailSend,
   useEmailVerificationForm,
-  useEmailVerificationSubmit,
 } from '../model'
 
 interface Props {
@@ -18,7 +17,13 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
   const email = useEmailSend(onSendCode ? { onSendCode } : {})
   const code = useCodeVerification(onVerifyCode ? { onVerifyCode } : {})
 
-  const { handleSubmit } = useEmailVerificationSubmit({ form, email, code })
+  const handleSubmit = form.handleSubmit(data => {
+    if (!email.isCodeSent) {
+      email.sendCode(data.email)
+    } else {
+      code.verifyCode(data.code)
+    }
+  })
 
   return (
     <FormProvider {...form}>
