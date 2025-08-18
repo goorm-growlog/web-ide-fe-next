@@ -1,9 +1,12 @@
 import { FormProvider } from 'react-hook-form'
 import FormField from '@/features/auth/ui/form-field'
 import InputWithButton from '@/features/auth/ui/input-with-button'
-import { useCodeVerification } from '../model/use-code-verification'
-import { useEmailSend } from '../model/use-email-send'
-import { useEmailVerificationForm } from '../model/use-email-verification-form'
+import {
+  useCodeVerification,
+  useEmailSend,
+  useEmailVerificationForm,
+  useEmailVerificationSubmit,
+} from '../model'
 
 interface Props {
   onSendCode?: (email: string) => Promise<void>
@@ -15,9 +18,11 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
   const email = useEmailSend(onSendCode ? { onSendCode } : {})
   const code = useCodeVerification(onVerifyCode ? { onVerifyCode } : {})
 
+  const { handleSubmit } = useEmailVerificationSubmit({ form, email, code })
+
   return (
     <FormProvider {...form}>
-      <form className="space-y-4 w-full">
+      <form className="space-y-4 w-full" onSubmit={handleSubmit}>
         <FormField name="email" control={form.control} label="Email">
           {field => (
             <InputWithButton
@@ -27,8 +32,8 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
               buttonText={email.getButtonText()}
               buttonProps={{
                 disabled: email.isSending || code.isVerified,
+                type: 'submit',
               }}
-              onButtonClick={() => email.sendCode(form.getValues('email'))}
             />
           )}
         </FormField>
@@ -47,8 +52,8 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
                 buttonText={code.getButtonText()}
                 buttonProps={{
                   disabled: code.isVerifying || code.isVerified,
+                  type: 'submit',
                 }}
-                onButtonClick={() => code.verifyCode(form.getValues('code'))}
               />
             )}
           </FormField>
