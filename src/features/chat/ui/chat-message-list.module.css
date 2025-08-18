@@ -1,0 +1,44 @@
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--color-muted-foreground);
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.emptyText {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--color-foreground);
+}
+
+.emptySubtext {
+  font-size: 14px;
+}
+
+.system {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.systemText {
+  text-align: center;
+  color: var(--color-muted-foreground);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.systemBadge {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  padding: 0.25rem 0.5rem;
+}

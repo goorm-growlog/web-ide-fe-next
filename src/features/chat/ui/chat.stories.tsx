@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { additionalMessages, sampleMessages } from '../model/mock-data'
+import { mockMessages } from '../model/mock-data'
 import { Chat } from './chat'
 
 const meta: Meta<typeof Chat> = {
@@ -28,7 +28,7 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    messages: sampleMessages,
+    messages: mockMessages,
     currentUserId: 2,
     onSendMessage: (message: string) => {
       console.log('Message sent:', message)
@@ -48,7 +48,7 @@ export const EmptyChat: Story = {
 
 export const ManyMessages: Story = {
   args: {
-    messages: [...sampleMessages, ...additionalMessages],
+    messages: mockMessages,
     currentUserId: 2,
     onSendMessage: (message: string) => {
       console.log('Message sent:', message)

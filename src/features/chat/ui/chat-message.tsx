@@ -15,10 +15,12 @@ export const ChatMessageComponent = ({
   message,
   isOwnMessage = false,
 }: ChatMessageProps) => {
+  const itemClassName = `${styles.item} ${!isOwnMessage ? styles.otherMessage : ''}`
+  const contentClassName = `${styles.content} ${!isOwnMessage ? styles.otherMessage : ''}`
+  const bubbleClassName = `${styles.bubble} ${!isOwnMessage ? styles.otherMessage : ''}`
+
   return (
-    <div
-      className={`${styles.item} ${!isOwnMessage ? styles.otherMessage : ''}`}
-    >
+    <div className={itemClassName}>
       {!isOwnMessage && (
         <Avatar className={styles.avatar}>
           <AvatarImage
@@ -31,14 +33,8 @@ export const ChatMessageComponent = ({
         </Avatar>
       )}
 
-      <div
-        className={`${styles.content} ${
-          !isOwnMessage ? styles.otherMessage : ''
-        }`}
-      >
-        <div
-          className={`${styles.bubble} ${isOwnMessage ? '' : styles.otherMessage}`}
-        >
+      <div className={contentClassName}>
+        <div className={bubbleClassName}>
           <p className={styles.text}>{message.content}</p>
         </div>
         <div className={styles.time}>{formatTime(message.sentAt)}</div>
