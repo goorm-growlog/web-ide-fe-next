@@ -21,7 +21,7 @@ export const formSchema = z.object({
 
 export const emailVerificationSchema = z.object({
   email: emailSchema,
-  code: codeSchema,
+  code: z.string().optional(),
 })
 
 export const passwordResetSchema = z.object({
