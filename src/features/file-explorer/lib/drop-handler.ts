@@ -1,5 +1,5 @@
 import type { DragTarget, ItemInstance } from '@headless-tree/core'
-import type { FileNode } from './types'
+import type { FileNode } from '../model/types'
 
 export const handleDrop = (
   items: ItemInstance<FileNode>[],

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { mockTabs } from '../../model/mock-data'
+import { mockTabs } from '@/widgets/sidebar/fixtures/mock-data'
 import type { Tab, TabKey } from '../../model/types'
 import TabSwitcher from '../tab-switcher/tab-switcher'
 import { TogglePanels } from '../toggle-panels/toggle-panels'

@@ -1,4 +1,4 @@
-import type { ChatMessage } from './types'
+import type { ChatMessage } from '@/features/chat/model/types'
 
 export const mockMessages: ChatMessage[] = [
   {
@@ -80,7 +80,7 @@ export const mockMessages: ChatMessage[] = [
     userId: 1,
     username: '김철수',
     content:
-      '프론트엔드는 Next.js + TypeScript, 백엔드는 Node.js + Express, 데이터베이스는 PostgreSQL을 사용할 예정입니다.',
+      '프론트엔드는 Next.js + TypeScript, 백엔드는 Node.js + Express, 데이터베이스는 PostgreSQL을 사용할 예정입니다. [package.json:25](https://github.com/example/package.json#L25)에서 의존성 확인할 수 있어요.',
     sentAt: '2025-01-15T09:12:00Z',
   },
   {
@@ -113,7 +113,7 @@ export const mockMessages: ChatMessage[] = [
     userId: 1,
     username: '김철수',
     content:
-      '모던하고 직관적인 인터페이스로, 사용자가 쉽게 적응할 수 있도록 설계하려고 합니다. Tailwind CSS와 shadcn/ui를 활용할 예정입니다.',
+      '모던하고 직관적인 인터페이스로, 사용자가 쉽게 적응할 수 있도록 설계하려고 합니다. Tailwind CSS와 shadcn/ui를 활용할 예정입니다. [tailwind.config.js:12](https://github.com/example/tailwind.config.js#L12) 설정도 참고하세요.',
     sentAt: '2025-01-15T09:20:00Z',
   },
   {
@@ -212,7 +212,7 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'ENTER',
     userId: 2,
     username: '나',
-    content: '나님이 입장했습니다.',
+    content: '오늘부터 개발 시작하겠습니다!',
     sentAt: '2025-01-16T10:00:00Z',
   },
   {
@@ -220,7 +220,8 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'TALK',
     userId: 2,
     username: '나',
-    content: '오늘부터 개발 시작하겠습니다!',
+    content:
+      '사용자 인증 API부터 시작하겠습니다. [auth.ts:25](https://github.com/team-dodn/spring-boot-java-template/blob/main/src/main/java/com/example/auth/AuthController.java#L25)',
     sentAt: '2025-01-16T10:01:00Z',
   },
   {
@@ -244,7 +245,8 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'TALK',
     userId: 2,
     username: '나',
-    content: '네, 좋습니다! 사용자 인증 API부터 시작하겠습니다.',
+    content:
+      '네, 좋습니다! JWT 토큰 기반으로 구현할 예정입니다. [JwtService.ts:42](https://github.com/example/JwtService.ts#L42) 참고해서 만들고 있어요.',
     sentAt: '2025-01-16T10:07:00Z',
   },
   {
@@ -252,7 +254,8 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'TALK',
     userId: 3,
     username: '박영희',
-    content: 'JWT 토큰 기반으로 구현하시는 거죠?',
+    content:
+      'JWT 토큰 기반으로 구현하시는 거죠? [JwtConfig.java:15](https://github.com/example/JwtConfig.java#L15) 참고하시면 좋을 것 같아요.',
     sentAt: '2025-01-16T10:08:00Z',
   },
   {
@@ -260,7 +263,8 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'TALK',
     userId: 2,
     username: '나',
-    content: '네, 맞습니다. 보안도 고려해서 refresh token도 구현할 예정입니다.',
+    content:
+      '네, 맞습니다. 보안도 고려해서 refresh token도 구현할 예정입니다. [TokenManager.ts:18](https://github.com/example/TokenManager.ts#L18) 구조를 참고하고 있어요.',
     sentAt: '2025-01-16T10:10:00Z',
   },
   {
@@ -268,7 +272,8 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'TALK',
     userId: 3,
     username: '박영희',
-    content: '좋습니다! 그럼 저는 데이터베이스 스키마 설계를 진행하겠습니다.',
+    content:
+      '좋습니다! 그럼 저는 데이터베이스 스키마 설계를 진행하겠습니다. [User.java:42](https://github.com/example/User.java#L42)와 [Project.java:18](https://github.com/example/Project.java#L18) 구조를 참고해서 만들겠어요.',
     sentAt: '2025-01-16T10:12:00Z',
   },
   {
@@ -276,7 +281,8 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'TALK',
     userId: 2,
     username: '나',
-    content: '네, 협력해서 진행하겠습니다!',
+    content:
+      '네, 협력해서 진행하겠습니다! 저는 [UserController.ts:15](https://github.com/example/UserController.ts#L15)와 [AuthMiddleware.ts:33](https://github.com/example/AuthMiddleware.ts#L33) 작업하고 있을게요.',
     sentAt: '2025-01-16T10:15:00Z',
   },
   {
@@ -326,7 +332,8 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'TALK',
     userId: 2,
     username: '나',
-    content: '사용자 인증 API는 거의 완성되었습니다!',
+    content:
+      '사용자 인증 API는 거의 완성되었습니다! [AuthService.ts:67](https://github.com/example/AuthService.ts#L67)에서 JWT 토큰 생성 로직을 구현했어요.',
     sentAt: '2025-01-17T14:03:00Z',
   },
   {
@@ -343,7 +350,7 @@ export const mockMessages: ChatMessage[] = [
     userId: 2,
     username: '나',
     content:
-      '네, Jest로 단위 테스트 작성했고, Postman으로 API 테스트도 완료했습니다.',
+      '네, Jest로 단위 테스트 작성했고, Postman으로 API 테스트도 완료했습니다. [auth.test.ts:23](https://github.com/example/auth.test.ts#L23)에서 테스트 케이스들을 확인할 수 있어요.',
     sentAt: '2025-01-17T14:05:00Z',
   },
   {
@@ -442,7 +449,7 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'ENTER',
     userId: 2,
     username: '나',
-    content: '나님이 입장했습니다.',
+    content: '주말에 프론트엔드 개발 진행하고 있습니다!',
     sentAt: '2025-01-18T11:00:00Z',
   },
   {
@@ -450,15 +457,8 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'TALK',
     userId: 2,
     username: '나',
-    content: '주말에 프론트엔드 개발 진행하고 있습니다!',
-    sentAt: '2025-01-18T11:01:00Z',
-  },
-  {
-    projectId: 1,
-    messageType: 'TALK',
-    userId: 2,
-    username: '나',
-    content: 'Next.js 프로젝트 설정 완료했고, 기본 레이아웃도 구현했습니다.',
+    content:
+      'Next.js 프로젝트 설정 완료했고, 기본 레이아웃도 구현했습니다. [layout.tsx:15](https://github.com/example/layout.tsx#L15)에서 전체 구조를 확인할 수 있어요.',
     sentAt: '2025-01-18T11:05:00Z',
   },
   {
@@ -466,7 +466,8 @@ export const mockMessages: ChatMessage[] = [
     messageType: 'TALK',
     userId: 2,
     username: '나',
-    content: 'shadcn/ui 컴포넌트들도 설치해서 기본적인 UI 구성했습니다.',
+    content:
+      'shadcn/ui 컴포넌트들도 설치해서 기본적인 UI 구성했습니다. [components.json:8](https://github.com/example/components.json#L8) 설정도 완료했어요.',
     sentAt: '2025-01-18T11:10:00Z',
   },
   {
@@ -475,7 +476,7 @@ export const mockMessages: ChatMessage[] = [
     userId: 2,
     username: '나',
     content:
-      '이제 채팅 기능 구현을 시작하려고 합니다. 실시간 채팅은 Socket.io 클라이언트를 사용할 예정입니다.',
+      '이제 채팅 기능 구현을 시작하려고 합니다. 실시간 채팅은 Socket.io 클라이언트를 사용할 예정입니다. [chat-socket.ts:12](https://github.com/example/chat-socket.ts#L12)에서 연결 로직을 구현했어요.',
     sentAt: '2025-01-18T11:15:00Z',
   },
   {
@@ -512,5 +513,42 @@ export const mockMessages: ChatMessage[] = [
     username: '나',
     content: '나님이 퇴장했습니다.',
     sentAt: '2025-01-18T11:35:00Z',
+  },
+]
+
+export const additionalMessages: ChatMessage[] = [
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 1,
+    username: '김철수',
+    content:
+      '추가 메시지 1입니다. 이 메시지는 채팅창이 길어질 때 스크롤이 생기는지 테스트하기 위한 것입니다.',
+    sentAt: '2025-01-18T12:00:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 2,
+    username: '나',
+    content: '추가 메시지 2입니다. 스크롤 테스트를 위한 긴 메시지입니다.',
+    sentAt: '2025-01-18T12:05:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 3,
+    username: '박영희',
+    content:
+      '추가 메시지 3입니다. 이제 채팅창이 충분히 길어져서 스크롤바가 나타날 것입니다.',
+    sentAt: '2025-01-18T12:10:00Z',
+  },
+  {
+    projectId: 1,
+    messageType: 'TALK',
+    userId: 1,
+    username: '김철수',
+    content: '추가 메시지 4입니다. 스크롤 테스트를 위한 마지막 메시지입니다.',
+    sentAt: '2025-01-18T12:15:00Z',
   },
 ]

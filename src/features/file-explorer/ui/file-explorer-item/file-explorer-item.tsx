@@ -8,8 +8,8 @@ import {
   FolderOpenIcon,
 } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
+import type { FileNode } from '@/features/file-explorer/model/types'
 import { cn } from '@/shared/lib/utils'
-import type { FileNode } from '../model/types'
 import styles from './file-explorer-item.module.css'
 
 interface FileExplorerItemProps {

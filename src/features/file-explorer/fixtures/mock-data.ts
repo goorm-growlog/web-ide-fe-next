@@ -1,4 +1,4 @@
-import type { FileNode } from './types'
+import type { FileNode } from '../model/types'
 
 export const mockFileTree: Record<string, FileNode> = {
   '/': {

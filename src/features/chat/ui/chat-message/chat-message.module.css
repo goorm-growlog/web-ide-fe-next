@@ -1,3 +1,9 @@
+:root {
+  --link-color: #2563eb;
+  --link-hover-color: #1d4ed8;
+  --link-visited-color: #7c3aed;
+}
+
 .item {
   display: flex;
   margin-bottom: 16px;
@@ -66,4 +72,36 @@
   font-size: 11px;
   color: var(--color-muted-foreground);
   margin-top: 2px;
+}
+
+.codeLink {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  display: inline;
+  cursor: pointer;
+  color: var(--link-color);
+  text-decoration: underline;
+}
+
+.codeLink:hover {
+  color: var(--link-hover-color);
+}
+
+.codeLink:focus {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.codeLink:visited {
+  color: var(--link-visited-color);
+}
+
+.codeLink:visited:hover {
+  opacity: 0.8;
 }

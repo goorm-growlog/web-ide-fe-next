@@ -1,5 +1,7 @@
 import { FilesIcon, SearchIcon, SettingsIcon, Share2Icon } from 'lucide-react'
-import type { Tab } from './types'
+import ChatPanel from '@/features/chat/ui/chat-panel/chat-panel'
+import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel/file-explorer-panel'
+import type { Tab } from '@/widgets/sidebar/model/types'
 
 // 기본 mock 데이터
 const mockItems = Array.from({ length: 40 }, (_, i) => `Item ${i + 1}`)
@@ -14,12 +16,12 @@ export const mockTabs: Tab[] = [
       {
         type: 'files',
         title: 'Files',
-        content: mockItems.slice(0, 15), // 파일 목록 (15개)
+        content: <FileExplorerPanel />,
       },
       {
         type: 'chats',
         title: 'Chats',
-        content: mockItems.slice(15, 25), // 채팅 목록 (10개)
+        content: <ChatPanel />,
       },
     ],
   },

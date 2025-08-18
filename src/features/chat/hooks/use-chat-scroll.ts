@@ -1,36 +1,31 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { requestScrollToBottom } from '@/shared/lib/scroll-utils'
-import type { ChatMessage } from '../model/types'
+import type { ChatMessage } from '@/features/chat/model/types'
+import { scrollToBottom } from '@/shared/lib/scroll-utils'
 
-const SELECTORS = '[data-radix-scroll-area-viewport]'
+// Radix UI ScrollArea의 뷰포트 선택자
+const SCROLL_AREA_VIEWPORT_SELECTOR = '[data-radix-scroll-area-viewport]'
 
 export const useChatScroll = (messages: ChatMessage[]) => {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
-  const isFirstLoad = useRef(true)
+  const lastMessageCount = useRef(0)
 
-  // 스크롤 요소를 찾는 함수
-  const getScrollElement = useCallback((): HTMLElement | null => {
-    return scrollAreaRef.current?.querySelector(SELECTORS) as HTMLElement | null
-  }, [])
-
-  // 첫 번째 로드 시 스크롤을 최하단으로
-  useEffect(() => {
-    const scrollElement = getScrollElement()
+  // 최하단으로 스크롤
+  const scrollToBottomHandler = useCallback(() => {
+    const scrollElement = scrollAreaRef.current?.querySelector(
+      SCROLL_AREA_VIEWPORT_SELECTOR,
+    ) as HTMLElement | null
     if (!scrollElement) return
 
-    if (isFirstLoad.current && messages.length > 0) {
-      scrollElement.scrollTop = scrollElement.scrollHeight
-      isFirstLoad.current = false
-    }
-  }, [messages, getScrollElement])
+    scrollToBottom(scrollElement)
+  }, [])
 
-  // 메시지 전송 후 스크롤을 최하단으로
-  const scrollToBottom = useCallback(() => {
-    const scrollElement = getScrollElement()
-    if (scrollElement) {
-      requestScrollToBottom(scrollElement)
+  // 메시지가 새로 추가되었을 때만 최하단으로 스크롤
+  useEffect(() => {
+    if (messages.length > lastMessageCount.current) {
+      scrollToBottomHandler()
+      lastMessageCount.current = messages.length
     }
-  }, [getScrollElement])
+  }, [messages, scrollToBottomHandler])
 
-  return { scrollAreaRef, scrollToBottom }
+  return { scrollAreaRef, scrollToBottom: scrollToBottomHandler }
 }
