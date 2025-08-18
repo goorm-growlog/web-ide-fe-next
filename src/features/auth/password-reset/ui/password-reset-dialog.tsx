@@ -25,7 +25,7 @@ const PasswordResetDialog = ({
 }: PasswordResetDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[420px] max-w-[85vw]" showCloseButton={false}>
+      <DialogContent className="w-[440px] max-w-[85vw]" showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>Reset Password</DialogTitle>
           <DialogDescription>receive a temporary password.</DialogDescription>
