@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export interface UseCodeVerificationOptions {
-  onVerifyCode?: (code: string) => Promise<boolean>
+  onVerifyCode?: ((code: string) => Promise<boolean>) | undefined
 }
 
 export const useCodeVerification = ({

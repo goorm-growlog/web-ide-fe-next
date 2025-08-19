@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export interface UseEmailSendOptions {
-  onSendCode?: (email: string) => Promise<void>
+  onSendCode?: ((email: string) => Promise<void>) | undefined
 }
 
 export const useEmailSend = ({ onSendCode }: UseEmailSendOptions = {}) => {
