@@ -76,7 +76,7 @@ export const Default: Story = {
           'Click the button to open the password reset dialog.',
           '',
           '- **Canvas tab**: You can test the dialog by clicking the button.',
-          '- **Docs tab**: See the DocsPreview story below for a visual preview.',
+          '- **Docs tab**: See a visual preview and usage details.',
         ].join('\n'),
       },
       source: {

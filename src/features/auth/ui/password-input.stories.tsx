@@ -1,4 +1,5 @@
 import type { Meta } from '@storybook/nextjs'
+import type { JSX } from 'react'
 import { useState } from 'react'
 import PasswordInput from './password-input'
 
@@ -44,7 +45,7 @@ export default meta
 
 // value와 onChange가 필요하지 않은 커스텀 스토리 타입
 interface CustomStoryObj {
-  render?: () => React.ReactElement
+  render?: () => JSX.Element
   parameters?: Record<string, unknown>
 }
 

@@ -34,7 +34,7 @@ export const useProfileAvatar = ({
     if (file.size > MAX_SIZE) return
     if (!ALLOWED_TYPES.includes(file.type)) return
 
-    onImageSelect(file)
+    onImageSelect?.(file)
 
     if (objectUrl) {
       URL.revokeObjectURL(objectUrl)
