@@ -1,4 +1,4 @@
-import styles from './chat-message-list.module.css'
+import styles from './chat-message.module.css'
 
 /**
  * 날짜 헤더 렌더링 컴포넌트

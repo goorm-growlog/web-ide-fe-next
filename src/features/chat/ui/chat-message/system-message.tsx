@@ -1,7 +1,7 @@
 import type { ParsedChatMessage } from '@/features/chat/model/types'
 import { getSystemMessageText } from '@/shared/lib/string-utils'
 import { Badge } from '@/shared/ui/shadcn/badge'
-import styles from './chat-message-list.module.css'
+import styles from './chat-message.module.css'
 
 /**
  * 시스템 메시지 렌더링 컴포넌트

@@ -23,22 +23,3 @@
 .emptySubtext {
   font-size: 14px;
 }
-
-.system {
-  display: flex;
-  justify-content: center;
-  margin: 32px 0;
-}
-
-.systemText {
-  text-align: center;
-  color: var(--color-muted-foreground);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.systemBadge {
-  font-size: 0.75rem;
-  color: var(--color-muted-foreground);
-  padding: 0.25rem 0.5rem;
-}

@@ -1,101 +1,130 @@
 'use client'
 
-import { memo, useMemo } from 'react'
-import { parseChatMessages } from '@/features/chat/lib/message-parser'
+import { memo } from 'react'
 import { formatDate } from '@/shared/lib/date-utils'
 import {
-  createDateHeaderVisibilityChecker,
-  createMessageKeyGenerator,
+  generateMessageKey,
+  isOwnMessage,
+  isSystemMessage,
+  shouldShowDateHeader,
 } from '../../lib/chat-message-utils'
 import type { ParsedChatMessage } from '../../model/types'
 import { ChatMessage } from '../chat-message/chat-message'
-import { DateHeader } from './date-header'
+import { DateHeader } from '../chat-message/date-header'
+import { SystemMessage } from '../chat-message/system-message'
 import { EmptyState } from './empty-state'
-import { SystemMessage } from './system-message'
 
 interface ChatMessageListProps {
   messages: ParsedChatMessage[]
   currentUserId: number
 }
 
-// 메시지 타입을 결정하는 헬퍼 함수
-const getMessageType = (message: ParsedChatMessage) => {
-  const isSystemMessage =
-    message.messageType === 'ENTER' || message.messageType === 'LEAVE'
-  return { isSystemMessage }
-}
-
 /**
  * 시스템 메시지를 렌더링하는 컴포넌트
+ *
+ * @param message - 렌더링할 시스템 메시지
  */
-const SystemMessageItem = ({ message }: { message: ParsedChatMessage }) => (
-  <SystemMessage message={message} />
+const SystemMessageItem = memo(
+  ({ message }: { message: ParsedChatMessage }) => (
+    <SystemMessage message={message} />
+  ),
 )
 
 /**
  * 일반 채팅 메시지를 렌더링하는 컴포넌트
+ *
+ * @param message - 렌더링할 채팅 메시지
+ * @param isOwnMessage - 메시지가 현재 사용자의 것인지 여부
  */
-const ChatMessageItem = ({
-  message,
-  isOwnMessage,
-}: {
-  message: ParsedChatMessage
-  isOwnMessage: boolean
-}) => <ChatMessage message={message} isOwnMessage={isOwnMessage} />
+const ChatMessageItem = memo(
+  ({
+    message,
+    isOwnMessage,
+  }: {
+    message: ParsedChatMessage
+    isOwnMessage: boolean
+  }) => <ChatMessage message={message} isOwnMessage={isOwnMessage} />,
+)
+
+/**
+ * 메시지 타입에 따른 렌더링을 담당하는 컴포넌트
+ *
+ * @param message - 렌더링할 메시지
+ * @param isOwnMessage - 메시지가 현재 사용자의 것인지 여부
+ */
+const MessageContent = memo(
+  ({
+    message,
+    isOwnMessage,
+  }: {
+    message: ParsedChatMessage
+    isOwnMessage: boolean
+  }) => {
+    if (isSystemMessage(message)) {
+      return <SystemMessageItem message={message} />
+    }
+
+    // 일반 채팅 메시지로 처리
+    return <ChatMessageItem message={message} isOwnMessage={isOwnMessage} />
+  },
+)
 
 /**
  * 개별 메시지 아이템을 렌더링하는 컴포넌트
+ *
+ * @param message - 렌더링할 메시지
+ * @param index - 메시지의 인덱스
+ * @param messages - 전체 메시지 배열 (날짜 헤더 계산용)
+ * @param currentUserId - 현재 사용자의 ID
  */
-const MessageItem = ({
-  message,
-  index,
-  dateHeaderChecker,
-  keyGenerator,
-  currentUserId,
-}: {
-  message: ParsedChatMessage
-  index: number
-  dateHeaderChecker: ReturnType<typeof createDateHeaderVisibilityChecker>
-  keyGenerator: ReturnType<typeof createMessageKeyGenerator>
-  currentUserId: number
-}) => {
-  const showDateHeader = dateHeaderChecker(index)
-  const messageKey = keyGenerator(message, index)
-  const isOwnMessage = currentUserId === message.userId
-  const { isSystemMessage } = getMessageType(message)
+const MessageItem = memo(
+  ({
+    message,
+    index,
+    messages,
+    currentUserId,
+  }: {
+    message: ParsedChatMessage
+    index: number
+    messages: ParsedChatMessage[]
+    currentUserId: number
+  }) => {
+    const shouldShowHeader = shouldShowDateHeader(messages, index)
+    const messageKey = generateMessageKey(message, index)
+    const isOwn = isOwnMessage(message, currentUserId)
 
-  return (
-    <div key={messageKey}>
-      {showDateHeader && <DateHeader date={formatDate(message.sentAt)} />}
+    return (
+      <div key={messageKey}>
+        {shouldShowHeader && <DateHeader date={formatDate(message.sentAt)} />}
+        <MessageContent message={message} isOwnMessage={isOwn} />
+      </div>
+    )
+  },
+)
 
-      {isSystemMessage ? (
-        <SystemMessageItem message={message} />
-      ) : (
-        <ChatMessageItem message={message} isOwnMessage={isOwnMessage} />
-      )}
-    </div>
-  )
-}
-
+/**
+ * 채팅 메시지 목록을 렌더링하는 컴포넌트
+ *
+ * 메시지가 없을 경우 빈 상태를 표시하고, 메시지가 있을 경우
+ * 각 메시지를 개별 아이템으로 렌더링합니다.
+ *
+ * @param messages - 렌더링할 채팅 메시지 배열
+ * @param currentUserId - 현재 로그인한 사용자의 ID
+ */
 export const ChatMessageList = memo(
   ({ messages, currentUserId }: ChatMessageListProps) => {
     if (messages.length === 0) {
       return <EmptyState />
     }
 
-    // 헬퍼 함수들을 한 번만 생성
-    const dateHeaderChecker = createDateHeaderVisibilityChecker(messages)
-    const keyGenerator = createMessageKeyGenerator()
-
     return (
       <>
         {messages.map((message, index) => (
           <MessageItem
-            key={`${message.userId}-${message.sentAt}-${index}`}
+            key={generateMessageKey(message, index)}
             message={message}
             index={index}
-            dateHeaderChecker={dateHeaderChecker}
-            keyGenerator={keyGenerator}
+            messages={messages}
             currentUserId={currentUserId}
           />
         ))}

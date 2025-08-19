@@ -47,53 +47,12 @@
             "strictCase": false,
             "filenameCases": ["kebab-case"]
           }
-        },
-        // 네이밍 컨벤션: 함수, 변수, 타입 등
-        "useNamingConvention": {
-          "level": "warn",
-          "options": {
-            "strictCase": false,
-            "conventions": [
-              {
-                "selector": {
-                  "kind": "function",
-                  "scope": "global"
-                },
-                "formats": ["PascalCase", "camelCase"]
-              },
-              {
-                "selector": {
-                  "kind": "variable"
-                },
-                "formats": ["camelCase", "PascalCase", "CONSTANT_CASE"]
-              },
-              {
-                "selector": {
-                  "kind": "typeAlias"
-                },
-                "formats": ["PascalCase"]
-              },
-              {
-                "selector": {
-                  "kind": "interface"
-                },
-                "formats": ["PascalCase"]
-              },
-              {
-                "selector": {
-                  "kind": "enum"
-                },
-                "formats": ["PascalCase"]
-              }
-            ]
-          }
         }
       },
       // 복잡도: 함수 인지적 복잡도 제한
       "complexity": {
         "recommended": true,
-        "noExcessiveCognitiveComplexity": "warn",
-        "noImplicitCoercions": "off"
+        "noExcessiveCognitiveComplexity": "warn"
       },
       // 성능: 비효율적 코드 방지
       "performance": {
