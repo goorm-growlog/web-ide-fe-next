@@ -22,7 +22,7 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
         />
         <button
           type="button"
-          aria-label={visible ? '비밀번호 숨기기' : '비밀번호 보기'}
+          aria-label={visible ? 'Hide password' : 'Show password'}
           aria-pressed={visible}
           disabled={props.disabled}
           onClick={() => setVisible(v => !v)}
