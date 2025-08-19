@@ -20,9 +20,9 @@ export const mockPanels: Panel[] = [
       <ChatPanel
         messages={mockMessages}
         currentUserId={1}
-        onSendMessage={(message: string): void =>
-          console.log(`Send Message: ${message}`)
-        }
+        onSendMessage={(_message: string): void => {
+          console.debug('Message sent')
+        }}
       />
     ),
   },
@@ -44,19 +44,6 @@ export const mockTabs: Tab[] = [
         type: 'files',
         title: 'Files',
         content: <FileExplorerPanel rootItemId={'/'} fileTree={mockFileTree} />,
-      },
-      {
-        type: 'chats',
-        title: 'Chats',
-        content: (
-          <ChatPanel
-            messages={mockMessages}
-            currentUserId={1}
-            onSendMessage={(message: string): void =>
-              console.log(`Send Message: ${message}`)
-            }
-          />
-        ),
       },
     ],
   },

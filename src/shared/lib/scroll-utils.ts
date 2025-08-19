@@ -5,8 +5,7 @@ export const scrollToBottom = (element: HTMLElement): void => {
   try {
     element.scrollTop = element.scrollHeight
   } catch {
-    // 스크롤 실패 시 무시
-    console.warn('Failed to scroll to bottom')
+    console.error('Failed to scroll to bottom')
   }
 }
 
@@ -22,6 +21,7 @@ export const smoothScrollToBottom = (element: HTMLElement): void => {
   } catch {
     // 부드러운 스크롤이 지원되지 않는 경우 일반 스크롤 사용
     scrollToBottom(element)
+    console.error('Failed to smooth scroll to bottom')
   }
 }
 
@@ -31,5 +31,6 @@ export const requestScrollToBottom = (element: HTMLElement): void => {
 
   requestAnimationFrame(() => {
     scrollToBottom(element)
+    console.error('Failed to request scroll to bottom')
   })
 }

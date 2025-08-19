@@ -16,6 +16,7 @@ export const formatDate = (dateString: string): string => {
 
     return `${year}.${month}.${day} (${weekday})`
   } catch {
+    console.error('Failed to format date')
     return 'Invalid date'
   }
 }
@@ -36,6 +37,7 @@ export const formatTime = (dateString: string): string => {
       hour12: true,
     })
   } catch {
+    console.error('Failed to format time')
     return 'Invalid time'
   }
 }
@@ -58,7 +60,7 @@ export const groupByDate = <T extends { sentAt: string }>(
         }
         groups[dateKey].push(item)
       } else {
-        console.warn('Invalid date:', item.sentAt)
+        console.error('Invalid date')
       }
     }
   })

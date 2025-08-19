@@ -17,15 +17,4 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
-  render: args => (
-    <div
-      style={{
-        height: '100vh',
-        width: '100vw',
-      }}
-    >
-      <TogglePanels {...args} />
-    </div>
-  ),
-}
+export const Default: Story = {}

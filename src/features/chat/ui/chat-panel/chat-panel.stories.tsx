@@ -12,8 +12,8 @@ const meta: Meta<typeof ChatPanel> = {
   args: {
     messages: mockMessages,
     currentUserId: 2,
-    onSendMessage: (message: string) => {
-      console.log('Message sent:', message)
+    onSendMessage: (_message: string) => {
+      console.debug('Message sent')
     },
   },
 }

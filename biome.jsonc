@@ -30,7 +30,7 @@
       "suspicious": {
         "recommended": true,
         "noDebugger": "error", // debugger 금지
-        "noConsole": "warn", // console 사용 경고
+        "noConsole": "off", // console 사용 경고
         "noEmptyBlockStatements": "error" // 빈 블록 금지
       },
       // 코드 스타일: import, const, 템플릿 문자열 등
@@ -61,7 +61,14 @@
       // 실험적(nursery): 최신 Biome 실험적 규칙
       "nursery": {
         "recommended": true,
-        "noMisusedPromises": "error" // Promise 오용 방지
+        "noMisusedPromises": "error", // Promise 오용 방지
+        "useSortedClasses": {
+          "level": "error",
+          "options": {
+            "attributes": ["classList"],
+            "functions": ["clsx", "cva", "cn", "tw", "tw.*"]
+          }
+        }
       }
     }
   },
