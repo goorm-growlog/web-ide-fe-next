@@ -14,8 +14,8 @@ interface Props {
 
 const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
   const form = useEmailVerificationForm()
-  const email = useEmailSend(onSendCode ? { onSendCode } : {})
-  const code = useCodeVerification(onVerifyCode ? { onVerifyCode } : {})
+  const email = useEmailSend({ onSendCode })
+  const code = useCodeVerification({ onVerifyCode })
 
   const handleSubmit = form.handleSubmit(data => {
     if (!email.isCodeSent) {
