@@ -21,7 +21,7 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
     if (!email.isCodeSent) {
       email.sendCode(data.email)
     } else {
-      code.verifyCode(data.code)
+      code.verifyCode(data.code ?? '')
     }
   })
 
