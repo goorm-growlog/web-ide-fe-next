@@ -83,17 +83,18 @@ const FileExplorerItem = ({
         return {
           ...restProps,
           className: cn(
-            styles.item,
-            isDropZone(item) && styles.dropZone,
             itemClassName,
+            isDropZone(item) && styles.dropZone,
+            styles.item,
           ),
         }
       })()}
-      style={{ paddingLeft }}
       data-selected={isSelected || undefined}
       data-focused={isFocused || undefined}
     >
-      <div className={styles.icons}>{iconElement}</div>
+      <div style={{ paddingLeft }} className={styles.icons}>
+        {iconElement}
+      </div>
       <div className={styles.label}>
         {item.isRenaming() ? (
           <input

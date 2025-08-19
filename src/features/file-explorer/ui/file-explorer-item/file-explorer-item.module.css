@@ -2,26 +2,20 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  cursor: pointer;
   padding: 0.2rem 0;
+  cursor: pointer;
 }
 
 .item:focus-visible,
 .item[data-focused] {
   box-shadow: 0 0 0 2px var(--color-sidebar-ring) inset;
   border-radius: 4px;
-  z-index: 2;
   outline: none;
 }
 
 .item[data-selected] {
   background: var(--color-sidebar-accent);
   color: var(--color-sidebar-accent-foreground);
-}
-
-.item:hover:not([data-selected]) {
-  background: var(--color-sidebar-accent);
-  color: var(--color-sidebar-foreground);
 }
 
 .dropZone {
