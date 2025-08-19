@@ -14,8 +14,8 @@ interface Props {
 
 const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
   const form = useEmailVerificationForm()
-  const email = useEmailSend(onSendCode ? { onSendCode } : {})
-  const code = useCodeVerification(onVerifyCode ? { onVerifyCode } : {})
+  const email = useEmailSend({ onSendCode })
+  const code = useCodeVerification({ onVerifyCode })
 
   // 이메일 변경 시 인증코드 입력 상태 초기화
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
