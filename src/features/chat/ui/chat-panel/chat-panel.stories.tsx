@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { mockMessages } from '@/features/chat/fixtures/mock-data'
 import { ChatPanel } from './chat-panel'
 
@@ -6,15 +6,9 @@ const meta: Meta<typeof ChatPanel> = {
   title: 'Features/ChatPanel',
   component: ChatPanel,
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
   },
   tags: ['autodocs'],
-}
-
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {
   args: {
     messages: mockMessages,
     currentUserId: 2,
@@ -24,14 +18,13 @@ export const Default: Story = {
   },
 }
 
+export default meta
+type Story = StoryObj<typeof meta>
+
+export const Default: Story = {}
+
 export const Empty: Story = {
-  args: {
-    messages: [],
-    currentUserId: 2,
-    onSendMessage: (message: string) => {
-      console.log('Message sent:', message)
-    },
-  },
+  args: { messages: [] },
 }
 
 export const CodeLinksOnly: Story = {
@@ -39,10 +32,6 @@ export const CodeLinksOnly: Story = {
     messages: mockMessages.filter(
       msg => msg.content.includes('[') || msg.content.includes('#file:'),
     ),
-    currentUserId: 2,
-    onSendMessage: (message: string) => {
-      console.log('Message sent:', message)
-    },
   },
 }
 
@@ -68,9 +57,5 @@ export const CodeLinksWithText: Story = {
         sentAt: '2024-01-15T10:35:00Z',
       },
     ],
-    currentUserId: 2,
-    onSendMessage: (message: string) => {
-      console.log('Message sent:', message)
-    },
   },
 }

@@ -10,10 +10,10 @@ import type { Panel } from '@/widgets/sidebar/model/types'
 import styles from './toggle-panels.module.css'
 
 interface TogglePanelsProps {
-  panels?: Panel[]
+  panels: Panel[]
 }
 
-export function TogglePanels({ panels }: TogglePanelsProps) {
+const TogglePanels = ({ panels }: TogglePanelsProps) => {
   if (!panels) return null
 
   return (
@@ -37,3 +37,5 @@ export function TogglePanels({ panels }: TogglePanelsProps) {
     </Accordion>
   )
 }
+
+export default TogglePanels

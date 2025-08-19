@@ -9,15 +9,15 @@ import styles from './text-input.module.css'
 interface TextInputProps {
   placeholder?: string
   buttonText?: string
-  onSend: (message: string) => void
   disabled?: boolean
+  onSend: (message: string) => void
 }
 
 export const TextInput = ({
   placeholder = 'Type your message...',
   buttonText = 'Send',
-  onSend,
   disabled = false,
+  onSend,
 }: TextInputProps) => {
   const [message, setMessage] = useState('')
 

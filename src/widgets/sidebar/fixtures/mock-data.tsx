@@ -1,10 +1,37 @@
 import { FilesIcon, SearchIcon, SettingsIcon, Share2Icon } from 'lucide-react'
+import { mockMessages } from '@/features/chat/fixtures/mock-data'
 import ChatPanel from '@/features/chat/ui/chat-panel/chat-panel'
+import { mockFileTree } from '@/features/file-explorer/fixtures/mock-data'
 import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel/file-explorer-panel'
-import type { Tab } from '@/widgets/sidebar/model/types'
+import type { Panel, Tab } from '@/widgets/sidebar/model/types'
 
-// 기본 mock 데이터
 const mockItems = Array.from({ length: 40 }, (_, i) => `Item ${i + 1}`)
+
+export const mockPanels: Panel[] = [
+  {
+    type: 'files',
+    title: 'Files',
+    content: <FileExplorerPanel rootItemId={'/'} fileTree={mockFileTree} />,
+  },
+  {
+    type: 'chats',
+    title: 'Chats',
+    content: (
+      <ChatPanel
+        messages={mockMessages}
+        currentUserId={1}
+        onSendMessage={(message: string): void =>
+          console.log(`Send Message: ${message}`)
+        }
+      />
+    ),
+  },
+  {
+    type: 'search',
+    title: 'Search',
+    content: <div>Search</div>,
+  },
+]
 
 export const mockTabs: Tab[] = [
   {
@@ -16,12 +43,20 @@ export const mockTabs: Tab[] = [
       {
         type: 'files',
         title: 'Files',
-        content: <FileExplorerPanel />,
+        content: <FileExplorerPanel rootItemId={'/'} fileTree={mockFileTree} />,
       },
       {
         type: 'chats',
         title: 'Chats',
-        content: <ChatPanel />,
+        content: (
+          <ChatPanel
+            messages={mockMessages}
+            currentUserId={1}
+            onSendMessage={(message: string): void =>
+              console.log(`Send Message: ${message}`)
+            }
+          />
+        ),
       },
     ],
   },
@@ -34,7 +69,7 @@ export const mockTabs: Tab[] = [
       {
         type: 'search',
         title: 'Search',
-        content: mockItems.slice(25, 30), // 검색 결과 (5개)
+        content: mockItems.slice(25, 30),
       },
     ],
   },
@@ -47,7 +82,7 @@ export const mockTabs: Tab[] = [
       {
         type: 'invite',
         title: 'Invite',
-        content: mockItems.slice(30, 35), // 초대 목록 (5개)
+        content: mockItems.slice(30, 35),
       },
     ],
   },
@@ -60,7 +95,7 @@ export const mockTabs: Tab[] = [
       {
         type: 'settings',
         title: 'Settings',
-        content: mockItems.slice(35, 40), // 설정 옵션 (5개)
+        content: mockItems.slice(35, 40),
       },
     ],
   },

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { StoryObj } from '@storybook/nextjs-vite'
 import { FileText, Search, Settings, Terminal, User } from 'lucide-react'
 import { fn } from 'storybook/test'
 import IconButton from './icon-button'
@@ -40,24 +40,21 @@ const meta = {
     },
   },
   args: {
-    onClick: fn(),
     Icon: FileText,
+    onClick: fn(),
   },
-} satisfies Meta<typeof IconButton>
-
+}
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    Icon: FileText,
     isSelected: false,
   },
 }
 
 export const Selected: Story = {
   args: {
-    Icon: FileText,
     isSelected: true,
   },
 }

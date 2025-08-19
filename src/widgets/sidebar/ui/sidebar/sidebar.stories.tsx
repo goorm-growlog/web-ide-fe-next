@@ -1,4 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
+import { mockTabs } from '@/widgets/sidebar/fixtures/mock-data'
 import Sidebar from './sidebar'
 
 const meta = {
@@ -6,6 +7,9 @@ const meta = {
   component: Sidebar,
   parameters: {
     layout: 'fullscreen',
+  },
+  args: {
+    tabs: mockTabs,
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof Sidebar>

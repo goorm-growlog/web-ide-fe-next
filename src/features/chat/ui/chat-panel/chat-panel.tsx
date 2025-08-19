@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, useCallback, useMemo } from 'react'
-import { mockMessages } from '@/features/chat/fixtures/mock-data'
+
 import { useChatScroll } from '@/features/chat/hooks/use-chat-scroll'
 import { parseChatMessages } from '@/features/chat/lib/message-parser'
 import type { ChatMessage } from '@/features/chat/model/types'
@@ -11,22 +11,15 @@ import { ChatMessageList } from '../chat-message-list/chat-message-list'
 import styles from './chat-panel.module.css'
 
 interface ChatPanelProps {
-  messages?: ChatMessage[]
-  currentUserId?: number
-  onSendMessage?: (message: string) => void
+  messages: ChatMessage[]
+  currentUserId: number
+  onSendMessage: (message: string) => void
 }
 
 export const ChatPanel = memo(
-  ({
-    messages = mockMessages,
-    currentUserId = 2,
-    onSendMessage = () => {
-      console.log('Message sent')
-    },
-  }: ChatPanelProps) => {
+  ({ messages, currentUserId, onSendMessage }: ChatPanelProps) => {
     const { scrollAreaRef, scrollToBottom } = useChatScroll(messages)
 
-    // ChatMessage[]를 ParsedChatMessage[]로 변환
     const parsedMessages = useMemo(
       () => parseChatMessages(messages),
       [messages],

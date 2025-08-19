@@ -9,7 +9,7 @@ import {
   syncDataLoaderFeature,
 } from '@headless-tree/core'
 import { useTree } from '@headless-tree/react'
-import { mockFileTree } from '@/features/file-explorer/fixtures/mock-data'
+
 import { handleDrop } from '@/features/file-explorer/lib/drop-handler'
 import { handleRename } from '@/features/file-explorer/lib/rename-handler'
 import {
@@ -22,11 +22,10 @@ import { cn } from '@/shared/lib/utils'
 import styles from './file-explorer-panel.module.css'
 
 interface FileExplorerPanelProps {
-  rootItemId?: string
-  fileTree?: Record<string, FileNode>
+  rootItemId: string
+  fileTree: Record<string, FileNode>
 }
 
-// 트리 설정을 생성하는 헬퍼 함수
 const createTreeConfig = (
   rootItemId: string,
   fileTree: Record<string, FileNode>,
@@ -43,6 +42,7 @@ const createTreeConfig = (
       Boolean(item.getItemData().isFolder),
     dataLoader,
     indent: INDENT_SIZE,
+    canReorder: false,
     canDrop: (_items: ItemInstance<FileNode>[], target: DragTarget<FileNode>) =>
       target.item.isFolder(),
     onDrop: handleDrop,
@@ -58,14 +58,14 @@ const createTreeConfig = (
 }
 
 export const FileExplorerPanel = ({
-  rootItemId = '/',
-  fileTree = mockFileTree,
+  rootItemId,
+  fileTree,
 }: FileExplorerPanelProps) => {
   const treeConfig = createTreeConfig(rootItemId, fileTree)
   const tree = useTree<FileNode>(treeConfig)
 
-  const containerProps = tree.getContainerProps()
-  const { className: treeClassName, ...restContainerProps } = containerProps
+  const { className: treeClassName, ...restContainerProps } =
+    tree.getContainerProps()
 
   return (
     <div
