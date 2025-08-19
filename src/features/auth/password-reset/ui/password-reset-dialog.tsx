@@ -23,8 +23,12 @@ const PasswordResetDialog = ({
   onSubmit,
   isLoading,
 }: PasswordResetDialogProps) => {
+  const handleOpenChange = (val: boolean) => {
+    if (isLoading) return
+    onOpenChange(val)
+  }
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="w-[440px] max-w-[85vw]" showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>Reset Password</DialogTitle>
@@ -36,7 +40,7 @@ const PasswordResetDialog = ({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleOpenChange(false)}
               disabled={isLoading}
             >
               Cancel
