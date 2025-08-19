@@ -7,10 +7,13 @@ export const PASSWORD_REQUIRED_MSG = 'Password must be at least 8 characters'
 export const CODE_REQUIRED_MSG = 'Verification code must be 6 digits'
 
 // 필드 단위 스키마
-export const emailSchema = z.string().email(EMAIL_REQUIRED_MSG)
-export const nameSchema = z.string().min(2, NAME_REQUIRED_MSG)
+export const emailSchema = z.string().trim().email(EMAIL_REQUIRED_MSG)
+export const nameSchema = z.string().trim().min(2, NAME_REQUIRED_MSG)
 export const passwordSchema = z.string().min(8, PASSWORD_REQUIRED_MSG)
-export const codeSchema = z.string().min(6, CODE_REQUIRED_MSG)
+export const codeSchema = z
+  .string()
+  .length(6, CODE_REQUIRED_MSG)
+  .regex(/^\d{6}$/, CODE_REQUIRED_MSG)
 
 // 조합 스키마
 export const formSchema = z.object({
