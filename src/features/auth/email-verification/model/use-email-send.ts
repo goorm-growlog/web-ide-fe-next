@@ -30,5 +30,6 @@ export const useEmailSend = ({ onSendCode }: UseEmailSendOptions = {}) => {
     isCodeSent,
     sendCode,
     getButtonText,
+    resetCodeSent: () => setIsCodeSent(false),
   }
 }

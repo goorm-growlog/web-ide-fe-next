@@ -17,6 +17,15 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
   const email = useEmailSend(onSendCode ? { onSendCode } : {})
   const code = useCodeVerification(onVerifyCode ? { onVerifyCode } : {})
 
+  // 이메일 변경 시 인증코드 입력 상태 초기화
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (email.isCodeSent || code.isVerified || form.getValues('code')) {
+      email.resetCodeSent()
+      form.setValue('code', '')
+    }
+    form.setValue('email', e.target.value)
+  }
+
   const handleSubmit = form.handleSubmit(data => {
     if (!email.isCodeSent) {
       email.sendCode(data.email)
@@ -32,6 +41,7 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
           {field => (
             <InputWithButton
               {...field}
+              onChange={handleEmailChange}
               placeholder="Enter a valid email"
               disabled={email.isSending || code.isVerified}
               buttonText={email.getButtonText()}
