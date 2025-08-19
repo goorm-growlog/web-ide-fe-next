@@ -13,9 +13,9 @@ interface Props {
 }
 
 const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
-  const form = useEmailVerificationForm()
   const email = useEmailSend({ onSendCode })
   const code = useCodeVerification({ onVerifyCode })
+  const form = useEmailVerificationForm()
 
   // 이메일 변경 시 인증코드 입력 상태 초기화
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,12 +27,18 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
   }
 
   const handleSubmit = form.handleSubmit(data => {
-    if (!email.isCodeSent) {
-      email.sendCode(data.email)
-    } else {
-      code.verifyCode(data.code ?? '')
-    }
+    // 제출은 코드 검증에만 사용
+    if (!email.isCodeSent) return
+    code.verifyCode(data.code ?? '')
   })
+
+  const handleSendCode = async () => {
+    // 이메일 필드만 유효성 검사 후 전송
+    const ok = await form.trigger('email')
+    if (ok) {
+      await email.sendCode(form.getValues('email'))
+    }
+  }
 
   return (
     <FormProvider {...form}>
@@ -43,11 +49,15 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
               {...field}
               onChange={handleEmailChange}
               placeholder="Enter a valid email"
+              type="email"
+              autoComplete="email"
               disabled={email.isSending || code.isVerified}
               buttonText={email.getButtonText()}
               buttonProps={{
-                disabled: email.isSending || code.isVerified,
-                type: 'submit',
+                disabled:
+                  email.isSending || email.isCodeSent || code.isVerified,
+                type: 'button',
+                onClick: handleSendCode,
               }}
             />
           )}
@@ -63,6 +73,9 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
                 {...field}
                 placeholder="Enter code"
                 maxLength={6}
+                autoComplete="one-time-code"
+                inputMode="numeric"
+                pattern="^[0-9]{6}$"
                 disabled={code.isVerifying || code.isVerified}
                 buttonText={code.getButtonText()}
                 buttonProps={{
