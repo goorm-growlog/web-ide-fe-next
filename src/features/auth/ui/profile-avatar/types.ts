@@ -1,5 +1,5 @@
 export interface ProfileAvatarProps {
-  src?: string
+  src?: string | undefined
   onImageChange?: (imageUrl: string) => void
   onImageSelect: (file: File) => void
 }

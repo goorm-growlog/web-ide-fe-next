@@ -15,17 +15,18 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={styles.root}>
         <Input
+          {...props}
           type={visible ? 'text' : 'password'}
           className={cn(className, 'pr-10')}
           ref={ref}
-          {...props}
         />
         <button
           type="button"
           aria-label={visible ? '비밀번호 숨기기' : '비밀번호 보기'}
+          aria-pressed={visible}
+          disabled={props.disabled}
           onClick={() => setVisible(v => !v)}
           className={styles.toggle}
-          tabIndex={-1}
         >
           <Icon className={styles.icon} />
         </button>

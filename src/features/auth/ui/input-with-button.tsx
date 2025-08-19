@@ -31,12 +31,13 @@ const InputWithButton = forwardRef<HTMLInputElement, InputWithButtonProps>(
           ref={ref}
           {...inputProps}
           {...rest}
-          className={cn('flex-1', inputProps?.className, className)}
+          className={cn('flex-1', inputProps?.className)}
         />
         <Button
           type="button"
           {...buttonProps}
           style={{ ...buttonProps?.style, width: buttonWidth }}
+          disabled={props.disabled || buttonProps?.disabled}
           onClick={onButtonClick || buttonProps?.onClick}
         >
           {buttonText}

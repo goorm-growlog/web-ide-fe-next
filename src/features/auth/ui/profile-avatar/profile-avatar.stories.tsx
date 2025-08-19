@@ -26,7 +26,7 @@ export const Default: Story = {
     const [image, setImage] = useState<string | undefined>()
     return (
       <ProfileAvatar
-        src={image ?? ''}
+        src={image ?? undefined}
         onImageSelect={(file: File) => {
           const reader = new FileReader()
           reader.onload = e => setImage(e.target?.result as string)

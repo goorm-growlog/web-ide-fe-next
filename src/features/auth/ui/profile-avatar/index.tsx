@@ -13,6 +13,7 @@ const ProfileAvatar = (props: ProfileAvatarProps) => {
       <button
         className={styles.avatarButton}
         onClick={handleAvatarClick}
+        aria-label="change profile image"
         onKeyDown={e => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
@@ -22,20 +23,20 @@ const ProfileAvatar = (props: ProfileAvatarProps) => {
         type="button"
       >
         <Avatar className={styles.avatar}>
-          <AvatarImage alt="avatar" src={previewSrc} />
+          <AvatarImage alt="" src={previewSrc} />
           <AvatarFallback>AvatarImg</AvatarFallback>
         </Avatar>
         <div className={styles.overlay}>
           <Camera className={styles.cameraIcon} />
         </div>
-        <input
-          accept="image/*"
-          className={styles.hiddenInput}
-          onChange={handleFileChange}
-          ref={fileInputRef}
-          type="file"
-        />
       </button>
+      <input
+        accept="image/*"
+        className={styles.hiddenInput}
+        onChange={handleFileChange}
+        ref={fileInputRef}
+        type="file"
+      />
     </div>
   )
 }
