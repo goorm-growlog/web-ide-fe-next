@@ -3,7 +3,6 @@ import type { ComponentProps } from 'react'
 import { forwardRef, useState } from 'react'
 import { cn } from '@/shared/lib/utils'
 import { Input } from '@/shared/ui/shadcn/input'
-import styles from './password-input.module.css'
 
 type InputProps = ComponentProps<'input'>
 
@@ -13,7 +12,7 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
     const Icon = visible ? Eye : EyeOff
 
     return (
-      <div className={styles.root}>
+      <div className="relative">
         <Input
           {...props}
           type={visible ? 'text' : 'password'}
@@ -26,9 +25,15 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
           aria-pressed={visible}
           disabled={props.disabled}
           onClick={() => setVisible(v => !v)}
-          className={styles.toggle}
+          className={cn(
+            'absolute right-2.5 top-1/2 -translate-y-1/2',
+            'bg-transparent border-none cursor-pointer p-0 flex items-center',
+            'text-muted-foreground hover:text-foreground',
+            'transition-colors duration-200',
+            'disabled:cursor-not-allowed disabled:opacity-50',
+          )}
         >
-          <Icon className={styles.icon} />
+          <Icon className="w-3.5 h-3.5" />
         </button>
       </div>
     )
