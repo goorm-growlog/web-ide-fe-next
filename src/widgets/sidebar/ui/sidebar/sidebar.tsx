@@ -6,7 +6,7 @@ import type { Panel } from '../../model/types'
 import TogglePanels from '../toggle-panels/toggle-panels'
 
 interface SidebarProps {
-  panels?: Panel[] | undefined
+  panels?: Panel[]
   className?: string
 }
 
@@ -15,7 +15,7 @@ const Sidebar = memo(({ panels = [], className }: SidebarProps) => {
     return (
       <aside
         className={cn(
-          'flex h-screen w-full flex-col overflow-hidden',
+          'flex h-full flex-1 flex-col overflow-hidden',
           'bg-muted/20',
           className,
         )}
@@ -30,7 +30,7 @@ const Sidebar = memo(({ panels = [], className }: SidebarProps) => {
   return (
     <aside
       className={cn(
-        'flex h-screen w-full flex-col overflow-hidden',
+        'flex h-full flex-1 flex-col overflow-hidden',
         'bg-background',
         className,
       )}

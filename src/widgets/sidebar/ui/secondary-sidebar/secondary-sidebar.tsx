@@ -7,7 +7,6 @@ export interface SecondarySidebarProps {
   messages: ChatMessage[]
   currentUserId: number
   onSendMessage: (message: string) => void
-  position?: 'left' | 'right'
   className?: string
 }
 
@@ -16,14 +15,13 @@ const SecondarySidebar = memo(
     messages,
     currentUserId,
     onSendMessage,
-    position = 'right',
     className,
   }: SecondarySidebarProps) => {
     return (
-      <div
+      <aside
         className={cn(
-          'w-80 min-w-80 max-w-96',
-          position === 'left' ? 'border-r' : 'border-l',
+          'flex h-full flex-1 flex-col overflow-hidden',
+          'bg-background',
           className,
         )}
       >
@@ -32,7 +30,7 @@ const SecondarySidebar = memo(
           currentUserId={currentUserId}
           onSendMessage={onSendMessage}
         />
-      </div>
+      </aside>
     )
   },
 )
