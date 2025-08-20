@@ -1,6 +1,6 @@
 'use client'
 
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { cn } from '@/shared/lib/utils'
 import IconButton from '@/shared/ui/icon-button/icon-button'
 import type { Tab, TabKey } from '@/widgets/sidebar/model/types'
@@ -10,49 +10,56 @@ interface TabSwitcherProps {
   activeTabKey: TabKey | null
   onTabClick: (key: TabKey) => void
   position?: 'left' | 'right'
+  className?: string
 }
 
 const TabSwitcher = memo(
-  ({ tabs, activeTabKey, onTabClick, position = 'left' }: TabSwitcherProps) => {
-    const handleTabClick = (key: TabKey) => {
-      onTabClick(key)
-    }
-
-    const topTabs = tabs.filter(tab => tab.position === 'top')
-    const bottomTabs = tabs.filter(tab => tab.position === 'bottom')
+  ({
+    tabs,
+    activeTabKey,
+    onTabClick,
+    position = 'left',
+    className,
+  }: TabSwitcherProps) => {
+    const { topTabs, bottomTabs } = useMemo(
+      () => ({
+        topTabs: tabs.filter(tab => tab.position === 'top'),
+        bottomTabs: tabs.filter(tab => tab.position === 'bottom'),
+      }),
+      [tabs],
+    )
 
     return (
       <nav
         className={cn(
-          'flex flex-col items-center justify-between gap-4 p-2',
+          'flex h-full flex-col items-center justify-between gap-1 p-2 md:gap-2',
           position === 'left' ? 'border-r' : 'border-l',
+          className,
         )}
       >
         {topTabs.length > 0 && (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1 md:gap-2">
             {topTabs.map(tab => (
               <IconButton
                 key={tab.key}
                 Icon={tab.icon}
-                title={tab.title}
-                onClick={() => handleTabClick(tab.key)}
+                onClick={() => onTabClick(tab.key)}
                 isSelected={tab.key === activeTabKey}
-                className="h-10 w-10 rounded-lg transition-all duration-200"
+                className="h-8 w-8 rounded-lg transition-all duration-200 md:h-9 md:w-9 lg:h-10 lg:w-10"
               />
             ))}
           </div>
         )}
 
         {bottomTabs.length > 0 && (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1 md:gap-2">
             {bottomTabs.map(tab => (
               <IconButton
                 key={tab.key}
                 Icon={tab.icon}
-                title={tab.title}
-                onClick={() => handleTabClick(tab.key)}
+                onClick={() => onTabClick(tab.key)}
                 isSelected={tab.key === activeTabKey}
-                className="h-10 w-10 rounded-lg transition-all duration-200"
+                className="h-8 w-8 rounded-lg transition-all duration-200 md:h-9 md:w-9 lg:h-10 lg:w-10"
               />
             ))}
           </div>

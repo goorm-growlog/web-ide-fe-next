@@ -1,43 +1,38 @@
 'use client'
 
-import { memo } from 'react'
+import { forwardRef, memo, type ReactNode } from 'react'
 import { cn } from '@/shared/lib/utils'
-import type { Panel } from '../../model/types'
-import TogglePanels from '../toggle-panels/toggle-panels'
 
 interface SidebarProps {
-  panels?: Panel[]
+  children?: ReactNode
   className?: string
 }
 
-const Sidebar = memo(({ panels = [], className }: SidebarProps) => {
-  if (panels.length === 0) {
+const Sidebar = memo(
+  forwardRef<HTMLElement, SidebarProps>(({ children, className }, ref) => {
+    const defaultEmptyState = (
+      <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
+        No content available
+      </div>
+    )
+
+    const content = children || defaultEmptyState
+
     return (
       <aside
+        ref={ref}
         className={cn(
           'flex h-full flex-1 flex-col overflow-hidden',
-          'bg-muted/20',
+          'bg-background',
           className,
         )}
       >
-        <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
-          {'No panels available'}
-        </div>
+        {content}
       </aside>
     )
-  }
+  }),
+)
 
-  return (
-    <aside
-      className={cn(
-        'flex h-full flex-1 flex-col overflow-hidden',
-        'bg-background',
-        className,
-      )}
-    >
-      <TogglePanels panels={panels} />
-    </aside>
-  )
-})
+Sidebar.displayName = 'Sidebar'
 
 export default Sidebar

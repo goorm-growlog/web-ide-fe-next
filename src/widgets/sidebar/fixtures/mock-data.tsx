@@ -1,7 +1,5 @@
 import { FilesIcon, SearchIcon, SettingsIcon, Share2Icon } from 'lucide-react'
-import { mockMessages } from '@/features/chat/fixtures/mock-data'
 import ChatPanel from '@/features/chat/ui/chat-panel/chat-panel'
-import { mockFileTree } from '@/features/file-explorer/fixtures/mock-data'
 import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel/file-explorer-panel'
 import type { Panel, Tab } from '@/widgets/sidebar/model/types'
 
@@ -9,25 +7,17 @@ const mockItems = Array.from({ length: 40 }, (_, i) => `Item ${i + 1}`)
 
 export const mockPanels: Panel[] = [
   {
-    type: 'files',
+    key: 'files',
     title: 'Files',
-    content: <FileExplorerPanel rootItemId={'/'} fileTree={mockFileTree} />,
+    content: <FileExplorerPanel />,
   },
   {
-    type: 'chats',
+    key: 'chats',
     title: 'Chats',
-    content: (
-      <ChatPanel
-        messages={mockMessages}
-        currentUserId={1}
-        onSendMessage={(_message: string): void => {
-          console.debug('Message sent')
-        }}
-      />
-    ),
+    content: <ChatPanel />,
   },
   {
-    type: 'search',
+    key: 'search',
     title: 'Search',
     content: <div>Search</div>,
   },
@@ -37,24 +27,22 @@ export const mockTabs: Tab[] = [
   {
     key: 'files',
     icon: FilesIcon,
-    title: 'Files',
     position: 'top',
     panels: [
       {
-        type: 'files',
+        key: 'files',
         title: 'Files',
-        content: <FileExplorerPanel rootItemId={'/'} fileTree={mockFileTree} />,
+        content: <FileExplorerPanel />,
       },
     ],
   },
   {
     key: 'search',
     icon: SearchIcon,
-    title: 'Search',
     position: 'top',
     panels: [
       {
-        type: 'search',
+        key: 'search',
         title: 'Search',
         content: mockItems.slice(25, 30),
       },
@@ -63,11 +51,10 @@ export const mockTabs: Tab[] = [
   {
     key: 'invite',
     icon: Share2Icon,
-    title: 'Invite',
     position: 'top',
     panels: [
       {
-        type: 'invite',
+        key: 'invite',
         title: 'Invite',
         content: mockItems.slice(30, 35),
       },
@@ -76,11 +63,10 @@ export const mockTabs: Tab[] = [
   {
     key: 'settings',
     icon: SettingsIcon,
-    title: 'Settings',
     position: 'bottom',
     panels: [
       {
-        type: 'settings',
+        key: 'settings',
         title: 'Settings',
         content: mockItems.slice(35, 40),
       },

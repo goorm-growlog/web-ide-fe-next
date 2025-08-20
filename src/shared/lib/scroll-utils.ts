@@ -30,7 +30,10 @@ export const requestScrollToBottom = (element: HTMLElement): void => {
   if (!element || !(element instanceof HTMLElement)) return
 
   requestAnimationFrame(() => {
-    scrollToBottom(element)
-    console.error('Failed to request scroll to bottom')
+    try {
+      scrollToBottom(element)
+    } catch {
+      console.error('Failed to request scroll to bottom')
+    }
   })
 }

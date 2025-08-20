@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { mockMessages } from '@/features/chat/fixtures/mock-data'
 import type { ChatMessage } from '@/features/chat/model/types'
 
 interface UseChatMessagesReturn {
@@ -13,7 +14,7 @@ export const useChatMessages = (
   initialUserId = 1,
   initialProjectId = 1,
 ): UseChatMessagesReturn => {
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [messages, setMessages] = useState<ChatMessage[]>(mockMessages)
   const [currentUserId] = useState(initialUserId)
 
   const addMessage = useCallback((message: ChatMessage) => {

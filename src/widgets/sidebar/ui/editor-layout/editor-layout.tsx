@@ -1,14 +1,14 @@
 'use client'
 
 import { memo } from 'react'
-import { useChatMessages } from '@/features/chat/hooks/use-chat-messages'
+import ChatPanel from '@/features/chat/ui/chat-panel/chat-panel'
 import ResizableGrowHandle from '@/shared/ui/resizable-grow-handle/resizable-grow-handle'
 import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/shared/ui/shadcn/resizable'
 import PrimarySidebar from '@/widgets/sidebar/ui/primary-sidebar/primary-sidebar'
-import SecondarySidebar from '@/widgets/sidebar/ui/secondary-sidebar/secondary-sidebar'
+import Sidebar from '@/widgets/sidebar/ui/sidebar/sidebar'
 import { useLayoutStore } from '../../store/layout-store'
 
 interface EditorLayoutProps {
@@ -17,7 +17,6 @@ interface EditorLayoutProps {
 
 const EditorLayout = memo(({ children }: EditorLayoutProps) => {
   const { layout, panelConfig, panelLayout, setPanelLayout } = useLayoutStore()
-  const { messages, currentUserId, sendMessage } = useChatMessages()
   const isPrimaryLeft = layout === 'primary-left'
 
   const handleLayoutChange = (sizes: number[]) => {
@@ -25,32 +24,52 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
     setPanelLayout(sizes)
   }
 
-  const primaryPanel = (position: 'left' | 'right') => (
+  // Panel configuration indices
+  const primaryIndex = isPrimaryLeft ? 0 : 2
+  const secondaryIndex = isPrimaryLeft ? 2 : 0
+  const mainIndex = 1
+
+  const primaryPanelLeft = (
     <ResizablePanel
-      defaultSize={panelLayout[isPrimaryLeft ? 0 : 2]}
-      minSize={panelConfig.primaryMinSize}
+      defaultSize={panelLayout[primaryIndex] ?? 25}
       maxSize={panelConfig.maxSize}
+      minSize={0}
+      className="min-w-16"
     >
-      <PrimarySidebar position={position} />
+      <PrimarySidebar position="left" />
+    </ResizablePanel>
+  )
+
+  const primaryPanelRight = (
+    <ResizablePanel
+      defaultSize={panelLayout[primaryIndex] ?? 25}
+      maxSize={panelConfig.maxSize}
+      minSize={0}
+      className="min-w-16"
+    >
+      <PrimarySidebar position="right" />
     </ResizablePanel>
   )
 
   const secondaryPanel = (
     <ResizablePanel
-      defaultSize={panelLayout[isPrimaryLeft ? 2 : 0]}
-      minSize={panelConfig.secondaryMinSize}
+      defaultSize={panelLayout[secondaryIndex] ?? 25}
       maxSize={panelConfig.maxSize}
+      minSize={10}
+      className="min-w-16"
     >
-      <SecondarySidebar
-        messages={messages}
-        currentUserId={currentUserId}
-        onSendMessage={sendMessage}
-      />
+      <Sidebar>
+        <ChatPanel />
+      </Sidebar>
     </ResizablePanel>
   )
 
   const mainPanel = (
-    <ResizablePanel defaultSize={panelLayout[1]}>
+    <ResizablePanel
+      defaultSize={panelLayout[mainIndex] ?? 50}
+      maxSize={100}
+      minSize={0}
+    >
       <main className="h-full p-8">{children}</main>
     </ResizablePanel>
   )
@@ -64,7 +83,7 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
       >
         {isPrimaryLeft ? (
           <>
-            {primaryPanel('left')}
+            {primaryPanelLeft}
             <ResizableGrowHandle />
             {mainPanel}
             <ResizableGrowHandle />
@@ -76,7 +95,7 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
             <ResizableGrowHandle />
             {mainPanel}
             <ResizableGrowHandle />
-            {primaryPanel('right')}
+            {primaryPanelRight}
           </>
         )}
       </ResizablePanelGroup>

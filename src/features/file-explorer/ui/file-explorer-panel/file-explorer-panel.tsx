@@ -9,7 +9,7 @@ import {
   syncDataLoaderFeature,
 } from '@headless-tree/core'
 import { useTree } from '@headless-tree/react'
-
+import { mockFileTree } from '@/features/file-explorer/fixtures/mock-data'
 import { handleDrop } from '@/features/file-explorer/lib/drop-handler'
 import { handleRename } from '@/features/file-explorer/lib/rename-handler'
 import {
@@ -20,11 +20,6 @@ import type { FileNode } from '@/features/file-explorer/model/types'
 import FileExplorerItem from '@/features/file-explorer/ui/file-explorer-item/file-explorer-item'
 import { cn } from '@/shared/lib/utils'
 import styles from './file-explorer-panel.module.css'
-
-interface FileExplorerPanelProps {
-  rootItemId: string
-  fileTree: Record<string, FileNode>
-}
 
 const createTreeConfig = (
   rootItemId: string,
@@ -57,11 +52,8 @@ const createTreeConfig = (
   }
 }
 
-export const FileExplorerPanel = ({
-  rootItemId,
-  fileTree,
-}: FileExplorerPanelProps) => {
-  const treeConfig = createTreeConfig(rootItemId, fileTree)
+export const FileExplorerPanel = () => {
+  const treeConfig = createTreeConfig('/', mockFileTree)
   const tree = useTree<FileNode>(treeConfig)
 
   const { className: treeClassName, ...restContainerProps } =

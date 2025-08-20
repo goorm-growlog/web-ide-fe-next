@@ -1,24 +1,17 @@
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-type PanelType =
-  | 'files'
-  | 'chats'
-  | 'search'
-  | 'invite'
-  | 'members'
-  | 'settings'
-export type Panel = {
-  type: PanelType
+export type PanelKey = 'files' | 'chats' | 'search' | 'invite' | 'settings'
+export interface Panel {
+  key: PanelKey
   title: string
   content: ReactNode
 }
 
 export type TabKey = 'files' | 'search' | 'invite' | 'settings'
-export type Tab = {
+export interface Tab {
   key: TabKey
-  icon: LucideIcon
-  title: string
-  position: 'top' | 'bottom'
   panels: Panel[]
+  icon: LucideIcon
+  position: 'top' | 'bottom'
 }
