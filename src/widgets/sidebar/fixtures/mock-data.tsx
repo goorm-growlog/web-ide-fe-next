@@ -12,14 +12,9 @@ export const mockPanels: Panel[] = [
     content: <FileExplorerPanel />,
   },
   {
-    key: 'chats',
-    title: 'Chats',
-    content: <ChatPanel />,
-  },
-  {
     key: 'search',
     title: 'Search',
-    content: <div>Search</div>,
+    content: <FileExplorerPanel />,
   },
 ]
 
@@ -33,6 +28,11 @@ export const mockTabs: Tab[] = [
         key: 'files',
         title: 'Files',
         content: <FileExplorerPanel />,
+      },
+      {
+        key: 'chats',
+        title: 'Chats',
+        content: <ChatPanel />,
       },
     ],
   },

@@ -18,7 +18,10 @@ const TogglePanels = memo(({ panels }: TogglePanelsProps) => {
   return (
     <Accordion
       type="multiple"
-      className={cn('flex h-full min-h-0 w-full flex-col', 'bg-background')}
+      className={cn(
+        'flex h-full min-h-0 w-full flex-col overflow-hidden',
+        'bg-background',
+      )}
       defaultValue={panels.map(panel => panel.key)}
     >
       {panels.map(panel => (
@@ -26,25 +29,20 @@ const TogglePanels = memo(({ panels }: TogglePanelsProps) => {
           key={panel.key}
           value={panel.key}
           className={cn(
-            // Layout
-            'flex w-full flex-col overflow-hidden',
-            // Borders
             'border-b last:border-b-0',
-            // State-based sizing
-            'data-[state=closed]:h-10 data-[state=closed]:flex-grow-0',
-            'data-[state=open]:h-min-0 data-[state=open]:flex-grow-1',
-            // Animation
-            'transition[height,flex-grow] duration-300 ease-in-out',
+            'data-[state=open]:flex data-[state=open]:flex-1 data-[state=open]:flex-col',
+            'data-[state=closed]:flex-none',
+            'transition-[flex-grow] duration-200 ease-out',
           )}
         >
           <AccordionTrigger
             className={cn(
               // Layout
               'flex h-10 w-full flex-row-reverse items-center justify-end gap-1 px-3',
-              // Typography
-              'cursor-pointer font-medium text-xs uppercase tracking-wider',
               // Borders
               'rounded-none border-b hover:no-underline',
+              // Typography
+              'cursor-pointer font-medium text-xs uppercase tracking-wider',
               // Colors
               'text-muted-foreground hover:text-foreground',
               // Interactive states
@@ -62,16 +60,13 @@ const TogglePanels = memo(({ panels }: TogglePanelsProps) => {
           </AccordionTrigger>
           <AccordionContent
             className={cn(
-              // Layout
-              'h-full min-h-0 w-full overflow-y-auto',
-              // Scrollbar
-              'scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent',
+              // Flex-based height filling with scroll container
+              'min-h-0 w-full overflow-y-auto',
+              // Scroller
+              'scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent pt-0 pb-4',
             )}
-            asChild
           >
-            <section aria-labelledby={`${panel.key}-trigger`}>
-              {panel.content}
-            </section>
+            {panel.content}
           </AccordionContent>
         </AccordionItem>
       ))}

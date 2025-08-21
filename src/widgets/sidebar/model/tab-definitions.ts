@@ -30,7 +30,7 @@ export const PANEL_DEFINITIONS: Record<
 > = {
   files: [
     { key: 'files', title: 'Files' },
-    // { key: 'chats', title: 'Chats' },
+    { key: 'files1', title: 'Files' },
   ],
   search: [{ key: 'search', title: 'Search' }],
   invite: [{ key: 'invite', title: 'Invite' }],

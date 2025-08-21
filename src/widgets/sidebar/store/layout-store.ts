@@ -5,7 +5,7 @@ import type { TabKey } from '../model/types'
 type LayoutType = 'primary-left' | 'primary-right'
 
 interface PanelConfig {
-  primaryMinSize: number // Tab switcher width (48px ≈ 4%)
+  primaryMinSize: number
   secondaryMinSize: number
   maxSize: number
 }
@@ -29,8 +29,8 @@ interface LayoutStore {
 }
 
 const DEFAULT_PANEL_CONFIG: PanelConfig = {
-  primaryMinSize: 2.5, // Tab switcher width only (48px ≈ 2.5% of 1920px)
-  secondaryMinSize: 2.5, // Tab switcher width only
+  primaryMinSize: 2.5,
+  secondaryMinSize: 2.5,
   maxSize: 45,
 }
 
@@ -50,7 +50,6 @@ export const useLayoutStore = create<LayoutStore>()(
         set({ layout: newLayout })
       },
 
-      // Tab state management (excluded from persist to reset on refresh)
       activeTabKey: 'files',
       setActiveTabKey: (activeTabKey: TabKey) => set({ activeTabKey }),
 
@@ -62,7 +61,7 @@ export const useLayoutStore = create<LayoutStore>()(
       setPanelLayout: (layout: number[]) => set({ panelLayout: layout }),
     }),
     {
-      name: 'sidebar-layout',
+      name: 'editor-layout',
       partialize: state => ({
         layout: state.layout,
         panelLayout: state.panelLayout,
