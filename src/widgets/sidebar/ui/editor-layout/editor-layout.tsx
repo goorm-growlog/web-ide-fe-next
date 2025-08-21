@@ -1,6 +1,6 @@
 'use client'
 
-import { memo } from 'react'
+import { memo, type ReactNode } from 'react'
 import ChatPanel from '@/features/chat/ui/chat-panel/chat-panel'
 import ResizableGrowHandle from '@/shared/ui/resizable-grow-handle/resizable-grow-handle'
 import {
@@ -12,7 +12,7 @@ import Sidebar from '@/widgets/sidebar/ui/sidebar/sidebar'
 import { useLayoutStore } from '../../store/layout-store'
 
 interface EditorLayoutProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 const EditorLayout = memo(({ children }: EditorLayoutProps) => {
@@ -20,11 +20,9 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
   const isPrimaryLeft = layout === 'primary-left'
 
   const handleLayoutChange = (sizes: number[]) => {
-    console.debug('Panel layout changed:', sizes)
     setPanelLayout(sizes)
   }
 
-  // Panel configuration indices
   const primaryIndex = isPrimaryLeft ? 0 : 2
   const secondaryIndex = isPrimaryLeft ? 2 : 0
   const mainIndex = 1
@@ -69,6 +67,7 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
       defaultSize={panelLayout[mainIndex] ?? 50}
       maxSize={100}
       minSize={0}
+      className="max-w-full"
     >
       <main className="h-full p-8">{children}</main>
     </ResizablePanel>

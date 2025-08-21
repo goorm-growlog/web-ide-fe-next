@@ -30,6 +30,7 @@ const PrimarySidebar = memo(
     const getPanelContent = useCallback((key: PanelKey): ReactNode => {
       const componentFactories: Record<PanelKey, () => ReactNode> = {
         files: () => <FileExplorerPanel />,
+        files1: () => <FileExplorerPanel />,
         chats: () => <ChatPanel />,
         search: () => <Search />,
         invite: () => <Invite />,
@@ -74,7 +75,8 @@ const PrimarySidebar = memo(
           activeTabKey,
           onTabClick: handleTabClick,
           position,
-          className: 'w-12 flex-shrink-0 md:w-14 lg:w-16',
+
+          className: 'w-12  md:w-14 lg:w-16 flex-shrink-0',
         }}
       />
     )

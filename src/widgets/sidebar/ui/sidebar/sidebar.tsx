@@ -11,12 +11,15 @@ interface SidebarProps {
 const Sidebar = memo(
   forwardRef<HTMLElement, SidebarProps>(({ children, className }, ref) => {
     const defaultEmptyState = (
-      <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
+      <div
+        className={cn(
+          'flex h-full items-center justify-center',
+          'text-muted-foreground text-sm',
+        )}
+      >
         No content available
       </div>
     )
-
-    const content = children || defaultEmptyState
 
     return (
       <aside
@@ -27,12 +30,10 @@ const Sidebar = memo(
           className,
         )}
       >
-        {content}
+        {children || defaultEmptyState}
       </aside>
     )
   }),
 )
-
-Sidebar.displayName = 'Sidebar'
 
 export default Sidebar
