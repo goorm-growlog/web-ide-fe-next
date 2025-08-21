@@ -1,13 +1,7 @@
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-export type PanelKey =
-  | 'files'
-  | 'files1'
-  | 'chats'
-  | 'search'
-  | 'invite'
-  | 'settings'
+export type PanelKey = 'files' | 'chats' | 'search' | 'invite' | 'settings'
 export interface Panel {
   key: PanelKey
   title: string

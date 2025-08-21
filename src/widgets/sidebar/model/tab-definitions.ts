@@ -28,10 +28,7 @@ export const PANEL_DEFINITIONS: Record<
   TabKey,
   { key: PanelKey; title: string }[]
 > = {
-  files: [
-    { key: 'files', title: 'Files' },
-    { key: 'files1', title: 'Files' },
-  ],
+  files: [{ key: 'files', title: 'Files' }],
   search: [{ key: 'search', title: 'Search' }],
   invite: [{ key: 'invite', title: 'Invite' }],
   settings: [{ key: 'settings', title: 'Settings' }],

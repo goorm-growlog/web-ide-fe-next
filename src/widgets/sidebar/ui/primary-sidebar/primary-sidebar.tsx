@@ -30,7 +30,6 @@ const PrimarySidebar = memo(
     const getPanelContent = useCallback((key: PanelKey): ReactNode => {
       const componentFactories: Record<PanelKey, () => ReactNode> = {
         files: () => <FileExplorerPanel />,
-        files1: () => <FileExplorerPanel />,
         chats: () => <ChatPanel />,
         search: () => <Search />,
         invite: () => <Invite />,
