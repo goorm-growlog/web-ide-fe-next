@@ -7,7 +7,7 @@ const meta = {
   title: 'Widgets/Sidebar/TabSwitcher',
   component: TabSwitcher,
   parameters: {
-    layout: 'fullscreen',
+    layout: 'centered',
   },
   args: {
     tabs: mockTabs,
@@ -20,4 +20,10 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = {
+  render: () => (
+    <div className="h-[50vh]">
+      <TabSwitcher tabs={mockTabs} activeTabKey="files" onTabClick={fn()} />
+    </div>
+  ),
+}

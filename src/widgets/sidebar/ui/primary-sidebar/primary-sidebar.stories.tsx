@@ -7,6 +7,11 @@ const meta: Meta<typeof PrimarySidebar> = {
   parameters: {
     layout: 'fullscreen',
   },
+  render: () => (
+    <div className="flex h-full w-full flex-col items-center justify-center">
+      <PrimarySidebar position="left" />
+    </div>
+  ),
 }
 
 export default meta
