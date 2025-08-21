@@ -1,6 +1,12 @@
 {
-  // Biome 2025: 최신 웹 프론트엔드 표준 설정
   "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
+  // Assist: import 자동 정리 및 그룹화
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "recommended": true
+    }
+  },
   // 린터: 코드 품질, 일관성, 접근성, 성능 등 종합 규칙
   "linter": {
     "enabled": true,
@@ -62,21 +68,16 @@
       "nursery": {
         "recommended": true,
         "noMisusedPromises": "error", // Promise 오용 방지
+        // CSS 클래스 정렬 규칙 (Tailwind CSS 클래스 자동 정렬)
         "useSortedClasses": {
           "level": "error",
+          "fix": "safe",
           "options": {
             "attributes": ["classList"],
             "functions": ["clsx", "cva", "cn", "tw", "tw.*"]
           }
         }
       }
-    }
-  },
-  // Assist: import 자동 정리 및 그룹화
-  "assist": {
-    "enabled": true,
-    "actions": {
-      "recommended": true
     }
   },
   // 포맷터: 코드 스타일 및 가독성 일관성

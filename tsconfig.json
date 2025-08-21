@@ -5,9 +5,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    // 인덱스 접근 시 체크 강화
     "noUncheckedIndexedAccess": true,
-    // 옵셔널 프로퍼티 타입의 정확성 강화
     "exactOptionalPropertyTypes": true,
     "noEmit": true,
     "esModuleInterop": true,
