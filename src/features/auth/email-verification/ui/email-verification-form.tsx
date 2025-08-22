@@ -1,11 +1,9 @@
 import { FormProvider } from 'react-hook-form'
 import FormField from '@/features/auth/ui/form-field'
 import InputWithButton from '@/features/auth/ui/input-with-button'
-import {
-  useCodeVerification,
-  useEmailSend,
-  useEmailVerificationForm,
-} from '../model'
+import { useCodeVerification } from '../model/use-code-verification'
+import { useEmailSend } from '../model/use-email-send'
+import { useEmailVerificationForm } from '../model/use-email-verification-form'
 
 interface Props {
   onSendCode?: (email: string) => Promise<void>
@@ -16,15 +14,6 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
   const email = useEmailSend({ onSendCode })
   const code = useCodeVerification({ onVerifyCode })
   const form = useEmailVerificationForm()
-
-  // 이메일 변경 시 인증코드 입력 상태 초기화
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (email.isCodeSent || code.isVerified || form.getValues('code')) {
-      email.resetCodeSent()
-      form.setValue('code', '')
-    }
-    form.setValue('email', e.target.value)
-  }
 
   const handleSubmit = form.handleSubmit(data => {
     // 제출은 코드 검증에만 사용
@@ -47,7 +36,19 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
           {field => (
             <InputWithButton
               {...field}
-              onChange={handleEmailChange}
+              onChange={e => {
+                // 이메일이 변경되면 코드 관련 상태를 초기화합니다.
+                if (
+                  email.isCodeSent ||
+                  code.isVerified ||
+                  form.getValues('code')
+                ) {
+                  email.resetCodeSent()
+                  form.setValue('code', '')
+                }
+                // react-hook-form의 상태 업데이트를 위해 field.onChange를 호출합니다.
+                field.onChange(e)
+              }}
               placeholder="Enter a valid email"
               type="email"
               autoComplete="email"
