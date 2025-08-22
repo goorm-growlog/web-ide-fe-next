@@ -1,35 +1,20 @@
-import type { LoginResult } from '../../login/model/types'
+import type { RefreshTokenResponse } from '@/features/auth/types'
+import { API_BASE, requestApi } from '@/shared/api/config'
 
-export const refreshAccessToken = async (): Promise<LoginResult> => {
-  try {
-    const res = await fetch(
-      'https://growlog-web-ide.duckdns.org/auth/refresh',
-      {
-        method: 'POST',
-        credentials: 'include', // HttpOnly 쿠키 자동 전송
-      },
-    )
-    const body = await res.json().catch(() => ({}))
-    if (!res.ok || !body.success || !body.data?.accessToken) {
-      return {
-        success: false,
-        message: body?.error?.message ?? `HTTP ${res.status}`,
-      }
-    }
-    return {
-      success: true,
-      message: '',
-      token: body.data.accessToken,
-    }
-  } catch (err: unknown) {
-    let message = 'Network error'
-    if (typeof err === 'object' && err && 'message' in err) {
-      const maybeMsg = (err as Record<string, unknown>).message
-      if (typeof maybeMsg === 'string') message = maybeMsg
-    }
-    return {
-      success: false,
-      message,
-    }
+/**
+ * 액세스 토큰을 갱신합니다.
+ * @returns 새로운 액세스 토큰
+ * @throws 토큰 갱신 실패 시 에러
+ */
+export const refreshAccessToken = async (): Promise<string> => {
+  const url = `${API_BASE}/auth/refresh`
+  const response = await requestApi<RefreshTokenResponse>(url, {
+    method: 'POST',
+  })
+
+  if (!response.success || !response.data) {
+    throw new Error(response.error || 'Token refresh failed')
   }
+
+  return response.data.accessToken
 }
