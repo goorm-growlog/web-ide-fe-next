@@ -4,7 +4,6 @@ import type { KeyboardEvent } from 'react'
 import { useState } from 'react'
 import { Button } from '@/shared/ui/shadcn/button'
 import { Input } from '@/shared/ui/shadcn/input'
-import styles from './text-input.module.css'
 
 interface TextInputProps {
   placeholder?: string
@@ -36,19 +35,19 @@ export const TextInput = ({
   }
 
   return (
-    <div className={styles.inputContainer}>
+    <div className="flex gap-3 bg-background p-4">
       <Input
         value={message}
         onChange={e => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className={styles.input}
+        className="flex-1 text-foreground placeholder:text-muted-foreground"
         disabled={disabled}
       />
       <Button
         onClick={handleSubmit}
         disabled={!message.trim() || disabled}
-        className={styles.submitButton}
+        className="shrink-0 text-primary-foreground"
       >
         {buttonText}
       </Button>
