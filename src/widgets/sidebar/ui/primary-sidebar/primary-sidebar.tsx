@@ -1,9 +1,6 @@
 import { memo, type ReactNode, useCallback, useMemo } from 'react'
-import ChatPanel from '@/features/chat/ui/chat-panel/chat-panel'
-import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel/file-explorer-panel'
-import Invite from '@/features/invite/ui/invite'
-import Search from '@/features/search/ui/search'
 import { cn } from '@/shared/lib/utils'
+import { SIDEBAR_PANEL_COMPONENTS } from '../../constants/sidebar-panel-components'
 import { PANEL_DEFINITIONS, TAB_DEFINITIONS } from '../../model/tab-definitions'
 import type { Panel, PanelKey, Tab, TabKey } from '../../model/types'
 import { useLayoutStore } from '../../store/layout-store'
@@ -28,18 +25,8 @@ const PrimarySidebar = memo(
     )
 
     const getPanelContent = useCallback((key: PanelKey): ReactNode => {
-      const componentFactories: Record<PanelKey, () => ReactNode> = {
-        files: () => <FileExplorerPanel />,
-        chats: () => <ChatPanel />,
-        search: () => <Search />,
-        invite: () => <Invite />,
-        settings: () => (
-          <div className="p-4 text-muted-foreground text-sm">Settings</div>
-        ),
-      }
-
       return (
-        componentFactories[key]?.() || (
+        SIDEBAR_PANEL_COMPONENTS[key]?.() || (
           <div className="p-4 text-muted-foreground text-sm">
             Unknown panel: {key}
           </div>
@@ -69,14 +56,11 @@ const PrimarySidebar = memo(
 
     const tabSwitcher = (
       <TabSwitcher
-        {...{
-          tabs,
-          activeTabKey,
-          onTabClick: handleTabClick,
-          position,
-
-          className: 'w-12  md:w-14 lg:w-16 flex-shrink-0',
-        }}
+        tabs={tabs}
+        activeTabKey={activeTabKey}
+        onTabClick={handleTabClick}
+        position={position}
+        className="w-12 flex-shrink-0 md:w-14 lg:w-16"
       />
     )
 

@@ -28,12 +28,7 @@ const TogglePanels = memo(({ panels }: TogglePanelsProps) => {
         <AccordionItem
           key={panel.key}
           value={panel.key}
-          className={cn(
-            'border-b last:border-b-0',
-            'data-[state=open]:flex data-[state=open]:flex-1 data-[state=open]:flex-col',
-            'data-[state=closed]:flex-none',
-            'transition-[flex-grow] duration-200 ease-out',
-          )}
+          className={cn('border-b last:border-b-0')}
         >
           <AccordionTrigger
             className={cn(
@@ -60,10 +55,10 @@ const TogglePanels = memo(({ panels }: TogglePanelsProps) => {
           </AccordionTrigger>
           <AccordionContent
             className={cn(
-              // Flex-based height filling with scroll container
+              // flex-1 대신 height로 공간 차지 (애니메이션 방해 없음)
               'min-h-0 w-full overflow-y-auto',
               // Scroller
-              'scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent pt-0 pb-4',
+              'scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent',
             )}
           >
             {panel.content}
