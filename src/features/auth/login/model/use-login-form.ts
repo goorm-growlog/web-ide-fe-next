@@ -31,10 +31,11 @@ export const useLoginForm = () => {
         // 성공 시 root 에러 제거
         form.clearErrors('root')
       } catch (err: unknown) {
-        const message =
-          typeof err === 'object' && err && 'message' in err
-            ? (err as any).message
-            : '알 수 없는 오류가 발생했습니다.'
+        let message = '알 수 없는 오류가 발생했습니다.'
+        if (typeof err === 'object' && err && 'message' in err) {
+          const maybeMsg = (err as Record<string, unknown>).message
+          if (typeof maybeMsg === 'string') message = maybeMsg
+        }
         form.setError('root', {
           type: 'server',
           message,
