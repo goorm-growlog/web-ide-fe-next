@@ -1,33 +1,17 @@
-import type { PasswordResetData } from '@/features/auth/model/validation-schema'
+import type { PasswordResetPayload } from '@/features/auth/types'
+import { API_BASE, requestApi } from '@/shared/api/config'
 
-export interface PasswordResetResult {
-  success: boolean
-  message?: string
-}
-
-export async function resetPassword(
-  data: PasswordResetData,
-): Promise<PasswordResetResult> {
-  const res = await fetch(
-    'https://growlog-web-ide.duckdns.org/auth/password-reset',
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    },
-  )
-
-  const body = await res.json().catch(() => ({}))
-
-  if (!res.ok || !body.success) {
-    return {
-      success: false,
-      message: body?.error?.message ?? `HTTP ${res.status}`,
-    }
-  }
-
-  return {
-    success: true,
-    message: body.message || '비밀번호 재설정 링크가 이메일로 전송되었습니다.',
-  }
+/**
+ * 비밀번호 재설정 요청을 수행합니다.
+ * @param payload 비밀번호 재설정 요청 데이터
+ * @throws 요청 실패 시 에러
+ */
+export const resetPassword = async (
+  payload: PasswordResetPayload,
+): Promise<void> => {
+  const url = `${API_BASE}/auth/reset-password`
+  await requestApi(url, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
 }
