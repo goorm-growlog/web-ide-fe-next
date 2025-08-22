@@ -17,8 +17,8 @@ const SigninWidget = () => {
   const [isPasswordResetDialogOpen, setIsPasswordResetDialogOpen] =
     useState(false)
 
-  const { form, isLoading } = useLoginForm()
-  const { onSubmit: handleLogin } = useLoginActions(form)
+  const { form } = useLoginForm()
+  const { onSubmit: handleLogin, isLoading } = useLoginActions(form)
   const { onSocialLogin } = useSocialLogin()
   const { isLoading: passwordResetLoading, onSubmit: passwordResetAction } =
     usePasswordResetActions()

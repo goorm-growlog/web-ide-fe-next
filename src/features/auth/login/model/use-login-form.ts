@@ -11,8 +11,5 @@ export const useLoginForm = () => {
     },
   })
 
-  return {
-    form,
-    isLoading: form.formState.isSubmitting,
-  }
+  return { form }
 }

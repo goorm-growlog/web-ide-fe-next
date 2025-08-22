@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
+import { useAuthActions } from '@/entities/auth'
 import type { LoginFormData } from '@/features/auth/types'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
-import { useAuthActions } from '@/shared/store/use-auth'
 import { getErrorMessage } from '@/shared/types/error'
 import { login } from '../api/login'
 
