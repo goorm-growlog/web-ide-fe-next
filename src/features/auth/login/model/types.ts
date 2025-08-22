@@ -1,17 +1,7 @@
-import { z } from 'zod'
-import { emailSchema, loginPasswordSchema } from '../../model/validation-schema'
-
-export const loginSchema = z.object({
-  email: emailSchema,
-  password: loginPasswordSchema,
-})
-
-export type LoginFormData = z.infer<typeof loginSchema>
-
+// LoginResult는 UI 컴포넌트에서 사용하는 결과 타입 (API 응답과는 다름)
 export interface LoginResult {
   success: boolean
   message?: string
-  token?: string
   user?: {
     id: string
     email: string

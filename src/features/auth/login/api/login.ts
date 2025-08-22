@@ -1,26 +1,27 @@
-import type { LoginFormData, LoginResult } from '../model/types'
+import type { LoginPayload, LoginResponse, User } from '@/features/auth/types'
+import { API_BASE, requestApi } from '@/shared/api/config'
 
-export async function login(data: LoginFormData): Promise<LoginResult> {
-  const res = await fetch('https://growlog-web-ide.duckdns.org/auth/login', {
+/**
+ * 로그인을 수행합니다.
+ * @param payload 로그인 요청 데이터 (이메일, 비밀번호)
+ * @returns 사용자 정보
+ * @throws 로그인 실패 시 에러
+ */
+export const login = async (payload: LoginPayload): Promise<User> => {
+  const url = `${API_BASE}/auth/login`
+  const response = await requestApi<LoginResponse>(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
-  const body = await res.json().catch(() => ({}))
-  if (!res.ok || !body.success) {
-    return {
-      success: false,
-      message: body?.error?.message ?? `HTTP ${res.status}`,
-    }
+
+  // 성공 응답 처리 및 데이터 변환
+  if (!response.success || !response.data) {
+    throw new Error(response.error || 'Login failed')
   }
+
   return {
-    success: true,
-    message: '',
-    token: body.data.accessToken,
-    user: {
-      id: String(body.data.userId),
-      email: data.email,
-      name: body.data.name,
-    },
+    id: response.data.userId.toString(),
+    email: payload.email,
+    name: response.data.name,
   }
 }
