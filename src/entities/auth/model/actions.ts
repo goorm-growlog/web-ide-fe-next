@@ -1,6 +1,6 @@
 import { logout as logoutApi } from '@/features/auth/logout/api/logout'
 import type { User } from '@/features/auth/types'
-import { useAuthStore } from './auth-store'
+import { useAuthStore } from './store'
 
 /**
  * 인증 관련 액션들을 제공하는 훅

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { getUser } from '@/entities/users/api/get-user'
-import { useAuthStore } from './auth-store'
+import { useAuthStore } from './store'
 
 /**
  * 앱 진입/새로고침 시 쿠키 기반으로 인증 상태를 복원합니다.
