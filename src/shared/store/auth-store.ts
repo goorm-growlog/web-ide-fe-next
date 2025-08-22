@@ -1,26 +1,18 @@
 import { create } from 'zustand'
-
-export interface User {
-  id: string
-  email: string
-  name?: string
-}
+import type { User } from '@/features/auth/types'
 
 interface AuthState {
-  token: string | null
   user: User | null
   isAuthenticated: boolean
-  setAuth: (token: string, user: User) => void
+  setAuth: (user: User) => void
   clearAuth: () => void
 }
 
 export const useAuthStore = create<AuthState>(
   (set: (state: Partial<AuthState>) => void) => ({
-    token: null,
     user: null,
     isAuthenticated: false,
-    setAuth: (token: string, user: User) =>
-      set({ token, user, isAuthenticated: true }),
-    clearAuth: () => set({ token: null, user: null, isAuthenticated: false }),
+    setAuth: (user: User) => set({ user, isAuthenticated: true }),
+    clearAuth: () => set({ user: null, isAuthenticated: false }),
   }),
 )
