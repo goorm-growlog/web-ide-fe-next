@@ -1,20 +1,40 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { useLoginForm } from '@/features/auth/login/model/use-login-form'
-import LoginForm from '@/features/auth/login/ui/login-form'
-import SocialLogin from '@/features/auth/login/ui/social-login'
-import { usePasswordResetDialogModel } from '@/features/auth/password-reset/model/use-password-reset-dialog-model'
-import PasswordResetDialog from '@/features/auth/password-reset/ui/password-reset-dialog'
+import { useState } from 'react'
+import {
+  LoginForm,
+  type PasswordResetData,
+  PasswordResetDialog,
+  SocialLogin,
+  useLoginActions,
+  useLoginForm,
+  usePasswordResetActions,
+  useSocialLogin,
+} from '@/features/auth'
 import AuthLayout from '@/shared/ui/auth-layout'
 
 const SigninWidget = () => {
-  const { form, isLoading, onSubmit, onPasswordReset, onSocialLogin } =
-    useLoginForm()
+  const [isPasswordResetDialogOpen, setIsPasswordResetDialogOpen] =
+    useState(false)
 
-  // 비밀번호 재설정 다이얼로그 모델 연결
-  const passwordResetDialog = usePasswordResetDialogModel({
-    onSubmit: onPasswordReset,
-  })
+  const { form, isLoading } = useLoginForm()
+  const { onSubmit: handleLogin } = useLoginActions(form)
+  const { onSocialLogin } = useSocialLogin()
+  const { isLoading: passwordResetLoading, onSubmit: passwordResetAction } =
+    usePasswordResetActions()
+
+  const handlePasswordResetOpen = () => {
+    setIsPasswordResetDialogOpen(true)
+  }
+
+  const handlePasswordReset = async (
+    data: PasswordResetData,
+  ): Promise<void> => {
+    const success = await passwordResetAction(data)
+    if (success) {
+      setIsPasswordResetDialogOpen(false)
+    }
+  }
 
   return (
     <AuthLayout>
@@ -31,8 +51,8 @@ const SigninWidget = () => {
       <LoginForm
         form={form}
         isLoading={isLoading}
-        onSubmit={onSubmit}
-        onPasswordResetClick={() => passwordResetDialog.setOpen(true)}
+        onSubmit={handleLogin}
+        onPasswordResetClick={handlePasswordResetOpen}
       />
 
       <div className="w-full flex items-center mt-12 mb-4">
@@ -42,7 +62,7 @@ const SigninWidget = () => {
       </div>
       <SocialLogin onSocialLogin={onSocialLogin} />
       <div className="mt-8 text-center text-muted-foreground text-sm">
-        Don’t have an account?{' '}
+        Don't have an account?{' '}
         <Link
           href="/signup"
           className="font-medium underline text-muted-foreground"
@@ -51,10 +71,10 @@ const SigninWidget = () => {
         </Link>
       </div>
       <PasswordResetDialog
-        open={passwordResetDialog.open}
-        onOpenChange={passwordResetDialog.onOpenChange}
-        onSubmit={passwordResetDialog.onSubmit}
-        isLoading={passwordResetDialog.isLoading}
+        open={isPasswordResetDialogOpen}
+        onOpenChange={setIsPasswordResetDialogOpen}
+        onSubmit={handlePasswordReset}
+        isLoading={passwordResetLoading}
       />
     </AuthLayout>
   )
