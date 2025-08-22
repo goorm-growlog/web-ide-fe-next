@@ -1,17 +1,8 @@
 'use client'
 
-import type { DragTarget, ItemInstance } from '@headless-tree/core'
-import {
-  dragAndDropFeature,
-  hotkeysCoreFeature,
-  renamingFeature,
-  selectionFeature,
-  syncDataLoaderFeature,
-} from '@headless-tree/core'
 import { useTree } from '@headless-tree/react'
 import { mockFileTree } from '@/features/file-explorer/fixtures/mock-data'
-import { handleDrop } from '@/features/file-explorer/lib/drop-handler'
-import { handleRename } from '@/features/file-explorer/lib/rename-handler'
+import { createTreeConfig } from '@/features/file-explorer/lib/tree-config-utils'
 import {
   ICON_SIZE,
   INDENT_SIZE,
@@ -19,51 +10,23 @@ import {
 import type { FileNode } from '@/features/file-explorer/model/types'
 import FileExplorerItem from '@/features/file-explorer/ui/file-explorer-item/file-explorer-item'
 import { cn } from '@/shared/lib/utils'
-import styles from './file-explorer-panel.module.css'
 
-const createTreeConfig = (
-  rootItemId: string,
-  fileTree: Record<string, FileNode>,
-) => {
-  const dataLoader = {
-    getItem: (itemId: string) => fileTree[itemId] ?? { name: itemId },
-    getChildren: (itemId: string) => fileTree[itemId]?.children ?? [],
-  }
-
-  return {
-    rootItemId,
-    getItemName: (item: ItemInstance<FileNode>) => item.getItemData().name,
-    isItemFolder: (item: ItemInstance<FileNode>) =>
-      Boolean(item.getItemData().isFolder),
-    dataLoader,
-    indent: INDENT_SIZE,
-    canReorder: false,
-    canDrop: (_items: ItemInstance<FileNode>[], target: DragTarget<FileNode>) =>
-      target.item.isFolder(),
-    onDrop: handleDrop,
-    onRename: handleRename,
-    features: [
-      syncDataLoaderFeature,
-      selectionFeature,
-      hotkeysCoreFeature,
-      dragAndDropFeature,
-      renamingFeature,
-    ],
-  }
-}
-
+/**
+ * 파일 탐색기 패널 메인 컴포넌트
+ */
 export const FileExplorerPanel = () => {
-  const treeConfig = createTreeConfig('/', mockFileTree)
+  const treeConfig = createTreeConfig({
+    rootItemId: '/',
+    fileTree: mockFileTree,
+    indent: INDENT_SIZE,
+  })
   const tree = useTree<FileNode>(treeConfig)
 
   const { className: treeClassName, ...restContainerProps } =
     tree.getContainerProps()
 
   return (
-    <div
-      {...restContainerProps}
-      className={cn(styles.container, treeClassName)}
-    >
+    <div {...restContainerProps} className={cn('flex flex-col', treeClassName)}>
       {tree.getItems().map(item => (
         <FileExplorerItem
           key={item.getId()}

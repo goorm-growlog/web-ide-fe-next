@@ -7,10 +7,10 @@ import {
   FolderIcon,
   FolderOpenIcon,
 } from 'lucide-react'
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
+import { isItemDropZone } from '@/features/file-explorer/lib/drop-zone-utils'
 import type { FileNode } from '@/features/file-explorer/model/types'
 import { cn } from '@/shared/lib/utils'
-import styles from './file-explorer-item.module.css'
 
 interface FileExplorerItemProps {
   item: ItemInstance<FileNode>
@@ -34,20 +34,9 @@ const FileExplorerItem = ({
     [level, indent, iconSize],
   )
 
-  const isDropZone = useCallback(
-    (itemInstance: ItemInstance<FileNode>): boolean => {
-      const isDragTarget = itemInstance.isDragTarget()
-      const isSelected = itemInstance.isSelected()
-
-      const dragTarget = itemInstance.getTree().getDragTarget()
-      const isDescendantOfDragTarget =
-        dragTarget?.item != null &&
-        itemInstance.isDescendentOf(dragTarget.item.getId())
-
-      return isDragTarget || (!isSelected && isDescendantOfDragTarget)
-    },
-    [],
-  )
+  /**
+   * 파일 탐색기 아이템 컴포넌트
+   */
 
   const iconElement = useMemo(() => {
     if (isFolder) {
@@ -55,7 +44,10 @@ const FileExplorerItem = ({
         <>
           <ChevronRightIcon
             data-state={isExpanded ? 'open' : 'closed'}
-            className={styles.chevron}
+            className={cn(
+              'transition-transform duration-200',
+              isExpanded ? 'rotate-90' : 'rotate-0',
+            )}
             size={iconSize}
           />
           {isExpanded ? (
@@ -68,34 +60,40 @@ const FileExplorerItem = ({
     }
     return (
       <>
-        <span style={{ paddingLeft: iconSize }} />
+        <div className={`w-${iconSize}`} />
         <FileIcon size={iconSize} />
       </>
     )
   }, [isFolder, isExpanded, iconSize])
 
+  const itemProps = item.getProps()
+  const { className: itemClassName, ...restProps } = itemProps
+
   return (
     <button
       type="button"
-      {...(() => {
-        const props = item.getProps()
-        const { className: itemClassName, ...restProps } = props
-        return {
-          ...restProps,
-          className: cn(
-            itemClassName,
-            isDropZone(item) && styles.dropZone,
-            styles.item,
-          ),
-        }
-      })()}
-      data-selected={isSelected || undefined}
-      data-focused={isFocused || undefined}
+      {...restProps}
+      className={cn(
+        itemClassName,
+        // 드롭존 상태
+        isItemDropZone(item) && 'bg-blue-50',
+        // 기본 스타일
+        'flex cursor-pointer items-center gap-1 py-1',
+        'transition-colors duration-150 ease-in-out',
+        // 키보드 접근성
+        'focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-inset',
+        // 상태별 스타일 (우선순위: selected > focused > hover)
+        isSelected && 'bg-sidebar-accent text-sidebar-accent-foreground',
+        !isSelected &&
+          isFocused &&
+          'rounded ring-2 ring-sidebar-ring ring-inset',
+        !isSelected && 'hover:bg-sidebar-accent/30',
+      )}
     >
-      <div style={{ paddingLeft }} className={styles.icons}>
+      <div className="flex gap-1" style={{ paddingLeft }}>
         {iconElement}
       </div>
-      <div className={styles.label}>
+      <div className="flex w-full gap-1 overflow-hidden text-ellipsis whitespace-nowrap">
         {item.isRenaming() ? (
           <input
             {...item.getRenameInputProps()}
