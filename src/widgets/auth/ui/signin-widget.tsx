@@ -8,14 +8,8 @@ import PasswordResetDialog from '@/features/auth/password-reset/ui/password-rese
 import AuthLayout from '@/shared/ui/auth-layout'
 
 const SigninWidget = () => {
-  const {
-    form,
-    isLoading,
-    setIsPasswordResetOpen,
-    onSubmit,
-    onPasswordReset,
-    onSocialLogin,
-  } = useLoginForm()
+  const { form, isLoading, onSubmit, onPasswordReset, onSocialLogin } =
+    useLoginForm()
 
   // 비밀번호 재설정 다이얼로그 모델 연결
   const passwordResetDialog = usePasswordResetDialogModel({
@@ -38,7 +32,7 @@ const SigninWidget = () => {
         form={form}
         isLoading={isLoading}
         onSubmit={onSubmit}
-        onPasswordResetClick={() => setIsPasswordResetOpen(true)}
+        onPasswordResetClick={() => passwordResetDialog.setOpen(true)}
       />
 
       <div className="w-full flex items-center mt-12 mb-4">

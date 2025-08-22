@@ -1,9 +1,9 @@
 import { z } from 'zod'
-import { emailSchema, passwordSchema } from '../../model/validation-schema'
+import { emailSchema, loginPasswordSchema } from '../../model/validation-schema'
 
 export const loginSchema = z.object({
   email: emailSchema,
-  password: passwordSchema,
+  password: loginPasswordSchema,
 })
 
 export type LoginFormData = z.infer<typeof loginSchema>
