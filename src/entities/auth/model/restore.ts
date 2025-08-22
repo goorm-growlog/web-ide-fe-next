@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect } from 'react'
 import { getUser } from '@/entities/users/api/get-user'
 import { useAuthStore } from './store'

@@ -1,3 +1,5 @@
+'use client'
+
 import { create } from 'zustand'
 import type { User } from '@/features/auth/types'
 

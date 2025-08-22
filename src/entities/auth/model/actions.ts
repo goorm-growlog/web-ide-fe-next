@@ -1,3 +1,5 @@
+'use client'
+
 import { logout as logoutApi } from '@/features/auth/logout/api/logout'
 import type { User } from '@/features/auth/types'
 import { useAuthStore } from './store'

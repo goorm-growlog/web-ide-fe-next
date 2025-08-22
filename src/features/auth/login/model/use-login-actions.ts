@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
