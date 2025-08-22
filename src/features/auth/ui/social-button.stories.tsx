@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs'
-import { SOCIAL_PROVIDERS } from '@/features/auth/login/model/social-login'
+import { SOCIAL_PROVIDERS } from '@/features/auth/social-login/model/types'
 import SocialButton from './social-button'
 
 const meta: Meta<typeof SocialButton> = {
