@@ -1,8 +1,31 @@
-import type { LoginFormData } from '../model/use-login-form'
+import type { LoginFormData, LoginResult } from '../model/types'
 
-export const login = async (data: LoginFormData) => {
-  // TODO: 실제 API 연동
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  // 예시: return axios.post('/api/login', data)
-  return { success: true }
+export const login = async (data: LoginFormData): Promise<LoginResult> => {
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    })
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      return {
+        success: false,
+        message: body?.message ?? `HTTP ${res.status}`,
+      }
+    }
+    return {
+      success: true,
+      message: body?.message,
+      // 필요시 body에서 토큰 등 추가
+    }
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err?.message || 'Network error',
+    }
+  }
 }

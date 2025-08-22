@@ -1,24 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import {
-  emailSchema,
-  type PasswordResetData,
-  passwordSchema,
-} from '../../model/validation-schema'
+import type { PasswordResetData } from '../../model/validation-schema'
 import { login } from '../api/login'
-
-const loginSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
-})
-
-export type LoginFormData = z.infer<typeof loginSchema>
+import { type LoginFormData, loginSchema } from './types'
 
 export const useLoginForm = () => {
   const [isPasswordResetOpen, setIsPasswordResetOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  // isLoading은 form.formState.isSubmitting을 사용
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -28,16 +17,32 @@ export const useLoginForm = () => {
     },
   })
 
-  const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true)
-    try {
-      await login(data)
-    } catch {
-      // TODO: 에러 처리
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const onSubmit = useCallback(
+    async (data: LoginFormData) => {
+      try {
+        const result = await login(data)
+        if (!result.success) {
+          form.setError('root', {
+            type: 'server',
+            message: result.message || '로그인에 실패했습니다.',
+          })
+          return
+        }
+        // 성공 시 root 에러 제거
+        form.clearErrors('root')
+      } catch (err: unknown) {
+        const message =
+          typeof err === 'object' && err && 'message' in err
+            ? (err as any).message
+            : '알 수 없는 오류가 발생했습니다.'
+        form.setError('root', {
+          type: 'server',
+          message,
+        })
+      }
+    },
+    [form],
+  )
 
   const onPasswordReset = async (_data: PasswordResetData) => {
     try {
@@ -55,7 +60,7 @@ export const useLoginForm = () => {
 
   return {
     form,
-    isLoading,
+    isLoading: form.formState.isSubmitting,
     isPasswordResetOpen,
     setIsPasswordResetOpen,
     onSubmit,

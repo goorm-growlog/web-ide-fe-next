@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useLoginForm } from '@/features/auth/login/model/use-login-form'
 import LoginForm from '@/features/auth/login/ui/login-form'
 import SocialLogin from '@/features/auth/login/ui/social-login'
+import { usePasswordResetDialogModel } from '@/features/auth/password-reset/model/use-password-reset-dialog-model'
 import PasswordResetDialog from '@/features/auth/password-reset/ui/password-reset-dialog'
 import AuthLayout from '@/shared/ui/auth-layout'
 
@@ -10,12 +11,16 @@ const SigninWidget = () => {
   const {
     form,
     isLoading,
-    isPasswordResetOpen,
     setIsPasswordResetOpen,
     onSubmit,
     onPasswordReset,
     onSocialLogin,
   } = useLoginForm()
+
+  // 비밀번호 재설정 다이얼로그 모델 연결
+  const passwordResetDialog = usePasswordResetDialogModel({
+    onSubmit: onPasswordReset,
+  })
 
   return (
     <AuthLayout>
@@ -52,10 +57,10 @@ const SigninWidget = () => {
         </Link>
       </div>
       <PasswordResetDialog
-        open={isPasswordResetOpen}
-        onOpenChange={setIsPasswordResetOpen}
-        onSubmit={onPasswordReset}
-        isLoading={false}
+        open={passwordResetDialog.open}
+        onOpenChange={passwordResetDialog.onOpenChange}
+        onSubmit={passwordResetDialog.onSubmit}
+        isLoading={passwordResetDialog.isLoading}
       />
     </AuthLayout>
   )
