@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { useLoginForm } from '@/features/auth/login/model/use-login-form'
 import LoginForm from '@/features/auth/login/ui/login-form'
@@ -18,6 +19,16 @@ const SigninWidget = () => {
 
   return (
     <AuthLayout>
+      {/* 로고 */}
+      <div className="text-center mb-12">
+        <Image
+          src="/logo.svg"
+          alt="GrowLog"
+          width={0}
+          height={0}
+          className="w-auto h-10 mx-auto"
+        />
+      </div>
       <LoginForm
         form={form}
         isLoading={isLoading}
@@ -25,7 +36,7 @@ const SigninWidget = () => {
         onPasswordResetClick={() => setIsPasswordResetOpen(true)}
       />
 
-      <div className="w-full flex items-center mt-12 mb-6">
+      <div className="w-full flex items-center mt-12 mb-4">
         <hr className="flex-1 border-border" />
         <span className="mx-4 text-muted-foreground text-sm">or</span>
         <hr className="flex-1 border-border" />

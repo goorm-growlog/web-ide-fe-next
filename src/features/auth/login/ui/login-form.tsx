@@ -41,11 +41,11 @@ const LoginForm = ({
           {isLoading ? 'Logging in...' : 'login'}
         </Button>
       </form>
-      <div className="flex justify-end mt-1">
+      <div className="flex justify-end mt-2">
         <button
           type="button"
           onClick={onPasswordResetClick}
-          className="text-sm text-gray-500 hover:underline hover:text-gray-700 transition"
+          className="text-xs text-muted-foreground hover:underline hover:text-muted-foreground/80 transition"
         >
           Forgot your password?
         </button>
