@@ -1,6 +1,10 @@
 'use client'
 
 import { memo } from 'react'
+import {
+  DateHeader,
+  SystemMessage,
+} from 'src/features/chat/ui/chat-message/message-layout'
 import { formatDate } from '@/shared/lib/date-utils'
 import {
   generateMessageKey,
@@ -10,9 +14,7 @@ import {
 } from '../../lib/chat-message-utils'
 import type { ParsedChatMessage } from '../../model/types'
 import { ChatMessage } from '../chat-message/chat-message'
-import { DateHeader } from '../chat-message/date-header'
-import { SystemMessage } from '../chat-message/system-message'
-import { EmptyState } from './empty-state'
+import { NoMessages } from './no-messages'
 
 interface ChatMessageListProps {
   messages: ParsedChatMessage[]
@@ -114,7 +116,7 @@ const MessageItem = memo(
 export const ChatMessageList = memo(
   ({ messages, currentUserId }: ChatMessageListProps) => {
     if (messages.length === 0) {
-      return <EmptyState />
+      return <NoMessages />
     }
 
     return (

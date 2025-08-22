@@ -37,3 +37,12 @@ export interface CodeLink {
   lineNumber: number
   url: string
 }
+
+/**
+ * 메시지 스타일링을 위한 클래스명 인터페이스
+ */
+export interface MessageClassNames {
+  item: string
+  content: string
+  bubble: string
+}

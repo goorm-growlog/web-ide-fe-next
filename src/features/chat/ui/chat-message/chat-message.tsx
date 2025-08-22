@@ -1,29 +1,16 @@
+import { CHAT_MESSAGE_STYLES } from 'src/features/chat/ui/constants/chat-styles'
+import {
+  getMessageAriaLabel,
+  getMessageClasses,
+} from '@/features/chat/lib/chat-message-utils'
 import type { ParsedChatMessage } from '@/features/chat/model/types'
 import { MessageContent } from '@/features/chat/ui/chat-message/message-content'
 import { OtherUserAvatar } from '@/features/chat/ui/chat-message/other-user-avatar'
 import { formatTime } from '@/shared/lib/date-utils'
-import styles from './chat-message.module.css'
 
 interface ChatMessageProps {
   message: ParsedChatMessage
   isOwnMessage?: boolean
-}
-
-// 클래스명 생성을 위한 헬퍼 함수
-const getMessageClasses = (isOwnMessage: boolean) => {
-  if (isOwnMessage) {
-    return {
-      item: styles.item,
-      content: styles.content,
-      bubble: styles.bubble,
-    }
-  }
-
-  return {
-    item: `${styles.item} ${styles.otherMessage}`,
-    content: `${styles.content} ${styles.otherMessage}`,
-    bubble: `${styles.bubble} ${styles.otherMessage}`,
-  }
 }
 
 /**
@@ -36,17 +23,30 @@ export const ChatMessage = ({
   const messageClasses = getMessageClasses(isOwnMessage)
 
   return (
-    <div className={messageClasses.item}>
+    <li
+      className={messageClasses.item}
+      aria-label={getMessageAriaLabel(
+        isOwnMessage,
+        message.username || 'Unknown user',
+        formatTime(message.sentAt),
+      )}
+    >
       {!isOwnMessage && <OtherUserAvatar message={message} />}
 
       <div className={messageClasses.content}>
-        <div className={messageClasses.bubble}>
-          <p className={styles.text}>
+        <section className={messageClasses.bubble} aria-label="Message content">
+          <p className={CHAT_MESSAGE_STYLES.messageText}>
             <MessageContent parts={message.parts} />
           </p>
-        </div>
-        <div className={styles.time}>{formatTime(message.sentAt)}</div>
+        </section>
+        <time
+          className={CHAT_MESSAGE_STYLES.timestamp}
+          dateTime={message.sentAt}
+          title={`Sent at ${new Date(message.sentAt).toLocaleString()}`}
+        >
+          {formatTime(message.sentAt)}
+        </time>
       </div>
-    </div>
+    </li>
   )
 }

@@ -1,22 +1,13 @@
+import {
+  FILE_LINK_PATTERN,
+  SINGLE_FILE_LINK_PATTERN,
+} from '../constants/parsing-patterns'
 import type {
   ChatMessage,
   CodeLink,
   MessagePart,
   ParsedChatMessage,
 } from '../model/types'
-
-/**
- * 파일 링크를 찾기 위한 정규식 패턴
- *
- * 형식: [파일명:라인번호](URL)
- * 예시: [Button.tsx:25](https://.../Button.tsx#L25)
- */
-const FILE_LINK_PATTERN = /\[([^:]+):(\d+)\]\(([^)]+)\)/g
-
-/**
- * 단일 파일 링크를 파싱하는 정규식 패턴
- */
-const SINGLE_FILE_LINK_PATTERN = /^\[([^:]+):(\d+)\]\(([^)]+)\)$/
 
 /**
  * 정규식 매치 결과를 안전하게 파싱하는 타입 가드

@@ -10,7 +10,6 @@ const meta: Meta<typeof ChatPanel> = {
   },
   tags: ['autodocs'],
   args: {
-    messages: mockMessages,
     currentUserId: 2,
     onSendMessage: (_message: string) => {
       console.debug('Message sent')
@@ -21,7 +20,11 @@ const meta: Meta<typeof ChatPanel> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = {
+  args: {
+    messages: mockMessages,
+  },
+}
 
 export const Empty: Story = {
   args: { messages: [] },

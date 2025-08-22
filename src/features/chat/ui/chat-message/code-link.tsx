@@ -2,7 +2,16 @@
 
 import Link from 'next/link'
 import { isExternalLink } from '@/features/chat/lib/chat-message-utils'
-import styles from './chat-message.module.css'
+import { cn } from '@/shared/lib/utils'
+
+/**
+ * 코드 링크 공통 스타일
+ */
+const CODE_LINK_STYLES = cn(
+  'inline text-sm underline',
+  'text-blue-600 visited:text-purple-600 hover:text-blue-800 visited:hover:opacity-80',
+  'focus:rounded focus:outline-2 focus:outline-ring focus:outline-offset-2',
+)
 
 interface CodeLinkProps {
   fileName: string
@@ -27,7 +36,7 @@ export const CodeLink = ({ fileName, lineNumber, url }: CodeLinkProps) => {
     return (
       <a
         href={url}
-        className={styles.codeLink}
+        className={CODE_LINK_STYLES}
         title={`${displayText} (new tab)`}
         aria-label={`${displayText} (opens in a new tab)`}
         target="_blank"
@@ -41,7 +50,7 @@ export const CodeLink = ({ fileName, lineNumber, url }: CodeLinkProps) => {
   return (
     <Link
       href={url}
-      className={styles.codeLink}
+      className={CODE_LINK_STYLES}
       title={displayText}
       aria-label={displayText}
     >
