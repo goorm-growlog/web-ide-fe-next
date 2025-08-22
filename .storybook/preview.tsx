@@ -20,9 +20,7 @@ const preview: Preview = {
   // This decorator wraps all stories in a div with full viewport dimensions
   decorators: [
     (Story) => (
-      
         <Story />
-      
     ),
   ],
 };
