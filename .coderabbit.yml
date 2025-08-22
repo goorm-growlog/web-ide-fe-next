@@ -1,0 +1,49 @@
+# CodeRabbit Configuration for web-ide-fe-next
+# AI-powered code review configuration
+
+reviews:
+  # Global review instructions
+  instructions: |
+    This is a Next.js 15 + React 19 based web IDE frontend project.
+    
+    ## Core Guidelines
+    Please refer to the project's frontend guidelines in `.cursor/rules/frontend-guide.mdc` file.
+    Follow all principles and patterns defined in this file for code review.
+
+    ## Project-Specific Guidelines
+    - Follow Feature-Sliced Design (FSD) architecture
+    - Use TypeScript strict mode
+    - Comply with Biome linter rules (biome.jsonc settings automatically applied)
+    - Use Lucide Icons
+    - Use shadcn/ui + Radix UI + Magic UI components
+
+    ## Review Tone & Style
+    - Provide all reviews in Korean (한국어)
+    - Be constructive and educational, not critical
+    - Focus on code quality improvement opportunities
+    - Explain the reasoning behind suggestions
+    - Provide specific, actionable feedback
+    - Use a friendly, collaborative tone
+    - Prioritize readability, maintainability, and best practices
+
+  # Tool configuration
+  tools:
+    # Biome linter integration (automatic config file recognition)
+    biome:
+      enabled: true
+    
+    # TypeScript type checking
+    typescript:
+      enabled: true
+      strict: true
+
+# Knowledge base configuration
+knowledge_base:
+  enabled: true
+  rules:
+    - "Use Lucide Icons (remove Material Icons)"
+    - "Prioritize shadcn/ui + Radix UI + Magic UI components"
+    - "Refer to frontend guidelines in .cursor/rules/frontend-guide.mdc"
+    - "All code reviews should be conducted in Korean"
+    - "Focus on code quality, architecture, and best practices"
+    - "Provide constructive feedback with clear explanations"
