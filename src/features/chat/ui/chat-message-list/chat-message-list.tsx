@@ -5,13 +5,13 @@ import {
   DateHeader,
   SystemMessage,
 } from 'src/features/chat/ui/chat-message/message-layout'
-import { formatDate } from '@/shared/lib/date-utils'
 import {
   generateMessageKey,
   isOwnMessage,
   isSystemMessage,
   shouldShowDateHeader,
-} from '../../lib/chat-message-utils'
+} from '@/features/chat/lib/chat-message-utils'
+import { formatDate } from '@/shared/lib/date-utils'
 import type { ParsedChatMessage } from '../../model/types'
 import { ChatMessage } from '../chat-message/chat-message'
 import { NoMessages } from './no-messages'

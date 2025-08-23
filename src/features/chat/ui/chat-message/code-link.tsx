@@ -8,9 +8,9 @@ import { cn } from '@/shared/lib/utils'
  * 코드 링크 공통 스타일
  */
 const CODE_LINK_STYLES = cn(
-  'inline text-sm underline',
+  'inline rounded text-sm underline',
   'text-blue-600 visited:text-purple-600 hover:text-blue-800 visited:hover:opacity-80',
-  'focus:rounded focus:outline-2 focus:outline-ring focus:outline-offset-2',
+  'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
 )
 
 interface CodeLinkProps {

@@ -26,6 +26,7 @@ export const MessageContent = ({ parts }: MessageContentProps) => {
           )
         }
 
+        // 메시지가 삭제되지 않으므로 index를 key로 사용해도 무방함
         const textKey = `text-${part.displayText.slice(0, 20).replace(/\s+/g, '-')}-${index}`
 
         return <span key={textKey}>{part.displayText}</span>

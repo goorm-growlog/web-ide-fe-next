@@ -18,9 +18,14 @@ export const ChatPanel = memo(() => {
   const parsedMessages = useMemo(() => parseChatMessages(messages), [messages])
 
   const handleSendMessage = useCallback(
-    (message: string) => {
-      sendMessage(message)
-      scrollToBottom()
+    async (message: string) => {
+      try {
+        await Promise.resolve(sendMessage(message))
+        scrollToBottom()
+      } catch (error) {
+        console.error('Failed to send message:', error)
+        scrollToBottom()
+      }
     },
     [sendMessage, scrollToBottom],
   )
@@ -32,6 +37,8 @@ export const ChatPanel = memo(() => {
         aria-label="Chat messages"
         role="log"
         aria-live="polite"
+        aria-relevant="additions"
+        aria-atomic="false"
       >
         <ScrollArea className="h-full" ref={scrollAreaRef}>
           <ChatMessageList

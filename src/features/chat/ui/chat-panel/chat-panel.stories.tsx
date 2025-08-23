@@ -32,9 +32,16 @@ export const Empty: Story = {
 
 export const CodeLinksOnly: Story = {
   args: {
-    messages: mockMessages.filter(
-      msg => msg.content.includes('[') || msg.content.includes('#file:'),
-    ),
+    messages: mockMessages.filter(msg => {
+      if (!msg.content) return false
+
+      const bracketPattern = /\[.*?\]/
+      const fileTokenPattern = /#file:\S+/
+
+      return (
+        bracketPattern.test(msg.content) || fileTokenPattern.test(msg.content)
+      )
+    }),
   },
 }
 

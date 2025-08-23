@@ -1,4 +1,3 @@
-import { CHAT_MESSAGE_STYLES } from 'src/features/chat/ui/constants/chat-styles'
 import {
   getMessageAriaLabel,
   getMessageClasses,
@@ -6,6 +5,7 @@ import {
 import type { ParsedChatMessage } from '@/features/chat/model/types'
 import { MessageContent } from '@/features/chat/ui/chat-message/message-content'
 import { OtherUserAvatar } from '@/features/chat/ui/chat-message/other-user-avatar'
+import { CHAT_MESSAGE_STYLES } from '@/features/chat/ui/constants/chat-styles'
 import { formatTime } from '@/shared/lib/date-utils'
 
 interface ChatMessageProps {
@@ -21,6 +21,8 @@ export const ChatMessage = ({
   isOwnMessage = false,
 }: ChatMessageProps) => {
   const messageClasses = getMessageClasses(isOwnMessage)
+  const sentAtDate = new Date(message.sentAt)
+  const formattedTime = formatTime(message.sentAt)
 
   return (
     <li
@@ -28,7 +30,7 @@ export const ChatMessage = ({
       aria-label={getMessageAriaLabel(
         isOwnMessage,
         message.username || 'Unknown user',
-        formatTime(message.sentAt),
+        formattedTime,
       )}
     >
       {!isOwnMessage && <OtherUserAvatar message={message} />}
@@ -42,9 +44,9 @@ export const ChatMessage = ({
         <time
           className={CHAT_MESSAGE_STYLES.timestamp}
           dateTime={message.sentAt}
-          title={`Sent at ${new Date(message.sentAt).toLocaleString()}`}
+          title={`Sent at ${sentAtDate.toLocaleString()}`}
         >
-          {formatTime(message.sentAt)}
+          {formattedTime}
         </time>
       </div>
     </li>
