@@ -11,7 +11,7 @@ export interface Panel {
 export type TabKey = 'files' | 'search' | 'invite' | 'settings'
 export interface Tab {
   key: TabKey
-  panels: Panel[]
+  panels: readonly Panel[]
   icon: LucideIcon
   position: 'top' | 'bottom'
 }
