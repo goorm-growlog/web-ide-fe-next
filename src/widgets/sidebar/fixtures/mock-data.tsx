@@ -1,5 +1,6 @@
 import { FilesIcon, SearchIcon, SettingsIcon, Share2Icon } from 'lucide-react'
 import ChatPanel from '@/features/chat/ui/chat-panel/chat-panel'
+import { mockFileTree } from '@/features/file-explorer/fixtures/mock-data'
 import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel/file-explorer-panel'
 import type { Panel, Tab } from '@/widgets/sidebar/model/types'
 
@@ -9,12 +10,12 @@ export const mockPanels: Panel[] = [
   {
     key: 'files',
     title: 'Files',
-    content: <FileExplorerPanel />,
+    content: <FileExplorerPanel fileTree={mockFileTree} />,
   },
   {
     key: 'search',
     title: 'Search',
-    content: <FileExplorerPanel />,
+    content: <FileExplorerPanel fileTree={mockFileTree} />,
   },
 ]
 
@@ -27,7 +28,7 @@ export const mockTabs: Tab[] = [
       {
         key: 'files',
         title: 'Files',
-        content: <FileExplorerPanel />,
+        content: <FileExplorerPanel fileTree={mockFileTree} />,
       },
       {
         key: 'chats',
@@ -44,7 +45,18 @@ export const mockTabs: Tab[] = [
       {
         key: 'search',
         title: 'Search',
-        content: mockItems.slice(25, 30),
+        content: (
+          <ul className="space-y-1 p-2">
+            {mockItems.slice(25, 30).map((item, index) => (
+              <li
+                key={`search-${25 + index}`}
+                className="text-muted-foreground text-sm"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        ),
       },
     ],
   },
@@ -56,7 +68,18 @@ export const mockTabs: Tab[] = [
       {
         key: 'invite',
         title: 'Invite',
-        content: mockItems.slice(30, 35),
+        content: (
+          <ul className="space-y-1 p-2">
+            {mockItems.slice(30, 35).map((item, index) => (
+              <li
+                key={`invite-${30 + index}`}
+                className="text-muted-foreground text-sm"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        ),
       },
     ],
   },
@@ -68,7 +91,18 @@ export const mockTabs: Tab[] = [
       {
         key: 'settings',
         title: 'Settings',
-        content: mockItems.slice(35, 40),
+        content: (
+          <ul className="space-y-1 p-2">
+            {mockItems.slice(35, 40).map((item, index) => (
+              <li
+                key={`settings-${35 + index}`}
+                className="text-muted-foreground text-sm"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        ),
       },
     ],
   },

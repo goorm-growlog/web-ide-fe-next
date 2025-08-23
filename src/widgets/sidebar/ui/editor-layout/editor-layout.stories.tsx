@@ -25,7 +25,7 @@ export const PrimaryLeft: Story = {
 
     return (
       <EditorLayout>
-        <h1 className="flex justify-center">Main Area</h1>
+        <h1 className="flex h-full items-center justify-center">Main Area</h1>
       </EditorLayout>
     )
   },
@@ -42,7 +42,7 @@ export const PrimaryRight: Story = {
 
     return (
       <EditorLayout>
-        <h1 className="flex justify-center">Main Area</h1>
+        <h1 className="flex h-full items-center justify-center">Main Area</h1>
       </EditorLayout>
     )
   },
