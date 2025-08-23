@@ -11,18 +11,12 @@ const preview: Preview = {
       },
     },
     a11y: {
-      test: 'todo',
+      manual: false,
     },
     viewport: {
       defaultViewport: 'responsive',
     },
   },
-  // This decorator wraps all stories in a div with full viewport dimensions
-  decorators: [
-    (Story) => (
-        <Story />
-    ),
-  ],
 };
 
 export default preview;
