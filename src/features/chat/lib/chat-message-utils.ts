@@ -86,8 +86,9 @@ export const isExternalLink = (url: string): boolean => {
 
   try {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
-    if (siteUrl) return new URL(url).origin !== new URL(siteUrl).origin
-    return true
+    if (!siteUrl) return false
+
+    return new URL(url).origin !== new URL(siteUrl).origin
   } catch {
     return false
   }

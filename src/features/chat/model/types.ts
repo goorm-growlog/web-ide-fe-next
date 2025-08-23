@@ -1,7 +1,14 @@
 /**
  * 메시지 타입의 유니온 타입
  */
-export type MessageType = 'ENTER' | 'LEAVE' | 'TALK'
+
+export const MESSAGE_TYPES = {
+  ENTER: 'ENTER',
+  LEAVE: 'LEAVE',
+  TALK: 'TALK',
+} as const
+
+export type MessageType = (typeof MESSAGE_TYPES)[keyof typeof MESSAGE_TYPES]
 
 /**
  * 시스템 메시지 타입

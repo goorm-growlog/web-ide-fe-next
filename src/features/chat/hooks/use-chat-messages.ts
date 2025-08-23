@@ -2,6 +2,9 @@ import { useCallback, useState } from 'react'
 import { mockMessages } from '@/features/chat/fixtures/mock-data'
 import type { ChatMessage } from '@/features/chat/model/types'
 
+// 공통 유틸리티 함수
+const getNowIso = (): string => new Date().toISOString()
+
 interface UseChatMessagesReturn {
   messages: ChatMessage[]
   currentUserId: number
@@ -27,9 +30,9 @@ export const useChatMessages = (
         projectId: initialProjectId,
         messageType: 'TALK',
         userId: currentUserId,
-        username: `User ${currentUserId}`,
+        username: `사용자 ${currentUserId}`,
         content,
-        sentAt: new Date().toISOString(),
+        sentAt: getNowIso(),
       }
       addMessage(newMessage)
     },
