@@ -1,3 +1,7 @@
+import {
+  MESSAGE_TYPES,
+  type MessageType,
+} from './../../features/chat/model/types'
 // 사용자 이니셜 추출
 export const getInitials = (username: string): string => {
   if (!username || typeof username !== 'string') return '?'
@@ -11,7 +15,7 @@ export const getInitials = (username: string): string => {
 
 // 시스템 메시지 텍스트 생성
 export const getSystemMessageText = (message: {
-  messageType: string
+  messageType: MessageType
   username: string
   content: string
 }): string => {
@@ -19,9 +23,9 @@ export const getSystemMessageText = (message: {
 
   const { messageType, username, content } = message
 
-  if (messageType === 'ENTER') {
+  if (messageType === MESSAGE_TYPES.ENTER) {
     return `${username} joined this chatroom.`
-  } else if (messageType === 'LEAVE') {
+  } else if (messageType === MESSAGE_TYPES.LEAVE) {
     return `${username} left this chatroom.`
   }
 

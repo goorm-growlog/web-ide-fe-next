@@ -58,13 +58,17 @@ function App() {
 }
 
 // AuthGuard component encapsulates the check/redirect logic
+"use client";
+
 function AuthGuard({ children }) {
+  const router = useRouter();
   const status = useCheckLoginStatus();
+  
   useEffect(() => {
     if (status === "LOGGED_IN") {
-      location.href = "/home";
+      router.replace("/home");
     }
-  }, [status]);
+  }, [status, router]);
 
   // Render children only if not logged in, otherwise render null (or loading)
   return status !== "LOGGED_IN" ? children : null;
@@ -283,22 +287,23 @@ Ensuring code behaves as expected based on its name, parameters, and context.
 #### Recommended Pattern 1: API Hooks (React Query)
 
 ```typescript
-// Always return the Query object
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+// Always return the Query object with explicit generics
+import { useQuery } from "@tanstack/react-query";
 
 // Assuming fetchUser returns Promise<UserType>
-function useUser(): UseQueryResult<UserType, Error> {
-  const query = useQuery({ queryKey: ["user"], queryFn: fetchUser });
-  return query;
+function useUser() {
+  return useQuery<UserType, Error>({ 
+    queryKey: ["user"] as const, 
+    queryFn: fetchUser 
+  });
 }
 
 // Assuming fetchServerTime returns Promise<Date>
-function useServerTime(): UseQueryResult<Date, Error> {
-  const query = useQuery({
-    queryKey: ["serverTime"],
+function useServerTime() {
+  return useQuery<Date, Error>({
+    queryKey: ["serverTime"] as const,
     queryFn: fetchServerTime,
   });
-  return query;
 }
 ```
 

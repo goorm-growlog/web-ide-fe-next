@@ -62,11 +62,31 @@ export const Selected: Story = {
 // Size examples
 export const SizeGroup: Story = {
   render: () => (
-    <div className="flex gap-2">
-      <IconButton Icon={Terminal} onClick={fn()} size={'icon'} />
-      <IconButton Icon={Terminal} onClick={fn()} size={'sm'} />
-      <IconButton Icon={Terminal} onClick={fn()} size={'default'} />
-      <IconButton Icon={Terminal} onClick={fn()} size={'lg'} />
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-2">
+        <span className="w-12 font-medium text-muted-foreground text-sm">
+          icon:
+        </span>
+        <IconButton Icon={Terminal} onClick={fn()} size={'icon'} />
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="w-12 font-medium text-muted-foreground text-sm">
+          sm:
+        </span>
+        <IconButton Icon={Terminal} onClick={fn()} size={'sm'} />
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="w-12 font-medium text-muted-foreground text-sm">
+          default:
+        </span>
+        <IconButton Icon={Terminal} onClick={fn()} size={'default'} />
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="w-12 font-medium text-muted-foreground text-sm">
+          lg:
+        </span>
+        <IconButton Icon={Terminal} onClick={fn()} size={'lg'} />
+      </div>
     </div>
   ),
 }
