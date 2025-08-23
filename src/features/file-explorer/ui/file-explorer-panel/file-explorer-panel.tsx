@@ -1,24 +1,34 @@
 'use client'
 
 import { useTree } from '@headless-tree/react'
-import { mockFileTree } from '@/features/file-explorer/fixtures/mock-data'
 import { createTreeConfig } from '@/features/file-explorer/lib/tree-config-utils'
 import {
-  ICON_SIZE,
-  INDENT_SIZE,
+  ICON_SIZE_PX,
+  INDENT_SIZE_PX,
 } from '@/features/file-explorer/model/constants'
 import type { FileNode } from '@/features/file-explorer/model/types'
 import FileExplorerItem from '@/features/file-explorer/ui/file-explorer-item/file-explorer-item'
 import { cn } from '@/shared/lib/utils'
+import { mockFileTree } from '../../fixtures/mock-data'
+
+interface FileExplorerPanelProps {
+  fileTree?: Record<string, FileNode>
+  rootItemId?: string
+  indent?: number
+}
 
 /**
  * 파일 탐색기 패널 메인 컴포넌트
  */
-export const FileExplorerPanel = () => {
+export const FileExplorerPanel = ({
+  fileTree = mockFileTree,
+  rootItemId = '/',
+  indent = INDENT_SIZE_PX,
+}: FileExplorerPanelProps) => {
   const treeConfig = createTreeConfig({
-    rootItemId: '/',
-    fileTree: mockFileTree,
-    indent: INDENT_SIZE,
+    rootItemId,
+    fileTree,
+    indent,
   })
   const tree = useTree<FileNode>(treeConfig)
 
@@ -31,8 +41,8 @@ export const FileExplorerPanel = () => {
         <FileExplorerItem
           key={item.getId()}
           item={item}
-          indent={INDENT_SIZE}
-          iconSize={ICON_SIZE}
+          indent={indent}
+          iconSize={ICON_SIZE_PX}
         />
       ))}
     </div>

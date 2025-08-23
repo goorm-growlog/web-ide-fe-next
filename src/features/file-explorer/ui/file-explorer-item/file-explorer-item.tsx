@@ -60,7 +60,7 @@ const FileExplorerItem = ({
     }
     return (
       <>
-        <div className={`w-${iconSize}`} />
+        <div style={{ width: `${iconSize}px` }} />
         <FileIcon size={iconSize} />
       </>
     )
