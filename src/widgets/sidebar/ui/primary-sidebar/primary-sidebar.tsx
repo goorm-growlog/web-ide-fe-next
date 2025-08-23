@@ -1,6 +1,6 @@
 import { memo, type ReactNode, useCallback, useMemo } from 'react'
 import { cn } from '@/shared/lib/utils'
-import { SIDEBAR_PANEL_COMPONENTS } from '../../constants/sidebar-panel-components'
+import { SIDEBAR_PANELS } from '../../constants/sidebar-panels'
 import { PANEL_DEFINITIONS, TAB_DEFINITIONS } from '../../model/tab-definitions'
 import type { Panel, PanelKey, Tab, TabKey } from '../../model/types'
 import { useLayoutStore } from '../../store/layout-store'
@@ -26,7 +26,7 @@ const PrimarySidebar = memo(
 
     const getPanelContent = useCallback((key: PanelKey): ReactNode => {
       return (
-        SIDEBAR_PANEL_COMPONENTS[key]?.() || (
+        SIDEBAR_PANELS[key]?.() || (
           <div className="p-4 text-muted-foreground text-sm">
             Unknown panel: {key}
           </div>

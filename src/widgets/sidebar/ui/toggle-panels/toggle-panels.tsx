@@ -55,7 +55,7 @@ const TogglePanels = memo(({ panels }: TogglePanelsProps) => {
           </AccordionTrigger>
           <AccordionContent
             className={cn(
-              // flex-1 대신 height로 공간 차지 (애니메이션 방해 없음)
+              // Use height instead of flex-1 to avoid interfering with animations
               'min-h-0 w-full overflow-y-auto',
               // Scroller
               'scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent',
