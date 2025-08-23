@@ -12,13 +12,7 @@ import { handleRename } from './rename-handler'
 
 /**
  * 파일 탐색기 트리 설정 관련 유틸리티 함수들
- *
- * 수정사항:
- * - createTreeConfig를 컴포넌트에서 분리하여 테스트 가능하게 개선
- * - 트리 설정 관련 로직을 한 곳으로 집중화
- * - 순수 함수로 만들어 예측 가능하고 안전한 함수 제공
  */
-
 export interface TreeConfigOptions {
   rootItemId: string
   fileTree: Record<string, FileNode>
@@ -47,7 +41,12 @@ export const createTreeConfig = ({
   indent,
 }: TreeConfigOptions) => {
   const dataLoader = {
-    getItem: (itemId: string) => fileTree[itemId] ?? { name: itemId },
+    getItem: (itemId: string): FileNode =>
+      fileTree[itemId] ??
+      ({
+        name: itemId,
+        isFolder: false,
+      } as FileNode),
     getChildren: (itemId: string) => fileTree[itemId]?.children ?? [],
   }
 
