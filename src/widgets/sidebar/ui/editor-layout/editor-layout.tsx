@@ -18,6 +18,7 @@ interface EditorLayoutProps {
 const EditorLayout = memo(({ children }: EditorLayoutProps) => {
   const { layout, panelConfig, panelLayout, setPanelLayout } = useLayoutStore()
   const isPrimaryLeft = layout === 'primary-left'
+  const primaryPosition = isPrimaryLeft ? 'left' : 'right'
 
   const handleLayoutChange = (sizes: number[]) => {
     setPanelLayout(sizes)
@@ -27,25 +28,14 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
   const secondaryIndex = isPrimaryLeft ? 2 : 0
   const mainIndex = 1
 
-  const primaryPanelLeft = (
+  const primaryPanel = (
     <ResizablePanel
       defaultSize={panelLayout[primaryIndex] ?? 25}
       maxSize={panelConfig.maxSize}
       minSize={0}
       className="min-w-16"
     >
-      <PrimarySidebar position="left" />
-    </ResizablePanel>
-  )
-
-  const primaryPanelRight = (
-    <ResizablePanel
-      defaultSize={panelLayout[primaryIndex] ?? 25}
-      maxSize={panelConfig.maxSize}
-      minSize={0}
-      className="min-w-16"
-    >
-      <PrimarySidebar position="right" />
+      <PrimarySidebar position={primaryPosition} />
     </ResizablePanel>
   )
 
@@ -69,7 +59,9 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
       minSize={0}
       className="max-w-full"
     >
-      <main className="h-full p-8">{children}</main>
+      <main aria-label="Editor main" className="h-full p-8">
+        {children}
+      </main>
     </ResizablePanel>
   )
 
@@ -82,7 +74,7 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
       >
         {isPrimaryLeft ? (
           <>
-            {primaryPanelLeft}
+            {primaryPanel}
             <ResizableGrowHandle />
             {mainPanel}
             <ResizableGrowHandle />
@@ -94,12 +86,14 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
             <ResizableGrowHandle />
             {mainPanel}
             <ResizableGrowHandle />
-            {primaryPanelRight}
+            {primaryPanel}
           </>
         )}
       </ResizablePanelGroup>
     </div>
   )
 })
+
+EditorLayout.displayName = 'EditorLayout'
 
 export default EditorLayout
