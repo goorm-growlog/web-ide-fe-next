@@ -9,22 +9,25 @@ interface IconButtonProps
   extends Omit<ComponentProps<typeof Button>, 'children'> {
   Icon: LucideIcon
   isSelected?: boolean
+  variant?: ComponentProps<typeof Button>['variant']
+  size?: ComponentProps<typeof Button>['size']
 }
 
 const IconButton = ({
   Icon,
   isSelected = false,
   className,
+  variant = 'outline',
+  size = 'icon',
   ...props
 }: IconButtonProps) => {
   return (
     <Button
-      className={cn(
-        className,
-        isSelected && 'bg-accent text-accent-foreground dark:bg-input/50',
-      )}
-      variant={'outline'}
-      size={'icon'}
+      className={cn(className, {
+        'bg-accent text-accent-foreground dark:bg-input/50': isSelected,
+      })}
+      variant={variant}
+      size={size}
       {...props}
     >
       <Icon />
