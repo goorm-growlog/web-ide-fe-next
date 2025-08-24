@@ -23,5 +23,6 @@ export const login = async (payload: LoginPayload): Promise<User> => {
     id: response.data.userId.toString(),
     email: payload.email,
     name: response.data.name,
+    profileImage: undefined, // 로그인 시에는 profileImage 없음
   }
 }

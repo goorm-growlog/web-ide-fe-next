@@ -47,5 +47,5 @@ export interface User {
   id: string
   email: string
   name?: string
-  profileImage: string | undefined
+  profileImage: string | undefined // undefined를 명시적으로 포함
 }
