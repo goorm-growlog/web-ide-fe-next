@@ -1,5 +1,4 @@
 {
-  // Zed + Biome 2.2.0 최적화 설정
   "formatter": {
     "language_server": {
       "name": "biome"

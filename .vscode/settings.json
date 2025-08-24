@@ -12,14 +12,13 @@
   "biome.enable": true,
   "biome.lintOnSave": true,
   "biome.requireConfiguration": true,
-  // Biome 확장 추가 설정 (자동 수정을 위해)
   "biome.unsafeWrites": true,
   "biome.applyUnsafe": true,
   "biome.lspBin": "npx",
-  // TypeScript/JavaScript 설정
   "typescript.preferences.importModuleSpecifier": "shortest",
   "javascript.preferences.importModuleSpecifier": "shortest",
   "typescript.preferences.includePackageJsonAutoImports": "off",
   "typescript.suggest.autoImports": true,
   "javascript.suggest.autoImports": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
 }

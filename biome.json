@@ -1,0 +1,117 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "recommended": true
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "domains": {
+      "next": "recommended"
+    },
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "recommended": true,
+        "useKeyWithClickEvents": "warn",
+        "useKeyWithMouseEvents": "warn",
+        "useValidAriaProps": "warn",
+        "useValidAriaValues": "warn"
+      },
+      "correctness": {
+        "recommended": true,
+        "noUndeclaredVariables": "error",
+        "noUnusedVariables": "error",
+        "useExhaustiveDependencies": "warn",
+        "useJsxKeyInIterable": "error"
+      },
+      "suspicious": {
+        "recommended": true,
+        "noDebugger": "error",
+        "noConsole": "off",
+        "noEmptyBlockStatements": "error"
+      },
+      "style": {
+        "recommended": true,
+        "useImportType": "error",
+        "useConst": "error",
+        "useTemplate": "error",
+        "useNodejsImportProtocol": "error",
+        "useFilenamingConvention": {
+          "level": "warn",
+          "options": {
+            "strictCase": false,
+            "filenameCases": ["kebab-case"]
+          }
+        }
+      },
+      "complexity": {
+        "recommended": true,
+        "noExcessiveCognitiveComplexity": "warn"
+      },
+      "performance": {
+        "recommended": true
+      },
+      "nursery": {
+        "recommended": true,
+        "noMisusedPromises": "error",
+        "useSortedClasses": {
+          "level": "error",
+          "fix": "safe",
+          "options": {
+            "attributes": ["classList"],
+            "functions": ["clsx", "cva", "cn", "tw", "tw.*"]
+          }
+        }
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 80,
+    "attributePosition": "auto"
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "asNeeded",
+      "bracketSameLine": false,
+      "bracketSpacing": true,
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "quoteStyle": "single",
+      "semicolons": "asNeeded",
+      "trailingCommas": "all"
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": true,
+      "trailingCommas": "none"
+    }
+  },
+  "css": {
+    "formatter": {
+      "enabled": true,
+      "quoteStyle": "single"
+    }
+  },
+  "files": {
+    "includes": [
+      "src/**/*",
+      "*.ts",
+      "*.tsx",
+      "*.js",
+      "*.jsx",
+      "*.json",
+      "*.jsonc",
+      "*.css",
+      "*.scss"
+    ]
+  }
+}
