@@ -1,8 +1,7 @@
-import type { ChatMessage } from '@/features/chat/model/types'
+import type { Message } from '@/features/chat/model/types'
 
-export const mockMessages: ChatMessage[] = [
+export const mockMessages: Message[] = [
   {
-    projectId: 1,
     messageType: 'ENTER',
     userId: 1,
     username: '김철수',
@@ -10,7 +9,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:00:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -18,7 +16,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:01:00Z',
   },
   {
-    projectId: 1,
     messageType: 'ENTER',
     userId: 2,
     username: '나',
@@ -26,7 +23,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:02:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -34,7 +30,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:03:00Z',
   },
   {
-    projectId: 1,
     messageType: 'ENTER',
     userId: 3,
     username: '박영희',
@@ -42,7 +37,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:05:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 3,
     username: '박영희',
@@ -50,7 +44,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:06:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -58,7 +51,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:07:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -67,7 +59,20 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:08:00Z',
   },
   {
-    projectId: 1,
+    messageType: 'TALK',
+    userId: 1,
+    username: '김철수',
+    content: '개발 기간은 약 3개월 정도로 예상하고 있습니다.',
+    sentAt: '2025-01-15T09:08:30Z',
+  },
+  {
+    messageType: 'TALK',
+    userId: 1,
+    username: '김철수',
+    content: '팀원 분들의 의견도 들어보고 싶어요!',
+    sentAt: '2025-01-15T09:09:00Z',
+  },
+  {
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -75,7 +80,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:10:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -84,7 +88,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:12:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 3,
     username: '박영희',
@@ -92,7 +95,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:15:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -100,7 +102,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:16:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -108,7 +109,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:18:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -117,7 +117,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:20:00Z',
   },
   {
-    projectId: 1,
     messageType: 'ENTER',
     userId: 4,
     username: '이민수',
@@ -125,7 +124,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:25:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 4,
     username: '이민수',
@@ -133,7 +131,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:26:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -141,7 +138,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:27:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 4,
     username: '이민수',
@@ -149,7 +145,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:28:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -158,7 +153,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:30:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -166,7 +160,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:31:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 3,
     username: '박영희',
@@ -174,7 +167,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:32:00Z',
   },
   {
-    projectId: 1,
     messageType: 'LEAVE',
     userId: 4,
     username: '이민수',
@@ -182,7 +174,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:33:00Z',
   },
   {
-    projectId: 1,
     messageType: 'LEAVE',
     userId: 3,
     username: '박영희',
@@ -190,7 +181,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:34:00Z',
   },
   {
-    projectId: 1,
     messageType: 'LEAVE',
     userId: 2,
     username: '나',
@@ -198,7 +188,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-15T09:35:00Z',
   },
   {
-    projectId: 1,
     messageType: 'LEAVE',
     userId: 1,
     username: '김철수',
@@ -208,7 +197,6 @@ export const mockMessages: ChatMessage[] = [
 
   // 2025-01-16 (목요일) - 개발 시작
   {
-    projectId: 1,
     messageType: 'ENTER',
     userId: 2,
     username: '나',
@@ -216,7 +204,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-16T10:00:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -225,7 +212,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-16T10:01:00Z',
   },
   {
-    projectId: 1,
     messageType: 'ENTER',
     userId: 3,
     username: '박영희',
@@ -233,7 +219,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-16T10:05:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 3,
     username: '박영희',
@@ -241,7 +226,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-16T10:06:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -250,7 +234,20 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-16T10:07:00Z',
   },
   {
-    projectId: 1,
+    messageType: 'TALK',
+    userId: 2,
+    username: '나',
+    content: '인증 플로우도 고민중인데, 로그인 유지 기간은 어떻게 설정할까요?',
+    sentAt: '2025-01-16T10:07:30Z',
+  },
+  {
+    messageType: 'TALK',
+    userId: 2,
+    username: '나',
+    content: '보안 정책도 함께 수립해야겠네요.',
+    sentAt: '2025-01-16T10:07:45Z',
+  },
+  {
     messageType: 'TALK',
     userId: 3,
     username: '박영희',
@@ -259,7 +256,20 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-16T10:08:00Z',
   },
   {
-    projectId: 1,
+    messageType: 'TALK',
+    userId: 3,
+    username: '박영희',
+    content: '토큰 만료 시간은 보통 15분에서 30분 정도로 설정해요.',
+    sentAt: '2025-01-16T10:08:20Z',
+  },
+  {
+    messageType: 'TALK',
+    userId: 3,
+    username: '박영희',
+    content: 'Refresh token은 1주일 정도가 적당할 것 같습니다.',
+    sentAt: '2025-01-16T10:08:40Z',
+  },
+  {
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -268,7 +278,13 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-16T10:10:00Z',
   },
   {
-    projectId: 1,
+    messageType: 'TALK',
+    userId: 2,
+    username: '나',
+    content: '좋은 조언 감사합니다! 그런 방향으로 구현해보겠습니다.',
+    sentAt: '2025-01-16T10:10:30Z',
+  },
+  {
     messageType: 'TALK',
     userId: 3,
     username: '박영희',
@@ -277,7 +293,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-16T10:12:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -286,7 +301,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-16T10:15:00Z',
   },
   {
-    projectId: 1,
     messageType: 'LEAVE',
     userId: 3,
     username: '박영희',
@@ -294,7 +308,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-16T10:30:00Z',
   },
   {
-    projectId: 1,
     messageType: 'LEAVE',
     userId: 2,
     username: '나',
@@ -304,7 +317,6 @@ export const mockMessages: ChatMessage[] = [
 
   // 2025-01-17 (금요일) - 진행 상황 공유
   {
-    projectId: 1,
     messageType: 'ENTER',
     userId: 1,
     username: '김철수',
@@ -312,7 +324,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:00:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -320,7 +331,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:01:00Z',
   },
   {
-    projectId: 1,
     messageType: 'ENTER',
     userId: 2,
     username: '나',
@@ -328,7 +338,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:02:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -337,7 +346,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:03:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -345,7 +353,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:04:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -354,7 +361,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:05:00Z',
   },
   {
-    projectId: 1,
     messageType: 'ENTER',
     userId: 3,
     username: '박영희',
@@ -362,7 +368,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:10:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 3,
     username: '박영희',
@@ -370,7 +375,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:11:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -378,7 +382,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:12:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 3,
     username: '박영희',
@@ -386,7 +389,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:13:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -394,7 +396,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:15:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -402,7 +403,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:16:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -411,7 +411,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:17:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 1,
     username: '김철수',
@@ -419,7 +418,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:20:00Z',
   },
   {
-    projectId: 1,
     messageType: 'LEAVE',
     userId: 3,
     username: '박영희',
@@ -427,7 +425,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:25:00Z',
   },
   {
-    projectId: 1,
     messageType: 'LEAVE',
     userId: 2,
     username: '나',
@@ -435,7 +432,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-17T14:26:00Z',
   },
   {
-    projectId: 1,
     messageType: 'LEAVE',
     userId: 1,
     username: '김철수',
@@ -445,7 +441,6 @@ export const mockMessages: ChatMessage[] = [
 
   // 2025-01-18 (토요일) - 주말 작업
   {
-    projectId: 1,
     messageType: 'ENTER',
     userId: 2,
     username: '나',
@@ -453,7 +448,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-18T11:00:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -462,7 +456,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-18T11:05:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -471,7 +464,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-18T11:10:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -480,7 +472,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-18T11:15:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -489,7 +480,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-18T11:20:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -498,7 +488,6 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-18T11:25:00Z',
   },
   {
-    projectId: 1,
     messageType: 'TALK',
     userId: 2,
     username: '나',
@@ -507,48 +496,10 @@ export const mockMessages: ChatMessage[] = [
     sentAt: '2025-01-18T11:30:00Z',
   },
   {
-    projectId: 1,
     messageType: 'LEAVE',
     userId: 2,
     username: '나',
     content: '나님이 퇴장했습니다.',
     sentAt: '2025-01-18T11:35:00Z',
-  },
-]
-
-export const additionalMessages: ChatMessage[] = [
-  {
-    projectId: 1,
-    messageType: 'TALK',
-    userId: 1,
-    username: '김철수',
-    content:
-      '추가 메시지 1입니다. 이 메시지는 채팅창이 길어질 때 스크롤이 생기는지 테스트하기 위한 것입니다.',
-    sentAt: '2025-01-18T12:00:00Z',
-  },
-  {
-    projectId: 1,
-    messageType: 'TALK',
-    userId: 2,
-    username: '나',
-    content: '추가 메시지 2입니다. 스크롤 테스트를 위한 긴 메시지입니다.',
-    sentAt: '2025-01-18T12:05:00Z',
-  },
-  {
-    projectId: 1,
-    messageType: 'TALK',
-    userId: 3,
-    username: '박영희',
-    content:
-      '추가 메시지 3입니다. 이제 채팅창이 충분히 길어져서 스크롤바가 나타날 것입니다.',
-    sentAt: '2025-01-18T12:10:00Z',
-  },
-  {
-    projectId: 1,
-    messageType: 'TALK',
-    userId: 1,
-    username: '김철수',
-    content: '추가 메시지 4입니다. 스크롤 테스트를 위한 마지막 메시지입니다.',
-    sentAt: '2025-01-18T12:15:00Z',
   },
 ]
