@@ -40,14 +40,5 @@ export async function requestApi<T>(
     throw new Error(parsedMessage)
   }
 
-  // 204 No Content, 빈 body, 또는 non-JSON 응답에 대한 가드
-  if (
-    res.status === 204 ||
-    res.headers.get('content-length') === '0' ||
-    !res.headers.get('content-type')?.includes('application/json')
-  ) {
-    return null as T
-  }
-
   return res.json()
 }
