@@ -15,3 +15,9 @@ export interface Tab {
   icon: LucideIcon
   position: 'top' | 'bottom'
 }
+
+export interface SidebarConfig {
+  primaryMinSize: number
+  secondaryMinSize: number
+  maxSize: number
+}

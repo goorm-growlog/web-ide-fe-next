@@ -2,7 +2,7 @@ import type { ItemInstance } from '@headless-tree/core'
 import type { FileNode } from '../model/types'
 
 /**
- * 주어진 아이템이 드롭 영역인지 판단하는 함수
+ * 주어진 아이템이 드롭 영역인지 판단
  *
  * 드롭 영역 조건:
  * 1. 현재 드래그 타겟인 경우
@@ -10,11 +10,6 @@ import type { FileNode } from '../model/types'
  *
  * @param itemInstance - 확인할 트리 아이템 인스턴스
  * @returns 드롭 영역 여부
- *
- * @example
- * ```tsx
- * const isDrop = isItemDropZone(treeItem)
- * ```
  */
 export const isItemDropZone = (
   itemInstance: ItemInstance<FileNode>,

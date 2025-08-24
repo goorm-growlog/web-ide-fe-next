@@ -1,0 +1,104 @@
+import type { StoryObj } from '@storybook/nextjs-vite'
+import { FileText, Search, Settings, Terminal, User } from 'lucide-react'
+import { fn } from 'storybook/test'
+import IconButton from '@/shared/ui/icon-button'
+
+const meta = {
+  title: 'Shared/IconButton',
+  component: IconButton,
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    Icon: {
+      control: false,
+      description: 'Lucide React icon component',
+    },
+    isSelected: {
+      control: 'boolean',
+      description: 'Whether the tab button is selected',
+    },
+    onClick: {
+      control: false,
+      description: 'Click handler function',
+    },
+    variant: {
+      control: 'select',
+      options: [
+        'default',
+        'destructive',
+        'outline',
+        'secondary',
+        'ghost',
+        'link',
+      ],
+    },
+    size: {
+      control: 'select',
+      options: ['default', 'sm', 'lg', 'icon'],
+    },
+  },
+  args: {
+    Icon: FileText,
+    onClick: fn(),
+  },
+}
+export default meta
+type Story = StoryObj<typeof meta>
+
+export const Default: Story = {
+  args: {
+    isSelected: false,
+  },
+}
+
+export const Selected: Story = {
+  args: {
+    isSelected: true,
+  },
+}
+
+// Size examples
+export const SizeGroup: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-2">
+        <span className="w-12 font-medium text-muted-foreground text-sm">
+          icon:
+        </span>
+        <IconButton Icon={Terminal} onClick={fn()} size={'icon'} />
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="w-12 font-medium text-muted-foreground text-sm">
+          sm:
+        </span>
+        <IconButton Icon={Terminal} onClick={fn()} size={'sm'} />
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="w-12 font-medium text-muted-foreground text-sm">
+          default:
+        </span>
+        <IconButton Icon={Terminal} onClick={fn()} size={'default'} />
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="w-12 font-medium text-muted-foreground text-sm">
+          lg:
+        </span>
+        <IconButton Icon={Terminal} onClick={fn()} size={'lg'} />
+      </div>
+    </div>
+  ),
+}
+
+// Interactive examples
+export const InteractiveGroup: Story = {
+  render: () => (
+    <div className="flex gap-2">
+      <IconButton Icon={FileText} onClick={fn()} isSelected={true} />
+      <IconButton Icon={Search} onClick={fn()} isSelected={false} />
+      <IconButton Icon={Settings} onClick={fn()} isSelected={false} />
+      <IconButton Icon={User} onClick={fn()} isSelected={false} />
+    </div>
+  ),
+}
