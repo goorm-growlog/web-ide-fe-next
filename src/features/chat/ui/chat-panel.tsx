@@ -16,19 +16,17 @@ export const ChatPanel = memo(() => {
   const currentUserId = DEFAULT_USER_CONFIG.MOCK_CURRENT_USER_ID
 
   const { messages, sendMessage } = useChatMessages()
-  const { scrollAreaRef, scrollToBottom } = useChatScroll(messages)
+  const { scrollAreaRef } = useChatScroll(messages)
 
   const handleSendMessage = useCallback(
     async (message: string) => {
       try {
         sendMessage(message)
-        scrollToBottom()
       } catch (error) {
         console.error('Failed to send message:', error)
-        scrollToBottom()
       }
     },
-    [sendMessage, scrollToBottom],
+    [sendMessage],
   )
 
   return (

@@ -23,21 +23,15 @@ interface MessageContentProps {
 export const MessageContent = memo(
   ({ message, isOwnMessage, isFirstInGroup }: MessageContentProps) => {
     if (message.messageType !== MESSAGE_TYPES.TALK) {
-      return (
-        <li>
-          <SystemMessageItem message={message} />
-        </li>
-      )
+      return <SystemMessageItem message={message} />
     }
 
     return (
-      <li>
-        <TalkMessageItem
-          message={message}
-          isOwnMessage={isOwnMessage}
-          isFirstInGroup={isFirstInGroup}
-        />
-      </li>
+      <TalkMessageItem
+        message={message}
+        isOwnMessage={isOwnMessage}
+        isFirstInGroup={isFirstInGroup}
+      />
     )
   },
 )

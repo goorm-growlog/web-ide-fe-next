@@ -55,18 +55,14 @@ export const MessageItem = memo(
     )
 
     return (
-      <>
-        {showDateHeader && (
-          <li>
-            <DateHeader date={message.sentAt} />
-          </li>
-        )}
+      <li>
+        {showDateHeader && <DateHeader date={message.sentAt} />}
         <MessageContent
           message={message}
           isOwnMessage={isOwnMessage}
           isFirstInGroup={isFirstInGroup}
         />
-      </>
+      </li>
     )
   },
 )

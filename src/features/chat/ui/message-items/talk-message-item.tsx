@@ -34,7 +34,7 @@ export const TalkMessageItem = memo(
     const shouldShowUsername = showUsername ?? (!isOwnMessage && isFirstInGroup)
 
     return (
-      <li
+      <div
         className={cn(
           'mb-4 flex gap-3 px-4',
           isOwnMessage ? 'justify-end' : 'justify-start',
@@ -78,7 +78,7 @@ export const TalkMessageItem = memo(
             />
           </div>
         )}
-      </li>
+      </div>
     )
   },
 )
