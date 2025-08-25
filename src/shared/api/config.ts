@@ -1,3 +1,5 @@
+import { fetchWithAuth } from './fetch-with-auth'
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string
 
 // 각 feature별 api 파일에서 아래 baseUrl만 import해서 사용
@@ -23,7 +25,7 @@ export async function requestApi<T>(
     }
   }
 
-  const res = await fetch(url, finalOptions)
+  const res = await fetchWithAuth(url, finalOptions)
 
   if (!res.ok) {
     const errorText = await res.text().catch(() => 'Unknown error')
