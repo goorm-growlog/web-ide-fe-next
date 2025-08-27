@@ -32,9 +32,6 @@ export const login = async (
 
   const { userId, name, accessToken } = data.data
 
-  // accessToken을 LocalStorage에 저장
-  localStorage.setItem('accessToken', accessToken)
-
   const user: User = {
     id: userId.toString(),
     email: payload.email,

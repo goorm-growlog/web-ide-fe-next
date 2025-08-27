@@ -22,8 +22,5 @@ export const refreshToken = async (): Promise<string> => {
 
   const { accessToken } = data.data
 
-  // 새로운 accessToken을 LocalStorage에 저장
-  localStorage.setItem('accessToken', accessToken)
-
   return accessToken
 }

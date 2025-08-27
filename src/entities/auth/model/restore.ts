@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import type { User } from '@/features/auth/types'
+import { tokenStorage } from '@/shared/lib/token-storage'
 import { useAuthStore } from './store'
 
 /**
@@ -14,25 +14,15 @@ export const useAuthRestore = () => {
 
   useEffect(() => {
     const restore = async () => {
-      const storedUserRaw = localStorage.getItem('user')
-      const accessToken = localStorage.getItem('accessToken')
-
-      let storedUser: User | null = null
-      if (storedUserRaw) {
-        try {
-          storedUser = JSON.parse(storedUserRaw) as User
-        } catch {
-          storedUser = null
-        }
-      }
+      const storedUser = tokenStorage.getUser()
+      const accessToken = tokenStorage.getAccessToken()
 
       // accessToken이 있으면 인증 상태 복원
       if (storedUser && accessToken) {
         setAuth(storedUser, accessToken)
       } else {
         clearAuth()
-        localStorage.removeItem('user')
-        localStorage.removeItem('accessToken')
+        tokenStorage.clearAll()
       }
 
       markRestored()

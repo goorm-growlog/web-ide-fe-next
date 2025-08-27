@@ -12,7 +12,4 @@ export const logout = async (): Promise<void> => {
   if (!response.ok) {
     throw new Error('Logout failed')
   }
-
-  // LocalStorage에서 accessToken 제거
-  localStorage.removeItem('accessToken')
 }

@@ -4,6 +4,7 @@ import { login as loginApi } from '@/features/auth/login/api/login'
 import { logout as logoutApi } from '@/features/auth/logout/api/logout'
 import { refreshToken as refreshTokenApi } from '@/features/auth/refresh/api/refresh'
 import type { User } from '@/features/auth/types'
+import { tokenStorage } from '@/shared/lib/token-storage'
 import { useAuthStore } from './store'
 
 /**
@@ -16,7 +17,8 @@ export const useAuthActions = () => {
 
   const saveAuth = (user: User, accessToken: string) => {
     setAuth(user, accessToken)
-    localStorage.setItem('user', JSON.stringify(user))
+    tokenStorage.setUser(user)
+    tokenStorage.setAccessToken(accessToken)
   }
 
   const login = async (email: string, password: string) => {
@@ -35,13 +37,13 @@ export const useAuthActions = () => {
 
     // API 호출 성공 여부와 관계없이 클라이언트 상태는 정리
     clearAuth()
-    localStorage.removeItem('user')
-    localStorage.removeItem('accessToken')
+    tokenStorage.clearAll()
   }
 
   const refreshTokens = async () => {
     const newAccessToken = await refreshTokenApi()
-    // store도 함께 업데이트
+    // Storage와 store 모두 업데이트
+    tokenStorage.setAccessToken(newAccessToken)
     setAccessToken(newAccessToken)
     return newAccessToken
   }
