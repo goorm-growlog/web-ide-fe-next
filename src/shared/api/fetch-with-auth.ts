@@ -1,5 +1,6 @@
 import { useAuthStore } from '@/entities/auth/model/store'
 import { refreshToken } from '@/features/auth/refresh/api/refresh'
+import { tokenStorage } from '@/shared/lib/token-storage'
 
 /**
  * 인증 미들웨어: AccessToken 만료 시 자동 갱신 후 재요청
@@ -24,7 +25,9 @@ export const fetchWithAuth = async (
   if (response.status === 401) {
     try {
       const newAccessToken = await refreshToken()
+      // 스토어와 스토리지 모두 업데이트
       store.setAccessToken(newAccessToken)
+      tokenStorage.setAccessToken(newAccessToken)
 
       // 새 토큰으로 재요청
       response = await fetch(input, {
@@ -38,10 +41,12 @@ export const fetchWithAuth = async (
       // 재요청도 401이면 로그아웃
       if (response.status === 401) {
         store.clearAuth()
+        tokenStorage.clearAll()
       }
     } catch (_error) {
       // refreshToken 실패 시 로그아웃
       store.clearAuth()
+      tokenStorage.clearAll()
     }
   }
 

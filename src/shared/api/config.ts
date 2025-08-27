@@ -1,3 +1,4 @@
+import { handleApiError } from '../lib/api-error'
 import { fetchWithAuth } from './fetch-with-auth'
 
 // 모든 API를 프록시를 통해 호출
@@ -26,18 +27,7 @@ export async function requestApi<T>(
   const res = await fetchWithAuth(url, finalOptions)
 
   if (!res.ok) {
-    const errorText = await res.text().catch(() => 'Unknown error')
-
-    // JSON 파싱 시도 (파싱 에러는 무시)
-    let parsedMessage = errorText
-    try {
-      const errorJson = JSON.parse(errorText)
-      parsedMessage = errorJson?.error?.message || errorText
-    } catch {
-      // JSON 파싱 실패 시 무시 (원본 errorText 사용)
-    }
-
-    throw new Error(parsedMessage)
+    await handleApiError(res, 'API request failed')
   }
 
   return res.json()
