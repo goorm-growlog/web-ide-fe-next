@@ -1,3 +1,5 @@
+import { handleApiError } from '@/shared/lib/api-error'
+
 /**
  * 토큰을 갱신합니다.
  * @returns 새로운 access token
@@ -11,7 +13,7 @@ export const refreshToken = async (): Promise<string> => {
   })
 
   if (!response.ok) {
-    throw new Error('Token refresh failed')
+    await handleApiError(response, 'Token refresh failed')
   }
 
   const data = await response.json()

@@ -15,10 +15,18 @@ export const useAuthActions = () => {
   const clearAuth = useAuthStore(state => state.clearAuth)
   const setAccessToken = useAuthStore(state => state.setAccessToken)
 
+  const syncToStorage = (user: User | null, accessToken: string | null) => {
+    if (user && accessToken) {
+      tokenStorage.setUser(user)
+      tokenStorage.setAccessToken(accessToken)
+    } else {
+      tokenStorage.clearAll()
+    }
+  }
+
   const saveAuth = (user: User, accessToken: string) => {
     setAuth(user, accessToken)
-    tokenStorage.setUser(user)
-    tokenStorage.setAccessToken(accessToken)
+    syncToStorage(user, accessToken)
   }
 
   const login = async (email: string, password: string) => {
@@ -29,22 +37,20 @@ export const useAuthActions = () => {
 
   const logout = async () => {
     try {
-      // 서버에 로그아웃 요청 (쿠키 삭제)
       await logoutApi()
     } catch {
-      // 로그아웃 API 실패는 조용히 처리 (클라이언트 상태는 이미 정리됨)
+      // 로그아웃 API 실패는 조용히 처리
     }
 
-    // API 호출 성공 여부와 관계없이 클라이언트 상태는 정리
+    // 클라이언트 상태 정리 (스토어 + 스토리지)
     clearAuth()
     tokenStorage.clearAll()
   }
 
   const refreshTokens = async () => {
     const newAccessToken = await refreshTokenApi()
-    // Storage와 store 모두 업데이트
-    tokenStorage.setAccessToken(newAccessToken)
     setAccessToken(newAccessToken)
+    tokenStorage.setAccessToken(newAccessToken)
     return newAccessToken
   }
 

@@ -1,4 +1,5 @@
 import type { LoginPayload, User } from '@/features/auth/types'
+import { handleApiError } from '@/shared/lib/api-error'
 
 /**
  * 로그인을 수행합니다.
@@ -20,8 +21,7 @@ export const login = async (
   })
 
   if (!response.ok) {
-    const errorData = await response.json()
-    throw new Error(errorData.error?.message || 'Login failed')
+    await handleApiError(response, 'Login failed')
   }
 
   const data = await response.json()

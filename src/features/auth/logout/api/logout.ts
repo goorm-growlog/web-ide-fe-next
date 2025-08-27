@@ -1,3 +1,5 @@
+import { handleApiError } from '@/shared/lib/api-error'
+
 /**
  * 로그아웃을 수행합니다.
  * @throws 로그아웃 실패 시 에러
@@ -10,6 +12,6 @@ export const logout = async (): Promise<void> => {
   })
 
   if (!response.ok) {
-    throw new Error('Logout failed')
+    await handleApiError(response, 'Logout failed')
   }
 }
