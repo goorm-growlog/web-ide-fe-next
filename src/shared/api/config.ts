@@ -1,12 +1,10 @@
 import { fetchWithAuth } from './fetch-with-auth'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string
+// 모든 API를 프록시를 통해 호출
+export const API_BASE = '/api'
 
-// 각 feature별 api 파일에서 아래 baseUrl만 import해서 사용
-export const API_BASE = API_BASE_URL
-
+// fetchWithAuth가 토큰을 자동으로 처리하므로 기본 옵션에서 제거
 export const defaultFetchOptions: RequestInit = {
-  credentials: 'include',
   headers: {
     Accept: 'application/json',
   },

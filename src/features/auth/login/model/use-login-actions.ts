@@ -8,10 +8,9 @@ import { useAuthActions } from '@/entities/auth'
 import type { LoginFormData } from '@/features/auth/types'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
-import { login } from '../api/login'
 
 export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
-  const { saveAuth } = useAuthActions()
+  const { login } = useAuthActions()
   const { isLoading, withLoading } = useLoadingState()
   const router = useRouter()
 
@@ -19,8 +18,7 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
     async (data: LoginFormData) => {
       return withLoading(async () => {
         try {
-          const user = await login(data)
-          saveAuth(user)
+          const _user = await login(data.email, data.password)
           toast.success('Login successful!')
           form?.clearErrors('root')
           router.push('/project') // 로그인 성공 시 프로젝트 페이지로 이동
@@ -31,7 +29,7 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
         }
       })
     },
-    [saveAuth, form, withLoading, router],
+    [login, form, withLoading, router],
   )
 
   return {

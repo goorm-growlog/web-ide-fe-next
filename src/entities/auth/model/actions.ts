@@ -1,6 +1,8 @@
 'use client'
 
+import { login as loginApi } from '@/features/auth/login/api/login'
 import { logout as logoutApi } from '@/features/auth/logout/api/logout'
+import { refreshToken as refreshTokenApi } from '@/features/auth/refresh/api/refresh'
 import type { User } from '@/features/auth/types'
 import { useAuthStore } from './store'
 
@@ -10,11 +12,17 @@ import { useAuthStore } from './store'
 export const useAuthActions = () => {
   const setAuth = useAuthStore(state => state.setAuth)
   const clearAuth = useAuthStore(state => state.clearAuth)
+  const setAccessToken = useAuthStore(state => state.setAccessToken)
 
-  const saveAuth = (user: User) => {
-    setAuth(user)
-    // 사용자 정보만 localStorage에 저장 (토큰은 HttpOnly 쿠키로 관리)
+  const saveAuth = (user: User, accessToken: string) => {
+    setAuth(user, accessToken)
     localStorage.setItem('user', JSON.stringify(user))
+  }
+
+  const login = async (email: string, password: string) => {
+    const { user, accessToken } = await loginApi({ email, password })
+    saveAuth(user, accessToken)
+    return user
   }
 
   const logout = async () => {
@@ -28,7 +36,15 @@ export const useAuthActions = () => {
     // API 호출 성공 여부와 관계없이 클라이언트 상태는 정리
     clearAuth()
     localStorage.removeItem('user')
+    localStorage.removeItem('accessToken')
   }
 
-  return { saveAuth, logout }
+  const refreshTokens = async () => {
+    const newAccessToken = await refreshTokenApi()
+    // store도 함께 업데이트
+    setAccessToken(newAccessToken)
+    return newAccessToken
+  }
+
+  return { saveAuth, setAccessToken, login, logout, refreshTokens }
 }

@@ -9,7 +9,7 @@ import { API_BASE, requestApi } from '@/shared/api/config'
 export const resetPassword = async (
   payload: PasswordResetPayload,
 ): Promise<void> => {
-  const url = `${API_BASE}/auth/reset-password`
+  const url = `${API_BASE}/reset-password`
   await requestApi(url, {
     method: 'POST',
     body: JSON.stringify(payload),
