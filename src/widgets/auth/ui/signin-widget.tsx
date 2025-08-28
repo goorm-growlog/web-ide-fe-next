@@ -9,13 +9,14 @@ const SigninWidget = () => {
     <AuthLayout>
       {/* 로고 */}
       <div className="text-center mb-12">
-        <Image
-          src="/logo.svg"
-          alt="GrowLog"
-          width={0}
-          height={0}
-          className="w-auto h-10 mx-auto"
-        />
+        <div className="relative w-auto h-10 mx-auto inline-block">
+          <Image
+            src="/logo.svg"
+            alt="GrowLog"
+            fill
+            className="object-contain"
+          />
+        </div>
       </div>
       <SigninForm />
       <div className="mt-8 text-center text-muted-foreground text-sm">
