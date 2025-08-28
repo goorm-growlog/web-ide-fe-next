@@ -9,7 +9,7 @@ const SigninWidget = () => {
     <AuthLayout>
       {/* 로고 */}
       <div className="text-center mb-12">
-        <div className="relative w-auto h-10 mx-auto inline-block">
+        <div className="relative w-40 h-10 mx-auto">
           <Image
             src="/logo.svg"
             alt="GrowLog"
