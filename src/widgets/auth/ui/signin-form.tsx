@@ -5,12 +5,11 @@ import {
   LoginForm,
   type PasswordResetData,
   PasswordResetDialog,
-  SocialLogin,
   useLoginActions,
   useLoginForm,
   usePasswordResetActions,
-  useSocialLogin,
 } from '@/features/auth'
+import { SocialLoginWidget } from '@/widgets/social-login'
 
 const SigninForm = () => {
   const [isPasswordResetDialogOpen, setIsPasswordResetDialogOpen] =
@@ -18,7 +17,6 @@ const SigninForm = () => {
 
   const { form } = useLoginForm()
   const { onSubmit: handleLogin, isLoading } = useLoginActions(form)
-  const { onSocialLogin } = useSocialLogin()
   const { isLoading: passwordResetLoading, onSubmit: passwordResetAction } =
     usePasswordResetActions()
 
@@ -48,7 +46,7 @@ const SigninForm = () => {
         <span className="mx-4 text-muted-foreground text-sm">or</span>
         <hr className="flex-1 border-border" />
       </div>
-      <SocialLogin onSocialLogin={onSocialLogin} />
+      <SocialLoginWidget />
       <PasswordResetDialog
         open={isPasswordResetDialogOpen}
         onOpenChange={setIsPasswordResetDialogOpen}
