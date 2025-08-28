@@ -73,7 +73,7 @@ const FileExplorerItem = ({
         itemClassName,
         isItemDropZone(item) && 'bg-blue-50',
         // 기본 스타일
-        'flex cursor-pointer items-center gap-1 py-1',
+        'flex w-full cursor-pointer items-center gap-1 py-1',
         'transition-colors duration-150 ease-in-out',
         // 키보드 접근성
         'focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-inset',

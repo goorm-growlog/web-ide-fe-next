@@ -5,6 +5,9 @@ import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/chat-config'
 import { useChatMessages } from '@/features/chat/hooks/use-chat-messages'
 import { useChatScroll } from '@/features/chat/hooks/use-chat-scroll'
 import { MessageList } from '@/features/chat/ui/message-list/message-list'
+import { SCROLLABLE_PANEL_CONTENT_STYLES } from '@/shared/constants/ui'
+import { cn } from '@/shared/lib/utils'
+import PanelLayout from '@/shared/ui/panel-layout'
 import { ScrollArea } from '@/shared/ui/shadcn/scroll-area'
 import { TextInput } from '@/shared/ui/text-input'
 
@@ -30,20 +33,22 @@ export const ChatPanel = memo(() => {
   )
 
   return (
-    <main className="flex h-full flex-col">
-      <section className="relative flex-1 overflow-hidden border-border border-b">
-        <ScrollArea className="h-full" ref={scrollAreaRef}>
-          <MessageList messages={messages} currentUserId={currentUserId} />
-        </ScrollArea>
-      </section>
+    <PanelLayout>
+      <ScrollArea
+        className={cn(
+          SCROLLABLE_PANEL_CONTENT_STYLES,
+          'border-border not-last:border-b',
+        )}
+        ref={scrollAreaRef}
+      >
+        <MessageList messages={messages} currentUserId={currentUserId} />
+      </ScrollArea>
 
-      <section>
-        <TextInput
-          placeholder="Type your message..."
-          buttonText="Send"
-          onSend={handleSendMessage}
-        />
-      </section>
-    </main>
+      <TextInput
+        placeholder="Type your message..."
+        buttonText="Send"
+        onSend={handleSendMessage}
+      />
+    </PanelLayout>
   )
 })
