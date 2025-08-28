@@ -14,18 +14,16 @@ interface AuthState {
   clearAuth: () => void
 }
 
-export const useAuthStore = create<AuthState>(
-  (set: (state: Partial<AuthState>) => void) => ({
-    user: null,
-    accessToken: null,
-    isAuthenticated: false,
-    isRestored: false,
-    setAuth: (user: User, accessToken: string) =>
-      set({ user, accessToken, isAuthenticated: true }),
-    setAccessToken: (accessToken: string | null) =>
-      set({ accessToken, isAuthenticated: Boolean(accessToken) }),
-    markRestored: () => set({ isRestored: true }),
-    clearAuth: () =>
-      set({ user: null, accessToken: null, isAuthenticated: false }),
-  }),
-)
+export const useAuthStore = create<AuthState>(set => ({
+  user: null,
+  accessToken: null,
+  isAuthenticated: false,
+  isRestored: false,
+  setAuth: (user: User, accessToken: string) =>
+    set({ user, accessToken, isAuthenticated: true }),
+  setAccessToken: (accessToken: string | null) =>
+    set({ accessToken, isAuthenticated: Boolean(accessToken) }),
+  markRestored: () => set({ isRestored: true }),
+  clearAuth: () =>
+    set({ user: null, accessToken: null, isAuthenticated: false }),
+}))
