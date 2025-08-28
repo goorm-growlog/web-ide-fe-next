@@ -106,3 +106,5 @@ Based on Cursor rules, follow these key principles:
 When working with this codebase, follow the established FSD patterns, use the existing UI components from shared/ui, and maintain the strict code quality standards enforced by Biome and the Git hooks.
 
 ## Additional Resources
+
+- Answer in Korean
