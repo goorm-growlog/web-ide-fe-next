@@ -1,99 +1,58 @@
-import { memo, type ReactNode, useCallback, useMemo } from 'react'
-import type {
-  Panel,
-  PanelKey,
-  Tab,
-  TabKey,
-} from 'src/widgets/sidebar/model/types'
+import { memo, useCallback } from 'react'
+import type { TabKey } from 'src/widgets/sidebar/model/types'
 import TabSwitcher from 'src/widgets/sidebar/ui/tab-switcher'
 import TogglePanels from 'src/widgets/sidebar/ui/toggle-panels'
-import { ChatPanel } from '@/features/chat/ui/chat-panel'
-import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel'
-import Invite from '@/features/invite/ui/invite'
-import Search from '@/features/search/ui/search'
 import { cn } from '@/shared/lib/utils'
-import {
-  PANEL_DEFINITIONS,
-  TAB_DEFINITIONS,
-} from '@/widgets/sidebar/constants/tab-definitions'
-import { useLayoutStore } from '@/widgets/sidebar/model/store'
-import Sidebar from '@/widgets/sidebar/ui/sidebar'
+import { TAB_DEFINITIONS } from '@/widgets/sidebar/model/constants'
+import { useActiveTab } from '@/widgets/sidebar/model/hooks'
 
 interface PrimarySidebarProps {
   position?: 'left' | 'right'
   className?: string
 }
 
-const SIDEBAR_PANELS: Record<PanelKey, () => ReactNode> = {
-  files: () => <FileExplorerPanel />,
-  chats: () => <ChatPanel />,
-  search: () => <Search />,
-  invite: () => <Invite />,
-  settings: () => (
-    <div className="p-4 text-muted-foreground text-sm">Settings</div>
-  ),
-}
+const PANELS_LAYOUT_STYLES =
+  'flex min-h-0 flex-1 flex-col h-full w-full overflow-hidden'
+const SIDEBAR_LAYOUT_STYLES =
+  'flex h-full w-full min-h-0 flex-row overflow-hidden bg-background'
 
 const PrimarySidebar = memo(
   ({ position = 'left', className }: PrimarySidebarProps) => {
-    const { activeTabKey, setActiveTabKey } = useLayoutStore()
+    const { activeTab, toggleTab } = useActiveTab()
+    const isVisible = activeTab !== null
 
     const handleTabClick = useCallback(
-      (key: TabKey) => setActiveTabKey(key),
-      [setActiveTabKey],
-    )
-
-    const getPanelContent = useCallback((key: PanelKey): ReactNode => {
-      return (
-        SIDEBAR_PANELS[key]?.() || (
-          <div className="p-4 text-muted-foreground text-sm">
-            Unknown panel: {key}
-          </div>
-        )
-      )
-    }, [])
-
-    const activePanels = useMemo((): Panel[] => {
-      return PANEL_DEFINITIONS[activeTabKey].map(def => ({
-        ...def,
-        content: getPanelContent(def.key),
-      }))
-    }, [activeTabKey, getPanelContent])
-
-    const tabs = useMemo((): Tab[] => {
-      return TAB_DEFINITIONS.map(def => ({
-        ...def,
-        panels: def.key === activeTabKey ? activePanels : [],
-      }))
-    }, [activeTabKey, activePanels])
-
-    const sidebarContent = (
-      <Sidebar>
-        <TogglePanels panels={activePanels} />
-      </Sidebar>
+      (key: TabKey) => toggleTab(key),
+      [toggleTab],
     )
 
     const tabSwitcher = (
       <TabSwitcher
-        tabs={tabs}
-        activeTabKey={activeTabKey}
+        tabs={TAB_DEFINITIONS}
+        activeTabKey={activeTab}
         onTabClick={handleTabClick}
         position={position}
         className="w-12 flex-shrink-0 md:w-14 lg:w-16"
       />
     )
 
+    const togglePanels = (
+      <div className={PANELS_LAYOUT_STYLES}>
+        <TogglePanels activeTabKey={activeTab} />
+      </div>
+    )
+
     return (
-      <div className={cn('flex h-full w-full', 'bg-background', className)}>
+      <div className={cn(SIDEBAR_LAYOUT_STYLES, className)}>
         {position === 'right' ? (
           <>
-            {sidebarContent}
+            {isVisible && togglePanels}
             {tabSwitcher}
           </>
         ) : (
           <>
             {tabSwitcher}
-            {sidebarContent}
+            {isVisible && togglePanels}
           </>
         )}
       </div>

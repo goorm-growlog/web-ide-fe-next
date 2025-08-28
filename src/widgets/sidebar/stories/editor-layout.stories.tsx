@@ -1,6 +1,7 @@
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: storybook only */
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { useEffect } from 'react'
-import { useLayoutStore } from '@/widgets/sidebar/model/store'
+import { usePosition } from '@/widgets/sidebar/model/hooks'
 import EditorLayout from '@/widgets/sidebar/ui/editor-layout'
 
 const meta: Meta<typeof EditorLayout> = {
@@ -14,14 +15,15 @@ const meta: Meta<typeof EditorLayout> = {
 export default meta
 type Story = StoryObj<typeof EditorLayout>
 
-// EditorLayout (Primary Left)
 export const PrimaryLeft: Story = {
   render: () => {
-    const { setPosition } = useLayoutStore()
+    const { position, togglePosition } = usePosition()
 
     useEffect(() => {
-      setPosition('left')
-    }, [setPosition])
+      if (position !== 'left') {
+        togglePosition()
+      }
+    }, [])
 
     return (
       <EditorLayout>
@@ -31,14 +33,15 @@ export const PrimaryLeft: Story = {
   },
 }
 
-// EditorLayout (Primary Right)
 export const PrimaryRight: Story = {
   render: () => {
-    const { setPosition } = useLayoutStore()
+    const { position, togglePosition } = usePosition()
 
     useEffect(() => {
-      setPosition('right')
-    }, [setPosition])
+      if (position !== 'right') {
+        togglePosition()
+      }
+    }, [])
 
     return (
       <EditorLayout>

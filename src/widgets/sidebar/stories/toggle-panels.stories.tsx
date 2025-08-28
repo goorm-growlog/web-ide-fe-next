@@ -1,5 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { mockPanels } from '@/widgets/sidebar/fixtures'
+import type { Meta } from '@storybook/nextjs-vite'
 import TogglePanels from '@/widgets/sidebar/ui/toggle-panels'
 
 const meta: Meta<typeof TogglePanels> = {
@@ -8,19 +7,14 @@ const meta: Meta<typeof TogglePanels> = {
     layout: 'fullscreen',
   },
   component: TogglePanels,
-  args: {
-    panels: mockPanels,
-  },
   tags: ['autodocs'],
 }
 export default meta
 
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {
-  render: args => (
+export const Default = {
+  render: () => (
     <div className="flex h-screen">
-      <TogglePanels panels={args.panels} />
+      <TogglePanels activeTabKey="files" />
     </div>
   ),
 }

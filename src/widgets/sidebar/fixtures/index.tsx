@@ -9,12 +9,12 @@ export const mockPanels: Panel[] = [
   {
     key: 'files',
     title: 'Files',
-    content: <FileExplorerPanel />,
+    content: FileExplorerPanel,
   },
   {
     key: 'search',
     title: 'Search',
-    content: <FileExplorerPanel />,
+    content: FileExplorerPanel,
   },
 ]
 
@@ -27,12 +27,12 @@ export const mockTabs: Tab[] = [
       {
         key: 'files',
         title: 'Files',
-        content: <FileExplorerPanel />,
+        content: FileExplorerPanel,
       },
       {
         key: 'chats',
         title: 'Chats',
-        content: <ChatPanel />,
+        content: ChatPanel,
       },
     ],
   },
@@ -44,7 +44,7 @@ export const mockTabs: Tab[] = [
       {
         key: 'search',
         title: 'Search',
-        content: (
+        content: () => (
           <ul className="space-y-1 p-2">
             {mockItems.slice(25, 30).map((item, index) => (
               <li
@@ -67,7 +67,7 @@ export const mockTabs: Tab[] = [
       {
         key: 'invite',
         title: 'Invite',
-        content: (
+        content: () => (
           <ul className="space-y-1 p-2">
             {mockItems.slice(30, 35).map((item, index) => (
               <li
@@ -90,7 +90,7 @@ export const mockTabs: Tab[] = [
       {
         key: 'settings',
         title: 'Settings',
-        content: (
+        content: () => (
           <ul className="space-y-1 p-2">
             {mockItems.slice(35, 40).map((item, index) => (
               <li

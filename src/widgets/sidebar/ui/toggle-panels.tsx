@@ -1,6 +1,6 @@
 'use client'
 
-import { memo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { cn } from '@/shared/lib/utils'
 import {
   Accordion,
@@ -8,64 +8,115 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/shared/ui/shadcn/accordion'
-import type { Panel } from '@/widgets/sidebar/model/types'
+import { useOpenPanels } from '@/widgets/sidebar/model/hooks'
+import type { PanelKey, TabKey } from '@/widgets/sidebar/model/types'
+import { TAB_DEFINITIONS } from '../model/constants'
+
+const PANEL_CONFIG = {
+  HEADER_HEIGHT: 40, // h-10 = 2.5rem = 40px
+} as const
 
 interface TogglePanelsProps {
-  panels: Panel[]
+  activeTabKey: TabKey | null
 }
 
-const TogglePanels = memo(({ panels }: TogglePanelsProps) => {
-  return (
-    <Accordion
-      type="multiple"
-      className={cn(
-        'flex h-full min-h-0 w-full flex-col overflow-hidden',
-        'bg-background',
-      )}
-      defaultValue={panels.map(panel => panel.key)}
-    >
-      {panels.map(panel => (
-        <AccordionItem
-          key={panel.key}
-          value={panel.key}
-          className={cn('border-b last:border-b-0')}
-        >
-          <AccordionTrigger
-            className={cn(
-              // Layout
-              'flex h-10 w-full flex-row-reverse items-center justify-end gap-1 px-3',
-              // Borders
-              'rounded-none border-b hover:no-underline',
-              // Typography
-              'cursor-pointer font-medium text-xs uppercase tracking-wider',
-              // Colors
-              'text-muted-foreground hover:text-foreground',
-              // Interactive states
-              'hover:bg-accent/50 focus:bg-accent/50',
-              // Animation
-              'transition-colors duration-200',
-              // State-specific styles
-              'data-[state=open]:border-b-transparent',
-              '[&[data-state=closed]>svg]:-rotate-90',
-              '[&[data-state=open]>svg]:rotate-0',
-            )}
-          >
-            <span>{panel.title}</span>
-          </AccordionTrigger>
-          <AccordionContent
-            className={cn(
-              // Use height instead of flex-1 to avoid interfering with animations
-              'min-h-0 w-full overflow-y-auto',
-              // Scroller
-              'scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent',
-            )}
-          >
-            {panel.content}
-          </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
+const TRIGGER_CLASSES = cn(
+  'w-full flex-row-reverse items-center justify-end gap-2 px-3',
+  'cursor-pointer rounded-none',
+  'text-muted-foreground text-xs uppercase tracking-wider',
+  'hover:bg-accent/50 hover:text-foreground hover:no-underline',
+  'focus:bg-accent/50',
+  'duration-200 ease-out',
+  'border-b',
+  '[&[data-state=open]>svg]:rotate-0',
+  '[&[data-state=closed]>svg]:-rotate-90',
+)
+
+const ITEM_CLASSES = cn(
+  'flex flex-shrink-0 flex-col',
+  'transition-all duration-300 ease-out',
+)
+
+const CONTENT_CLASSES = cn(
+  'relative flex-shrink-0',
+  'transition-all duration-300 ease-out',
+)
+
+const TogglePanels = ({ activeTabKey }: TogglePanelsProps) => {
+  const { openPanels, togglePanel } = useOpenPanels()
+
+  const panelData = useMemo(() => {
+    const panels =
+      TAB_DEFINITIONS.find(tab => tab.key === activeTabKey)?.panels || []
+    const totalHeaders = panels.length * PANEL_CONFIG.HEADER_HEIGHT
+    const contentHeight =
+      openPanels.length > 0
+        ? `calc(calc(100vh - ${totalHeaders}px) / ${openPanels.length})`
+        : '0px'
+
+    return {
+      panels,
+      totalHeaders,
+      contentHeight,
+      panelCount: panels.length,
+      openCount: openPanels.length,
+    }
+  }, [activeTabKey, openPanels.length])
+
+  const handlePanelToggle = useCallback(
+    (panelKey: PanelKey) => {
+      togglePanel(panelKey)
+    },
+    [togglePanel],
   )
-})
+
+  return (
+    <div className="h-dvh bg-background">
+      <Accordion
+        type="multiple"
+        value={openPanels}
+        className="flex h-full flex-col"
+      >
+        {panelData.panels.map(panelDef => {
+          const isOpen = openPanels.includes(panelDef.key)
+          const Component = panelDef.content
+          const itemHeight = isOpen
+            ? `calc(${PANEL_CONFIG.HEADER_HEIGHT}px + ${panelData.contentHeight})`
+            : `${PANEL_CONFIG.HEADER_HEIGHT}px`
+
+          return (
+            <AccordionItem
+              key={panelDef.key}
+              value={panelDef.key}
+              className={ITEM_CLASSES}
+              style={{ height: itemHeight }}
+            >
+              <AccordionTrigger
+                className={TRIGGER_CLASSES}
+                style={{
+                  height: `${PANEL_CONFIG.HEADER_HEIGHT}px`,
+                  borderBottomColor: isOpen ? 'transparent' : '',
+                }}
+                onClick={() => handlePanelToggle(panelDef.key)}
+              >
+                {panelDef.title}
+              </AccordionTrigger>
+              <AccordionContent
+                className={CONTENT_CLASSES}
+                style={{
+                  height: isOpen ? panelData.contentHeight : '0px',
+                  overflowY: isOpen ? 'auto' : 'hidden',
+                  opacity: isOpen ? 1 : 0,
+                }}
+              >
+                <Component />
+              </AccordionContent>
+            </AccordionItem>
+          )
+        })}
+      </Accordion>
+    </div>
+  )
+}
 
 export default TogglePanels

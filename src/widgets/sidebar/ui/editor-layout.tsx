@@ -2,39 +2,46 @@
 
 import { memo, type ReactNode } from 'react'
 import { ChatPanel } from '@/features/chat/ui/chat-panel'
+import { cn } from '@/shared/lib/utils'
 import ResizableGrowHandle from '@/shared/ui/resizable-grow-handle'
 import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/shared/ui/shadcn/resizable'
-import { SIDEBAR_CONFIG } from '@/widgets/sidebar/constants/sidebar-config'
-import { useLayoutStore } from '@/widgets/sidebar/model/store'
+import { DEFAULT_SIDEBAR_CONFIG } from '@/widgets/sidebar/model/constants'
+import {
+  useActiveTab,
+  useLayout,
+  useLayoutIndices,
+  usePosition,
+} from '@/widgets/sidebar/model/hooks'
 import PrimarySidebar from '@/widgets/sidebar/ui/primary-sidebar'
-import Sidebar from '@/widgets/sidebar/ui/sidebar'
 
 interface EditorLayoutProps {
   children: ReactNode
 }
 
 const EditorLayout = memo(({ children }: EditorLayoutProps) => {
-  const { position, sidebarLayout, setSidebarLayout } = useLayoutStore()
+  const sidebarConfig = DEFAULT_SIDEBAR_CONFIG
+
+  const { layout, setLayout } = useLayout()
+  const { position } = usePosition()
+  const index = useLayoutIndices()
+
+  const activeTab = useActiveTab()
+  const isVisible = activeTab !== null
+
   const isPrimaryLeft = position === 'left'
   const primaryPosition = isPrimaryLeft ? 'left' : 'right'
 
-  const handleLayoutChange = (sizes: number[]) => {
-    setSidebarLayout(sizes)
-  }
-
-  const primaryIndex = isPrimaryLeft ? 0 : 2
-  const secondaryIndex = isPrimaryLeft ? 2 : 0
-  const mainIndex = 1
+  const handleLayoutChange = (sizes: number[]) => setLayout(sizes)
 
   const primaryPanel = (
     <ResizablePanel
-      defaultSize={sidebarLayout[primaryIndex] ?? 25}
-      maxSize={SIDEBAR_CONFIG.maxSize}
-      minSize={0}
-      className="min-w-16"
+      defaultSize={isVisible ? (layout[index.primary] ?? 25) : 16}
+      maxSize={sidebarConfig.maxSize}
+      minSize={isVisible ? 10 : 16}
+      className={cn('min-w-16', isVisible ? '' : 'max-w-16')}
     >
       <PrimarySidebar position={primaryPosition} />
     </ResizablePanel>
@@ -42,20 +49,18 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
 
   const secondaryPanel = (
     <ResizablePanel
-      defaultSize={sidebarLayout[secondaryIndex] ?? 25}
-      maxSize={SIDEBAR_CONFIG.maxSize}
+      defaultSize={layout[index.secondary] ?? 25}
+      maxSize={sidebarConfig.maxSize}
       minSize={10}
       className="min-w-16"
     >
-      <Sidebar>
-        <ChatPanel />
-      </Sidebar>
+      <ChatPanel />
     </ResizablePanel>
   )
 
   const mainPanel = (
     <ResizablePanel
-      defaultSize={sidebarLayout[mainIndex] ?? 50}
+      defaultSize={layout[index.main] ?? 50}
       maxSize={100}
       minSize={0}
       className="max-w-full"
