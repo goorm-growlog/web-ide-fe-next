@@ -12,14 +12,14 @@ export const fetchWithAuth = async (
   const store = useAuthStore.getState()
   const accessToken = store.accessToken
 
-  // 1. 헤더에 현재 accessToken 추가
-  const authHeaders = {
-    ...init?.headers,
-    ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+  // 1. 헤더 안전 병합 (Headers 인스턴스 지원)
+  const headers = new Headers(init?.headers)
+  if (accessToken) {
+    headers.set('Authorization', `Bearer ${accessToken}`)
   }
 
   // 2. 최초 요청
-  let response = await fetch(input, { ...init, headers: authHeaders })
+  let response = await fetch(input, { ...init, headers })
 
   // 3. 401 에러 시 토큰 갱신 시도 (한 번만)
   if (response.status === 401) {
@@ -30,12 +30,12 @@ export const fetchWithAuth = async (
       tokenStorage.setAccessToken(newAccessToken)
 
       // 새 토큰으로 재요청
+      const retryHeaders = new Headers(init?.headers)
+      retryHeaders.set('Authorization', `Bearer ${newAccessToken}`)
+
       response = await fetch(input, {
         ...init,
-        headers: {
-          ...init?.headers,
-          Authorization: `Bearer ${newAccessToken}`,
-        },
+        headers: retryHeaders,
       })
 
       // 재요청도 401이면 로그아웃
