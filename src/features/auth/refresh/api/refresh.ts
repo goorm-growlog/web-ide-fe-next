@@ -1,4 +1,5 @@
-import { handleApiError } from '@/shared/lib/api-error'
+import type { RefreshTokenResponse } from '@/features/auth/types'
+import { AUTH_BASE, requestApi } from '@/shared/api/config'
 
 /**
  * 토큰을 갱신합니다.
@@ -6,23 +7,17 @@ import { handleApiError } from '@/shared/lib/api-error'
  * @throws 토큰 갱신 실패 시 에러
  */
 export const refreshToken = async (): Promise<string> => {
-  // 프록시를 통해 same-origin으로 요청
-  const response = await fetch(`/auth/refresh`, {
-    method: 'POST',
-    credentials: 'include', // refreshToken 쿠키 자동 전송
-  })
+  const response = await requestApi<RefreshTokenResponse>(
+    `${AUTH_BASE}/refresh`,
+    {
+      method: 'POST',
+      credentials: 'include', // refreshToken 쿠키 자동 전송
+    },
+  )
 
-  if (!response.ok) {
-    await handleApiError(response, 'Token refresh failed')
+  if (!response.success || !response.data) {
+    throw new Error(response.error || 'Token refresh failed')
   }
 
-  const data = await response.json()
-
-  if (!data.success || !data.data) {
-    throw new Error(data.error?.message || 'Token refresh failed')
-  }
-
-  const { accessToken } = data.data
-
-  return accessToken
+  return response.data.accessToken
 }

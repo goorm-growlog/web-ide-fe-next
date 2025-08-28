@@ -38,7 +38,7 @@ const LoginForm = ({
           className="w-full bg-primary hover:bg-primary/80 text-primary-foreground"
           disabled={isLoading}
         >
-          {isLoading ? 'Logging in...' : 'login'}
+          {isLoading ? 'Logging in...' : 'Login'}
         </Button>
       </form>
       <div className="flex justify-end mt-2">

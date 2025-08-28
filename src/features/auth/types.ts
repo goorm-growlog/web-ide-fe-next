@@ -19,7 +19,7 @@ export type PasswordResetFormData = z.infer<typeof passwordResetSchema>
 export type LoginPayload = LoginFormData
 export type PasswordResetPayload = PasswordResetFormData
 
-// API 응답 데이터 타입 (공통 ApiResponse 구조 사용)
+// API 응답 데이터 타입
 export interface LoginData {
   userId: number
   name: string
@@ -37,7 +37,7 @@ export interface UserInfoData {
   profileImage?: string
 }
 
-// API 응답 타입 (공통 구조 활용)
+// API 응답 타입 (일관된 구조)
 export type LoginResponse = ApiResponse<LoginData>
 export type RefreshTokenResponse = ApiResponse<RefreshTokenData>
 export type UserInfoResponse = ApiResponse<UserInfoData>
@@ -47,5 +47,5 @@ export interface User {
   id: string
   email: string
   name?: string
-  profileImage: string | undefined // undefined를 명시적으로 포함
+  profileImage: string | undefined
 }

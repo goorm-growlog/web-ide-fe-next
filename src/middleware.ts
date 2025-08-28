@@ -4,26 +4,23 @@ import { NextResponse } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // API 요청은 우회시키기 (프록시가 처리)
-  if (pathname.startsWith('/api')) {
+  // 프록시 경로는 우회
+  if (pathname.startsWith('/api') || pathname.startsWith('/auth')) {
     return NextResponse.next()
   }
 
-  // 공개 페이지 (인증 불필요)
-  const publicPaths = ['/signin', '/signup', '/']
+  // 공개 페이지는 접근 허용
   if (
-    publicPaths.some(path => pathname === path || pathname.startsWith(path))
+    pathname === '/' ||
+    pathname.startsWith('/signin') ||
+    pathname.startsWith('/signup')
   ) {
     return NextResponse.next()
   }
 
-  // 보호된 페이지 (인증 필요)
-  const protectedPaths = ['/account', '/project']
-  const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path))
-
-  if (isProtectedPath) {
-    const refreshCookie = request.cookies.get('refresh')
-    const refreshToken = refreshCookie?.value?.trim()
+  // 보호된 페이지는 인증 확인
+  if (pathname.startsWith('/account') || pathname.startsWith('/project')) {
+    const refreshToken = request.cookies.get('refresh')?.value?.trim()
 
     if (!refreshToken) {
       return NextResponse.redirect(new URL('/signin', request.url))

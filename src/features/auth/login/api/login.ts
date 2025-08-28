@@ -1,36 +1,26 @@
-import type { LoginPayload, User } from '@/features/auth/types'
-import { handleApiError } from '@/shared/lib/api-error'
+import type { LoginPayload, LoginResponse, User } from '@/features/auth/types'
+import { AUTH_BASE, requestApi } from '@/shared/api/config'
 
 /**
  * 로그인을 수행합니다.
  * @param payload 로그인 요청 데이터 (이메일, 비밀번호)
- * @returns 사용자 정보
+ * @returns 사용자 정보와 액세스 토큰
  * @throws 로그인 실패 시 에러
  */
 export const login = async (
   payload: LoginPayload,
 ): Promise<{ user: User; accessToken: string }> => {
-  // 프록시를 통해 same-origin으로 요청
-  const response = await fetch(`/auth/login`, {
+  const response = await requestApi<LoginResponse>(`${AUTH_BASE}/login`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(payload),
     credentials: 'include', // refreshToken을 HttpOnly 쿠키로 받기 위해
   })
 
-  if (!response.ok) {
-    await handleApiError(response, 'Login failed')
+  if (!response.success || !response.data) {
+    throw new Error(response.error || 'Login failed')
   }
 
-  const data = await response.json()
-
-  if (!data.success || !data.data) {
-    throw new Error(data.error?.message || 'Login failed')
-  }
-
-  const { userId, name, accessToken } = data.data
+  const { userId, name, accessToken } = response.data
 
   const user: User = {
     id: userId.toString(),

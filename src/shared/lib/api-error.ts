@@ -13,9 +13,9 @@ export class ApiError extends Error {
 }
 
 /**
- * API 응답에서 에러 메시지를 추출합니다
+ * API 응답에서 에러 메시지를 추출합니다 (내부용)
  */
-export const extractErrorMessage = async (
+const extractErrorMessage = async (
   response: Response,
   fallbackMessage: string,
 ): Promise<string> => {

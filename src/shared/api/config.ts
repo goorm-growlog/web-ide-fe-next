@@ -1,16 +1,23 @@
 import { handleApiError } from '../lib/api-error'
 import { fetchWithAuth } from './fetch-with-auth'
 
-// 모든 API를 프록시를 통해 호출
+// API 베이스 URL
 export const API_BASE = '/api'
+export const AUTH_BASE = '/auth'
 
-// fetchWithAuth가 토큰을 자동으로 처리하므로 기본 옵션에서 제거
+// 기본 fetch 옵션
 export const defaultFetchOptions: RequestInit = {
   headers: {
     Accept: 'application/json',
   },
 }
 
+/**
+ * 통합 API 요청 함수
+ * - 자동 토큰 갱신 (fetchWithAuth)
+ * - 일관된 에러 처리
+ * - credentials 옵션 지원
+ */
 export async function requestApi<T>(
   url: string,
   options?: RequestInit,
@@ -18,7 +25,7 @@ export async function requestApi<T>(
   // 기본 옵션과 전달받은 옵션 병합
   const finalOptions = { ...defaultFetchOptions, ...options }
 
-  // 문자열 body인 경우 Content-Type이 없으면 JSON으로 설정
+  // 문자열 body인 경우 Content-Type 설정
   if (typeof options?.body === 'string') {
     finalOptions.headers = {
       ...finalOptions.headers,
