@@ -2,14 +2,13 @@
 
 import { useRouter } from 'next/navigation'
 import { useAuthActions } from '@/entities/auth'
-import { useAuthGuard } from '@/shared/hooks/use-auth-guard'
+import { useAuthRestore } from '@/entities/auth/model/restore'
 
 const AccountPage = () => {
-  const { ensured } = useAuthGuard()
+  useAuthRestore() // 백그라운드에서 상태 복원
+  
   const { logout, refreshTokens } = useAuthActions()
   const router = useRouter()
-
-  if (!ensured) return null
 
   return (
     <div style={{ padding: 24 }}>
