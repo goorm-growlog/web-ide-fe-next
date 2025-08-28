@@ -1,3 +1,5 @@
+'use client'
+
 import SocialButton from '@/features/auth/ui/social-button'
 
 interface SocialLoginProps {
