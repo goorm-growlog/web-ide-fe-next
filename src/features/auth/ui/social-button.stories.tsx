@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/nextjs'
-import { SOCIAL_PROVIDERS } from '@/features/auth/social-login/model/types'
 import SocialButton from './social-button'
 
 const meta: Meta<typeof SocialButton> = {
@@ -12,7 +11,7 @@ const meta: Meta<typeof SocialButton> = {
   argTypes: {
     provider: {
       control: { type: 'select' },
-      options: [SOCIAL_PROVIDERS.KAKAO, SOCIAL_PROVIDERS.GITHUB],
+      options: ['kakao', 'github'],
     },
     onClick: { action: 'clicked' },
   },
@@ -23,13 +22,13 @@ type Story = StoryObj<typeof meta>
 
 export const Kakao: Story = {
   args: {
-    provider: SOCIAL_PROVIDERS.KAKAO,
+    provider: 'kakao',
   },
 }
 
 export const GitHub: Story = {
   args: {
-    provider: SOCIAL_PROVIDERS.GITHUB,
+    provider: 'github',
   },
 }
 
