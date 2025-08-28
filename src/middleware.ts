@@ -16,9 +16,10 @@ export function middleware(request: NextRequest) {
 
   // 계정 페이지는 인증 필요
   if (pathname.startsWith('/account')) {
-    const token = request.cookies.get('refresh')
+    const refreshCookie = request.cookies.get('refresh')
+    const refreshToken = refreshCookie?.value?.trim()
 
-    if (!token) {
+    if (!refreshToken) {
       return NextResponse.redirect(new URL('/signin', request.url))
     }
   }
