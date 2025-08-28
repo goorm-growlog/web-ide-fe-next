@@ -1,5 +1,5 @@
-import type { PasswordResetPayload } from '@/features/auth/types'
-import { API_BASE, requestApi } from '@/shared/api/config'
+import { api } from '../../api/api-client'
+import type { PasswordResetPayload } from '../../model/types'
 
 /**
  * 비밀번호 재설정 요청을 수행합니다.
@@ -9,8 +9,7 @@ import { API_BASE, requestApi } from '@/shared/api/config'
 export const resetPassword = async (
   payload: PasswordResetPayload,
 ): Promise<void> => {
-  const url = `${API_BASE}/reset-password`
-  await requestApi(url, {
+  await api('/api/reset-password', {
     method: 'POST',
     body: JSON.stringify(payload),
   })

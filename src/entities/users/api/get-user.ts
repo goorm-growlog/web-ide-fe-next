@@ -1,5 +1,5 @@
-import type { User, UserInfoResponse } from '@/features/auth/types'
-import { API_BASE, requestApi } from '@/shared/api/config'
+import { api } from '@/entities/users/api-client'
+import type { User, UserInfoData } from '@/features/auth/model/types'
 
 /**
  * 현재 사용자 정보를 조회합니다.
@@ -7,17 +7,12 @@ import { API_BASE, requestApi } from '@/shared/api/config'
  * @throws 사용자 정보 조회 실패 시 에러
  */
 export const getUser = async (): Promise<User> => {
-  const url = `${API_BASE}/users/me`
-  const response = await requestApi<UserInfoResponse>(url)
-
-  if (!response.success || !response.data) {
-    throw new Error(response.error || 'Failed to get user info')
-  }
+  const response = await api<UserInfoData>('/api/users/me')
 
   return {
-    id: response.data.userId.toString(),
-    email: response.data.email,
-    name: response.data.name,
-    profileImage: response.data.profileImage,
+    id: response.userId.toString(),
+    email: response.email,
+    name: response.name,
+    profileImage: response.profileImage,
   }
 }

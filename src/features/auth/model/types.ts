@@ -4,7 +4,7 @@ import {
   emailSchema,
   loginPasswordSchema,
   type passwordResetSchema,
-} from './model/validation-schema'
+} from './validation-schema'
 
 // 폼 관련 타입
 export const loginSchema = z.object({
