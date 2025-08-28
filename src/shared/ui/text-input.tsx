@@ -1,7 +1,6 @@
 'use client'
 
-import type { KeyboardEvent } from 'react'
-import { useState } from 'react'
+import { type KeyboardEvent, useState } from 'react'
 import { Button } from '@/shared/ui/shadcn/button'
 import { Input } from '@/shared/ui/shadcn/input'
 
@@ -35,7 +34,7 @@ export const TextInput = ({
   }
 
   return (
-    <div className="flex gap-3 bg-background p-4">
+    <div className="flex flex-shrink-0 gap-3 bg-background p-4">
       <Input
         value={message}
         onChange={e => setMessage(e.target.value)}
