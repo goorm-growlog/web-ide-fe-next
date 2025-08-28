@@ -15,9 +15,11 @@ export async function requestApi<T>(
   url: string,
   options?: RequestInit,
 ): Promise<T> {
-  // JSON body인 경우에만 Content-Type 추가
+  // 기본 옵션과 전달받은 옵션 병합
   const finalOptions = { ...defaultFetchOptions, ...options }
-  if (options?.body && typeof options.body === 'string') {
+
+  // 문자열 body인 경우 Content-Type이 없으면 JSON으로 설정
+  if (typeof options?.body === 'string') {
     finalOptions.headers = {
       ...finalOptions.headers,
       'Content-Type': 'application/json',
