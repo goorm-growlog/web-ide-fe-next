@@ -14,11 +14,10 @@
   "biome.requireConfiguration": true,
   "biome.unsafeWrites": true,
   "biome.applyUnsafe": true,
-  "biome.lspBin": "npx",
   "typescript.preferences.importModuleSpecifier": "shortest",
   "javascript.preferences.importModuleSpecifier": "shortest",
   "typescript.preferences.includePackageJsonAutoImports": "off",
   "typescript.suggest.autoImports": true,
   "javascript.suggest.autoImports": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
