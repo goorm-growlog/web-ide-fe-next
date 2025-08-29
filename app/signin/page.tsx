@@ -1,3 +1,7 @@
-const SigninPage = () => <div>Signin Page</div>
+import SigninWidget from '@/widgets/auth/ui/signin-widget'
+
+const SigninPage = () => {
+  return <SigninWidget />
+}
 
 export default SigninPage
