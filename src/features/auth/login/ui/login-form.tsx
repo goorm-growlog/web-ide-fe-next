@@ -1,5 +1,4 @@
 import type { UseFormReturn } from 'react-hook-form'
-import { FormProvider } from 'react-hook-form'
 import { Button } from '@/shared/ui/shadcn/button'
 import { Form } from '@/shared/ui/shadcn/form'
 import type { LoginFormData } from '../../model/types'
