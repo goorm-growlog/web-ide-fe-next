@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel'
+import FileExplorerPanel from '../ui/file-explorer-panel'
 
 const meta: Meta<typeof FileExplorerPanel> = {
   title: 'Features/FileExplorerPanel',
