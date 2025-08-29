@@ -46,7 +46,7 @@ export const useChatScroll = (messages: Message[]) => {
 
       lastMessageCount.current = messages.length
     }
-  }, [messages])
+  }, [messages.length])
 
   return {
     scrollAreaRef,

@@ -17,7 +17,7 @@ const createCodeLink = (match: RegExpMatchArray): CodeLink | null => {
   if (!fileName || !lineNumberStr || !url) return null
 
   const lineNumber = parseInt(lineNumberStr, 10)
-  if (Number.isNaN(lineNumber)) return null
+  if (Number.isNaN(lineNumber) || lineNumber < 1) return null
 
   return { fileName, lineNumber, url }
 }

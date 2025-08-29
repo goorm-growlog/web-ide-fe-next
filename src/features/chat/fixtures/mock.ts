@@ -1,4 +1,4 @@
-import type { Message } from '@/features/chat/model/types'
+import type { Message } from '@/features/chat/model/message-types'
 
 export const mockMessages: Message[] = [
   {
