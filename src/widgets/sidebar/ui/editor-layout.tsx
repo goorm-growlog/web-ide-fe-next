@@ -2,7 +2,6 @@
 
 import { memo, type ReactNode } from 'react'
 import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/chat-config'
-import { useChatMessages } from '@/features/chat/hooks/use-chat-messages'
 import { ChatPanel } from '@/features/chat/ui/chat-panel'
 import { cn } from '@/shared/lib/utils'
 import ResizableGrowHandle from '@/shared/ui/resizable-grow-handle'
@@ -36,7 +35,6 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
   const primaryPosition = isPrimaryLeft ? 'left' : 'right'
 
   const currentUserId = DEFAULT_USER_CONFIG.MOCK_CURRENT_USER_ID
-  const { messages, sendMessage } = useChatMessages()
 
   const handleLayoutChange = (sizes: number[]) => setLayout(sizes)
 
@@ -62,11 +60,7 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
       minSize={10}
       className="min-w-16"
     >
-      <ChatPanel
-        currentUserId={currentUserId}
-        messages={messages}
-        sendMessage={sendMessage}
-      />
+      <ChatPanel currentUserId={currentUserId} />
     </ResizablePanel>
   )
 
