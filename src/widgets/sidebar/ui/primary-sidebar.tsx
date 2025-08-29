@@ -1,13 +1,14 @@
 import { memo, useCallback } from 'react'
-import type { TabKey } from 'src/widgets/sidebar/model/types'
-import TabSwitcher from 'src/widgets/sidebar/ui/tab-switcher'
-import TogglePanels from 'src/widgets/sidebar/ui/toggle-panels'
 import { cn } from '@/shared/lib/utils'
 import { TAB_DEFINITIONS } from '@/widgets/sidebar/model/constants'
-import { useActiveTab } from '@/widgets/sidebar/model/hooks'
+import type { TabKey } from '@/widgets/sidebar/model/types'
+import TabSwitcher from '@/widgets/sidebar/ui/tab-switcher'
+import TogglePanels from '@/widgets/sidebar/ui/toggle-panels'
 
 interface PrimarySidebarProps {
   position?: 'left' | 'right'
+  activeTab: TabKey | null
+  toggleTab: (tab: TabKey) => void
   className?: string
 }
 
@@ -17,12 +18,16 @@ const SIDEBAR_LAYOUT_STYLES =
   'flex h-full w-full min-h-0 flex-row overflow-hidden bg-background'
 
 const PrimarySidebar = memo(
-  ({ position = 'left', className }: PrimarySidebarProps) => {
-    const { activeTab, toggleTab } = useActiveTab()
+  ({
+    position = 'left',
+    activeTab,
+    toggleTab,
+    className,
+  }: PrimarySidebarProps) => {
     const isVisible = activeTab !== null
 
     const handleTabClick = useCallback(
-      (key: TabKey) => toggleTab(key),
+      (tab: TabKey) => toggleTab(tab),
       [toggleTab],
     )
 

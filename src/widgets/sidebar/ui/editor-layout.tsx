@@ -1,6 +1,8 @@
 'use client'
 
 import { memo, type ReactNode } from 'react'
+import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/chat-config'
+import { useChatMessages } from '@/features/chat/hooks/use-chat-messages'
 import { ChatPanel } from '@/features/chat/ui/chat-panel'
 import { cn } from '@/shared/lib/utils'
 import ResizableGrowHandle from '@/shared/ui/resizable-grow-handle'
@@ -26,41 +28,51 @@ const EditorLayout = memo(({ children }: EditorLayoutProps) => {
 
   const { layout, setLayout } = useLayout()
   const { position } = usePosition()
-  const index = useLayoutIndices()
+  const { primary, secondary, main } = useLayoutIndices()
 
-  const activeTab = useActiveTab()
+  const { activeTab, toggleTab } = useActiveTab()
   const isVisible = activeTab !== null
-
   const isPrimaryLeft = position === 'left'
   const primaryPosition = isPrimaryLeft ? 'left' : 'right'
+
+  const currentUserId = DEFAULT_USER_CONFIG.MOCK_CURRENT_USER_ID
+  const { messages, sendMessage } = useChatMessages()
 
   const handleLayoutChange = (sizes: number[]) => setLayout(sizes)
 
   const primaryPanel = (
     <ResizablePanel
-      defaultSize={isVisible ? (layout[index.primary] ?? 25) : 16}
+      defaultSize={isVisible ? (layout[primary] ?? 25) : 16}
       maxSize={sidebarConfig.maxSize}
       minSize={isVisible ? 10 : 16}
       className={cn('min-w-16', isVisible ? '' : 'max-w-16')}
     >
-      <PrimarySidebar position={primaryPosition} />
+      <PrimarySidebar
+        position={primaryPosition}
+        activeTab={activeTab}
+        toggleTab={toggleTab}
+      />
     </ResizablePanel>
   )
 
   const secondaryPanel = (
     <ResizablePanel
-      defaultSize={layout[index.secondary] ?? 25}
+      defaultSize={layout[secondary] ?? 25}
       maxSize={sidebarConfig.maxSize}
       minSize={10}
       className="min-w-16"
     >
-      <ChatPanel />
+      <ChatPanel
+        currentUserId={currentUserId}
+        messages={messages}
+        sendMessage={sendMessage}
+      />
     </ResizablePanel>
   )
 
   const mainPanel = (
     <ResizablePanel
-      defaultSize={layout[index.main] ?? 50}
+      defaultSize={layout[main] ?? 50}
       maxSize={100}
       minSize={0}
       className="max-w-full"

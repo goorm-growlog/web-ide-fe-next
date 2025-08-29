@@ -76,6 +76,9 @@ const TogglePanels = ({ activeTabKey }: TogglePanelsProps) => {
         type="multiple"
         value={openPanels}
         className="flex h-full flex-col"
+        onValueChange={value => {
+          console.log('value', value)
+        }}
       >
         {panelData.panels.map(panelDef => {
           const isOpen = openPanels.includes(panelDef.key)
