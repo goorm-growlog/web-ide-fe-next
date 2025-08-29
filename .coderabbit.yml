@@ -1,0 +1,319 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+# CodeRabbit Configuration for web-ide-fe-next
+# AI-powered code review configuration
+
+# 언어 설정 (한국어로 리뷰)
+language: "ko-KR"
+
+# 베타 기능 활성화
+early_access: true
+
+# 무료 티어 기능 활성화
+enable_free_tier: true
+
+# 전역 톤 및 전문성 설정
+tone_instructions: |
+  Expert frontend code reviewer specializing in Next.js, React, TypeScript, and modern web development.
+  Focus on FSD (Feature-Sliced Design) architecture, accessibility, performance, and maintainability.
+
+# 리뷰 설정 섹션
+reviews:
+  # 리뷰 프로필 설정 (chill, assertive)
+  profile: "chill"
+  
+  # 변경 요청 워크플로우 비활성화 (PR에서 직접 변경 요청하지 않음)
+  request_changes_workflow: false
+  
+  # 고수준 요약 제공 (전체적인 코드 품질 개요)
+  high_level_summary: true
+  
+  # 고수준 요약 플레이스홀더
+  high_level_summary_placeholder: "## 📋 전체 리뷰 요약\n\n"
+  
+  # 워크스루에 고수준 요약 포함 여부
+  high_level_summary_in_walkthrough: false
+  
+  # 리뷰 상태 표시 (리뷰 진행 상황을 명확하게 표시)
+  review_status: true
+  
+  # 커밋 상태 설정 (리뷰 진행 시 커밋 상태 설정)
+  commit_status: true
+  
+  # 리뷰 실패 시 커밋 상태 설정
+  fail_commit_status: false
+  
+  # 워크스루 접기 (긴 설명을 접을 수 있게 하여 가독성 향상)
+  collapse_walkthrough: false
+
+  # 도구 설정 (린터 및 타입체커 통합)
+  tools:
+    # Biome 린터 통합 (자동 설정 파일 인식)
+    biome:
+      enabled: true
+
+  # 시 형식의 리뷰 비활성화 (더 실용적인 리뷰)
+  poem: false
+  
+  # 변경된 파일 요약 생성
+  changed_files_summary: true
+  
+  # 시퀀스 다이어그램 생성
+  sequence_diagrams: true
+  
+  # 코드 리뷰 노력 추정
+  estimate_code_review_effort: true
+  
+  # 연결된 이슈 평가
+  assess_linked_issues: true
+  
+  # 관련 이슈 포함
+  related_issues: true
+  
+  # 관련 PR 포함
+  related_prs: true
+  
+  # 라벨 제안
+  suggested_labels: true
+  
+  # 자동 라벨 적용 (비활성화)
+  auto_apply_labels: false
+  
+  # 리뷰어 제안
+  suggested_reviewers: true
+  
+  # 자동 리뷰어 할당 (비활성화)
+  auto_assign_reviewers: false
+
+  # 자동 리뷰 설정
+  auto_review:
+    # 자동 리뷰 활성화 (PR 생성 시 자동으로 AI 리뷰 시작)
+    enabled: true
+    
+    # Draft PR 리뷰 여부 (false: 완성된 PR만 리뷰)
+    drafts: false
+    
+    # 자동 리뷰를 수행할 브랜치들 (이 브랜치들로의 PR만 리뷰)
+    base_branches:
+      - main
+      - develop
+    
+    # 증분 리뷰 활성화 (새로운 변경사항만 리뷰하여 효율성 향상)
+    auto_incremental_review: true
+    
+    # 제목 키워드로 리뷰 무시 (특정 키워드가 포함된 PR은 리뷰하지 않음)
+    ignore_title_keywords:
+      - "wip"           # 작업 중인 PR
+      - "draft"         # 초안 PR
+      - "do not review" # 리뷰 금지 PR
+      - "temp"          # 임시 PR
+      - "docs"         # 문서 변경
+      - "typo"         # 오타 수정
+      - "minor"        # 사소한 변경
+    
+    # 자동화 봇 사용자명 무시 (Dependabot, Renovate 등)
+    ignore_usernames:
+      - "dependabot[bot]"
+      - "renovate[bot]"
+    
+    # PR 닫힐 때 리뷰 중단
+    abort_on_close: true
+
+  # 경로별 맞춤 지침 (FSD 아키텍처 및 구체적인 파일 타입별 리뷰 규칙)
+  path_instructions:
+    # FSD 아키텍처 레이어들
+    - path: "src/entities/**"
+      instructions: |
+        Business entities layer review guidelines:
+        - Ensure pure business logic without UI components
+        - Verify only shared layer imports (no other layers)
+        - Check reusability and domain isolation
+        - Validate business model purity
+
+    - path: "src/features/**"
+      instructions: |
+        Business features layer review guidelines:
+        - Focus on single business functionality
+        - Import only entities and shared layers
+        - Avoid importing other features
+        - Separate business logic from UI logic
+        - Check feature independence
+
+    - path: "src/widgets/**"
+      instructions: |
+        Composite components layer review guidelines:
+        - Import only entities, shared, and features layers
+        - Avoid importing other widgets
+        - Ensure reusable composite UI blocks
+        - Check component composition patterns
+
+    - path: "src/shared/**"
+      instructions: |
+        Shared utilities layer review guidelines:
+        - Import no other layers (pure utilities)
+        - Ensure reusability across all layers
+        - Check for circular dependencies
+        - Validate utility function purity
+
+    # UI 컴포넌트 (재사용 가능한 UI 요소들)
+    - path: "src/shared/ui/**"
+      instructions: |
+        UI Components review guidelines:
+        - Ensure compliance with shadcn/ui and Radix UI patterns
+        - Verify accessibility (a11y) guidelines compliance
+        - Review TypeScript type definition completeness
+        - Check props interface clarity and documentation
+        - Validate semantic HTML usage and ARIA attributes
+        - Ensure keyboard navigation support
+        - Check color contrast ratios and screen reader compatibility
+
+    # React 컴포넌트 성능 최적화 (TSX 파일)
+    - path: "src/**/*.tsx"
+      instructions: |
+        React Components performance review guidelines:
+        - Check for unnecessary re-renders and optimization opportunities
+        - Verify proper use of React.memo, useMemo, useCallback
+        - Review bundle size impact of imports (prefer dynamic imports for large components)
+        - Ensure proper image optimization and lazy loading implementation
+        - Check for proper error boundaries usage
+        - Verify efficient state management patterns
+        - Review prop drilling and consider context usage
+
+    # Next.js 앱 라우터 페이지 (App Router)
+    - path: "src/app/**"
+      instructions: |
+        Next.js App Router pages review guidelines:
+        - Verify proper Server vs Client Component distinction
+        - Check metadata API implementation for SEO optimization
+        - Review loading.tsx, error.tsx, not-found.tsx implementations
+        - Ensure proper data fetching patterns (fetch, cache, revalidate)
+        - Check for proper streaming and Suspense usage
+        - Verify environment variable security (no client-side exposure)
+        - Review route groups and parallel routes usage
+
+    # 테스트 파일들 (코드 품질과 안정성 보장)
+    - path: "**/*.{test,spec}.*"
+      instructions: |
+        Test files review guidelines:
+        - Verify test coverage adequacy
+        - Ensure test case clarity and comprehensiveness
+        - Review mock data usage appropriateness
+        - Check test descriptions and naming conventions
+
+    # Storybook 스토리 파일 (UI 컴포넌트 문서화 및 테스트)
+    - path: "src/**/*.stories.tsx"
+      instructions: |
+        Storybook stories review guidelines:
+        - Verify component props type definitions
+        - Ensure various state and variant cases are covered
+        - Check accessibility test cases inclusion
+        - Review story naming and organization
+
+    # 설정 파일들 (프로젝트 설정 및 환경 구성)
+    - path: "*.config.*"
+      instructions: |
+        Configuration files review guidelines:
+        - Verify configuration correctness and completeness
+        - Check environment-specific settings appropriateness
+        - Review security-related configuration safety
+        - Ensure no unnecessary or redundant settings
+
+    # 타입 정의 파일들 (TypeScript 타입 시스템)
+    - path: "**/*.{d,types,interface}.ts"
+      instructions: |
+        Type definition files review guidelines:
+        - Ensure type clarity and precision
+        - Verify appropriate use of generic types
+        - Check union and intersection types appropriateness
+        - Review type guards usage where necessary
+
+    # 보안 검증 규칙 (모든 TypeScript/JavaScript 파일)
+    - path: "**/*.{ts,tsx,js,jsx}"
+      instructions: |
+        Security review guidelines:
+        - Check for potential XSS vulnerabilities in JSX
+        - Verify input sanitization and validation
+        - Review environment variable exposure (no client-side secrets)
+        - Validate authentication and authorization patterns
+        - Check for SQL injection vulnerabilities in database queries
+        - Ensure proper CSRF protection implementation
+        - Review cookie security settings (httpOnly, secure, sameSite)
+
+    # CSS/SCSS 스타일 파일 (스타일링 및 성능)
+    - path: "**/*.{css,scss,module.css,module.scss}"
+      instructions: |
+        CSS/SCSS review guidelines:
+        - Optimize Tailwind CSS class usage and avoid redundancy
+        - Check for CSS-in-JS performance patterns
+        - Verify responsive design implementation
+        - Review accessibility in styling (color contrast, focus indicators)
+        - Ensure CSS custom properties usage for maintainability
+        - Check for unused styles and dead CSS
+        - Validate CSS Grid and Flexbox usage efficiency
+
+    # Custom Hooks 패턴 (React Hook 최적화)
+    - path: "**/use*.{ts,tsx}"
+      instructions: |
+        Custom Hooks review guidelines:
+        - Verify proper React Hook rules compliance
+        - Check for efficient dependency arrays in useEffect/useMemo/useCallback
+        - Ensure proper cleanup in useEffect for subscriptions
+        - Review hook reusability and single responsibility
+        - Validate proper state management patterns
+        - Check for unnecessary re-renders and optimization opportunities
+        - Ensure proper error handling within hooks
+
+    # 환경 설정 및 보안 관련 파일
+    - path: "**/.env*"
+      instructions: |
+        Environment and security configuration review guidelines:
+        - Verify no sensitive data in environment files
+        - Check Next.js security headers configuration
+        - Review middleware security implementations
+        - Validate CORS settings appropriateness
+        - Ensure proper secret management patterns
+        - Check for production vs development environment distinctions
+
+    - path: "**/next.config.*"
+      instructions: |
+        Environment and security configuration review guidelines:
+        - Verify no sensitive data in environment files
+        - Check Next.js security headers configuration
+        - Review middleware security implementations
+        - Validate CORS settings appropriateness
+        - Ensure proper secret management patterns
+        - Check for production vs development environment distinctions
+
+    - path: "**/middleware.{ts,js}"
+      instructions: |
+        Environment and security configuration review guidelines:
+        - Verify no sensitive data in environment files
+        - Check Next.js security headers configuration
+        - Review middleware security implementations
+        - Validate CORS settings appropriateness
+        - Ensure proper secret management patterns
+        - Check for production vs development environment distinctions
+
+# 채팅 설정 섹션
+chat:
+  # 자동 응답 활성화 (리뷰 관련 질문에 자동으로 답변)
+  auto_reply: true
+
+# 지식 베이스 설정 섹션
+knowledge_base:
+  # 학습 범위 설정 (로컬 저장소 학습)
+  learnings:
+    scope: "local"
+  
+  # 이슈 범위 설정 (로컬 저장소 이슈)
+  issues:
+    scope: "local"
+  
+  # PR 범위 설정 (로컬 저장소 PR)
+  pull_requests:
+    scope: "local"
+  
+  # 코드 가이드라인 파일 참조
+  code_guidelines:
+    filePatterns:
+      - ".cursor/rules/frontend-guide.mdc"

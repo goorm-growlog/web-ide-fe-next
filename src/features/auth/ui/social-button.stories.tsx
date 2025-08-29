@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import SocialButton from './social-button'
 
 const meta: Meta<typeof SocialButton> = {

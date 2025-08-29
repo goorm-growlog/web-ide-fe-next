@@ -1,4 +1,4 @@
-import type { Meta } from '@storybook/nextjs'
+import type { Meta } from '@storybook/nextjs-vite'
 import type { JSX } from 'react'
 import { useState } from 'react'
 import PasswordInput from './password-input'

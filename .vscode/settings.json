@@ -1,7 +1,23 @@
 {
   "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.organizeImports.biome": "explicit"
-  }
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit",
+    "source.removeUnusedImports.biome": "never",
+    "source.sortImports.biome": "explicit",
+    "source.addMissingImports.biome": "never",
+    "source.sortClasses.biome": "explicit"
+  },
+  "biome.enable": true,
+  "biome.lintOnSave": true,
+  "biome.requireConfiguration": true,
+  "biome.unsafeWrites": true,
+  "biome.applyUnsafe": true,
+  "typescript.preferences.importModuleSpecifier": "shortest",
+  "javascript.preferences.importModuleSpecifier": "shortest",
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.suggest.autoImports": true,
+  "javascript.suggest.autoImports": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

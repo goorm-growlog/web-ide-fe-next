@@ -35,17 +35,17 @@ const LoginForm = ({
         </FormField>
         <Button
           type="submit"
-          className="w-full bg-primary hover:bg-primary/80 text-primary-foreground"
+          className="w-full bg-primary text-primary-foreground hover:bg-primary/80"
           disabled={isLoading}
         >
           {isLoading ? 'Logging in...' : 'Login'}
         </Button>
       </form>
-      <div className="flex justify-end mt-2">
+      <div className="mt-2 flex justify-end">
         <button
           type="button"
           onClick={onPasswordResetClick}
-          className="text-xs text-muted-foreground hover:underline hover:text-muted-foreground/80 transition"
+          className="text-muted-foreground text-xs transition hover:text-muted-foreground/80 hover:underline"
         >
           Forgot your password?
         </button>

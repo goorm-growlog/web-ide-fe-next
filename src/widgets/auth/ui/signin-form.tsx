@@ -41,7 +41,7 @@ const SigninForm = () => {
         onSubmit={handleLogin}
         onPasswordResetClick={handlePasswordResetOpen}
       />
-      <div className="w-full flex items-center mt-12 mb-4">
+      <div className="mt-12 mb-4 flex w-full items-center">
         <hr className="flex-1 border-border" />
         <span className="mx-4 text-muted-foreground text-sm">or</span>
         <hr className="flex-1 border-border" />

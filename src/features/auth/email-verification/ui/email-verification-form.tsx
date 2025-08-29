@@ -31,7 +31,7 @@ const EmailVerificationForm = ({ onSendCode, onVerifyCode }: Props) => {
 
   return (
     <FormProvider {...form}>
-      <form className="space-y-4 w-full" onSubmit={handleSubmit}>
+      <form className="w-full space-y-4" onSubmit={handleSubmit}>
         <FormField name="email" control={form.control} label="Email">
           {field => (
             <InputWithButton

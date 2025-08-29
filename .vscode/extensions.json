@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "clinyong.vscode-css-modules",
+    "bradlc.vscode-tailwindcss",
+    "biomejs.biome"
+  ]
+}

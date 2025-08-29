@@ -25,14 +25,14 @@ const SocialButton = ({ provider, onClick, className }: SocialButtonProps) => (
   <button
     type="button"
     onClick={onClick}
-    className={`flex items-center justify-center w-12 h-12 rounded-md transition-colors ${PROVIDER_STYLES[provider]} ${className ?? ''}`}
+    className={`flex h-12 w-12 items-center justify-center rounded-md transition-colors ${PROVIDER_STYLES[provider]} ${className ?? ''}`}
   >
     <Image
       src={PROVIDER_ICON[provider]}
       alt={PROVIDER_ALT[provider]}
       width={16}
       height={16}
-      className={provider === 'kakao' ? 'filter brightness-0' : ''}
+      className={provider === 'kakao' ? 'brightness-0 filter' : ''}
     />
   </button>
 )

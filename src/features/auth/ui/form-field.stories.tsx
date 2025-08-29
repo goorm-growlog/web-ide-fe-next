@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { FormProvider, useForm } from 'react-hook-form'
 import { type FormData, formSchema } from '../model/validation-schema'
 import FormField from './form-field'
@@ -126,7 +126,7 @@ export const LiveValidationForm: Story = {
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit(onSubmit)}
-          className="space-y-4 w-80"
+          className="w-80 space-y-4"
         >
           <FormField
             name="email"
@@ -150,7 +150,7 @@ export const LiveValidationForm: Story = {
           </FormField>
           <button
             type="submit"
-            className="w-full bg-zinc-800 text-white p-2 rounded hover:bg-zinc-700"
+            className="w-full rounded bg-zinc-800 p-2 text-white hover:bg-zinc-700"
           >
             Submit
           </button>

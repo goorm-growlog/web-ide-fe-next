@@ -8,8 +8,8 @@ const SigninWidget = () => {
   return (
     <AuthLayout>
       {/* 로고 */}
-      <div className="text-center mb-12">
-        <div className="relative w-40 h-10 mx-auto">
+      <div className="mb-12 text-center">
+        <div className="relative mx-auto h-10 w-40">
           <Image
             src="/logo.svg"
             alt="GrowLog"
@@ -23,7 +23,7 @@ const SigninWidget = () => {
         Don't have an account?{' '}
         <Link
           href="/signup"
-          className="font-medium underline text-muted-foreground"
+          className="font-medium text-muted-foreground underline"
         >
           Sign Up
         </Link>

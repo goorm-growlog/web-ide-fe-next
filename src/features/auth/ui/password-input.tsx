@@ -28,14 +28,14 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
           disabled={props.disabled}
           onClick={() => setVisible(v => !v)}
           className={cn(
-            'absolute right-2.5 top-1/2 -translate-y-1/2',
-            'bg-transparent border-none cursor-pointer p-0 flex items-center',
+            '-translate-y-1/2 absolute top-1/2 right-2.5',
+            'flex cursor-pointer items-center border-none bg-transparent p-0',
             'text-muted-foreground hover:text-foreground',
             'transition-colors duration-200',
             'disabled:cursor-not-allowed disabled:opacity-50',
           )}
         >
-          <Icon className="w-3.5 h-3.5" />
+          <Icon className="h-3.5 w-3.5" />
         </button>
       </div>
     )
