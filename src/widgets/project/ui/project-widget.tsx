@@ -1,51 +1,29 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/entities/auth/model/store'
-import { logout as logoutApi } from '@/features/auth/logout/api/logout'
-import { refreshToken as refreshTokenApi } from '@/features/auth/refresh/api/refresh'
+import { useSession } from 'next-auth/react'
+import { useLogout } from '@/features/auth/logout/model/use-logout'
 
 /**
  * 프로젝트 관리 위젯
- * FSD 원칙에 맞게 pages와 features/entities 사이의 중간 계층
+ * FSD 원칙: 비즈니스 로직은 features에 위임하고 UI 조합만 담당
+ * 클라이언트에서 세션을 조회하여 서버 의존성 제거
  */
 export const ProjectWidget = () => {
-  const { clearAuth, setAccessToken } = useAuthStore()
-  const router = useRouter()
+  const { data: session, status } = useSession()
+  const { logout } = useLogout()
+
+  // 로딩 상태 (미들웨어가 보호하므로 빠르게 로드됨)
+  if (status === 'loading') {
+    return <div style={{ padding: 24 }}>Loading...</div>
+  }
 
   return (
     <div style={{ padding: 24 }}>
       <h1>Project</h1>
-      <button
-        type="button"
-        onClick={async () => {
-          try {
-            await logoutApi()
-          } catch {
-            // 로그아웃 API 실패는 조용히 처리
-          }
-          clearAuth()
-          router.replace('/signin')
-        }}
-      >
+      <p>Welcome, {session?.user?.name || session?.user?.email}!</p>
+
+      <button type="button" onClick={logout}>
         로그아웃
-      </button>
-      <button
-        type="button"
-        style={{ marginLeft: 8 }}
-        onClick={async () => {
-          try {
-            const token = await refreshTokenApi()
-            setAccessToken(token)
-            alert(`토큰 갱신 성공: ${token.slice(0, 20)}...`)
-          } catch (e) {
-            alert(
-              `토큰 갱신 실패: ${e instanceof Error ? e.message : String(e)}`,
-            )
-          }
-        }}
-      >
-        리프레쉬
       </button>
     </div>
   )
