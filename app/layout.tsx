@@ -1,5 +1,6 @@
 import './globals.css'
 
+import { Providers } from '@/shared/providers/providers'
 import AppToaster from '@/shared/ui/app-toaster'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
@@ -29,8 +30,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-    <AppToaster />
-    {children}
+        <Providers>
+          <AppToaster />
+          {children}
+        </Providers>
       </body>
     </html>
   )
