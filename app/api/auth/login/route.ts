@@ -1,35 +1,43 @@
-import { NextResponse } from 'next/server'
-import { api } from '@/shared/api/ky-client'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json()
     
     // 백엔드 로그인 API 호출
-    const response = await api
-      .post('auth/login', {
-        json: { email, password },
-        credentials: 'include',
-      })
-      .json()
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ email, password }),
+    })
 
-    return NextResponse.json(response, { status: 200 })
-  } catch (error) {
-    // ky HTTPError 처리 - 백엔드 에러 메시지 그대로 전달
-    if (error && typeof error === 'object' && 'name' in error && error.name === 'HTTPError' && 'response' in error) {
-      const httpError = error as { response: Response }
-      const body = await httpError.response.json()
-      return NextResponse.json(body, { status: httpError.response.status })
+    if (!response.ok) {
+      const errorData = await response.json()
+      return NextResponse.json(errorData, { status: response.status })
     }
+
+    const data = await response.json()
     
-    // 기타 에러 처리
-    const errorMessage = error && typeof error === 'object' && 'message' in error 
-      ? String(error.message) 
-      : '로그인에 실패했습니다.'
-      
+    // 🔥 핵심: 백엔드에서 받은 쿠키를 클라이언트로 포워딩
+    const nextResponse = NextResponse.json(data, { status: 200 })
+    
+    // Set-Cookie 헤더들을 모두 복사
+    const setCookieHeaders = response.headers.getSetCookie?.() || 
+                             response.headers.get('set-cookie')?.split(', ') || []
+    
+    setCookieHeaders.forEach(cookie => {
+      nextResponse.headers.append('Set-Cookie', cookie)
+    })
+    
+    return nextResponse
+  } catch (error) {
+    console.error('Login API error:', error)
     return NextResponse.json(
-      { error: { message: errorMessage } },
-      { status: 500 },
+      { error: { message: '로그인에 실패했습니다.' } },
+      { status: 500 }
     )
   }
 }

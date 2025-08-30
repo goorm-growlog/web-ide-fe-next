@@ -59,11 +59,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {
         email: { type: 'email' },
         password: { type: 'password' },
+        userData: { type: 'text' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
 
         try {
+          // 커스텀 API Route에서 전달받은 사용자 정보 사용
+          if (credentials.userData) {
+            const userData = JSON.parse(String(credentials.userData))
+            return {
+              id: String(userData.userId),
+              email: String(credentials.email),
+              name: userData.name,
+              image: null,
+              accessToken: userData.accessToken,
+            }
+          }
+
+          // userData가 없는 경우 백엔드 호출 (기존 방식)
           const response = await api
             .post('auth/login', {
               json: {
@@ -105,15 +119,33 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return {
           ...token,
           accessToken: userWithToken.accessToken,
+          // 토큰 만료 시간 추가 (예: 1시간)
+          accessTokenExpires: Date.now() + 60 * 60 * 1000,
         }
       }
 
-      // 토큰 갱신은 401 에러 발생 시에만 수행
-      // 여기서는 기존 토큰을 그대로 반환
-      return token
+      // 토큰 갱신 체크
+      const tokenWithExpiry = token as {
+        accessTokenExpires?: number
+        accessToken?: string
+      }
+
+      // 토큰이 아직 유효한 경우
+      if (Date.now() < (tokenWithExpiry.accessTokenExpires || 0)) {
+        return token
+      }
+
+      // 토큰이 만료된 경우 → 리프레시
+      console.log('🔄 Token expired, refreshing...')
+      return await _refreshAccessToken(token)
     },
     async session({ session, token }) {
-      const tokenWithError = token as { error?: string; accessToken?: string }
+      const tokenWithError = token as {
+        error?: string
+        accessToken?: string
+        accessTokenExpires?: number
+      }
+
       if (tokenWithError.error === 'RefreshAccessTokenError') {
         return { ...session, error: 'RefreshAccessTokenError' }
       }

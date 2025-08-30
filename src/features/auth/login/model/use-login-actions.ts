@@ -5,81 +5,82 @@ import { signIn } from 'next-auth/react'
 import { useCallback } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
-import { api } from '@/shared/api/ky-client'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
 import type { LoginFormData } from '../../model/types'
-
-interface LoginApiResponse {
-  success: boolean
-  data?: { userId: number; name: string; accessToken: string }
-  error?: { code: string; message: string }
-}
 
 export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
   const { isLoading, withLoading } = useLoadingState()
   const router = useRouter()
 
-  const onSubmit = useCallback(
+  // 복잡한 로그인 처리 로직을 useCallback으로 분리
+  const handleLogin = useCallback(
     async (data: LoginFormData) => {
-      return withLoading(async () => {
-        try {
-          // Call backend login API directly
-          const response = await api
-            .post('auth/login', {
-              json: { email: data.email, password: data.password },
-              credentials: 'include',
-            })
-            .json<LoginApiResponse>()
-
-          if (!response.success) {
-            const errorMessage = response.error?.message || 'Login failed'
-            form?.setError('root', { type: 'server', message: errorMessage })
-            toast.error(errorMessage)
-            return
-          }
-
-          // Create NextAuth session on success
-          const result = await signIn('credentials', {
+      try {
+        // 1. 커스텀 API Route로 로그인 (쿠키 포워딩)
+        const loginResponse = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
             email: data.email,
             password: data.password,
-            redirect: false,
-          })
+          }),
+        })
 
-          if (result?.ok) {
-            toast.success('Login successful!')
-            form?.clearErrors('root')
-            router.push('/project')
-          } else {
-            const errorMessage = 'Failed to create session'
-            form?.setError('root', { type: 'server', message: errorMessage })
-            toast.error(errorMessage)
-          }
-        } catch (error) {
-          let errorMessage = getErrorMessage(error) || 'Login failed'
+        if (!loginResponse.ok) {
+          const errorData = await loginResponse.json()
+          const errorMessage = errorData?.error?.message || 'Login failed'
+          form?.setError('root', { type: 'server', message: errorMessage })
+          toast.error(errorMessage)
+          return
+        }
 
-          // Handle ky HTTPError
-          if (
-            error &&
-            typeof error === 'object' &&
-            'name' in error &&
-            error.name === 'HTTPError'
-          ) {
-            try {
-              const httpError = error as unknown as { response: Response }
-              const body = await httpError.response.json()
-              errorMessage = body?.error?.message || errorMessage
-            } catch {
-              // Use fallback message if parsing fails
-            }
-          }
+        const loginData = await loginResponse.json()
 
+        if (!loginData.success) {
+          const errorMessage = loginData.error?.message || 'Login failed'
+          form?.setError('root', { type: 'server', message: errorMessage })
+          toast.error(errorMessage)
+          return
+        }
+
+        // 2. NextAuth 세션 생성 (이미 쿠키는 설정됨)
+        const result = await signIn('credentials', {
+          email: data.email,
+          password: data.password,
+          // 실제 사용자 정보를 NextAuth에 전달
+          userData: JSON.stringify({
+            userId: loginData.data.userId,
+            name: loginData.data.name,
+            accessToken: loginData.data.accessToken,
+          }),
+          redirect: false,
+        })
+
+        if (result?.ok) {
+          toast.success('Login successful!')
+          form?.clearErrors('root')
+          router.push('/project')
+        } else {
+          const errorMessage = result?.error || 'Failed to login'
           form?.setError('root', { type: 'server', message: errorMessage })
           toast.error(errorMessage)
         }
-      })
+      } catch (error) {
+        const errorMessage = getErrorMessage(error) || 'Failed to login'
+        form?.setError('root', { type: 'server', message: errorMessage })
+        toast.error(errorMessage)
+      }
     },
-    [form, withLoading, router],
+    [form, router],
+  )
+
+  const onSubmit = useCallback(
+    async (data: LoginFormData) => {
+      return withLoading(() => handleLogin(data))
+    },
+    [withLoading, handleLogin],
   )
 
   return {
