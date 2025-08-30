@@ -1,4 +1,5 @@
-import { api } from '../../api/api-client'
+import { api } from '@/shared/api/ky-client'
+import { handleApiSuccess } from '@/shared/lib/api-response-handler'
 import type { PasswordResetPayload } from '../../model/types'
 
 /**
@@ -9,8 +10,18 @@ import type { PasswordResetPayload } from '../../model/types'
 export const resetPassword = async (
   payload: PasswordResetPayload,
 ): Promise<void> => {
-  await api('/api/reset-password', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
+  // 백엔드 API: POST /auth/reset-password
+  const response = await api
+    .post('auth/reset-password', {
+      json: {
+        name: payload.name,
+        email: payload.email,
+      },
+    })
+    .json<{
+      success: boolean
+      error?: { code: string; message: string }
+    }>()
+
+  handleApiSuccess(response, 'Password reset failed')
 }
