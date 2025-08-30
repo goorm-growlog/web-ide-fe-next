@@ -90,7 +90,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             image: null,
             accessToken: data.accessToken,
           }
-        } catch {
+        } catch (_error) {
+          // 인증 실패 시 null 반환 (NextAuth 공식 패턴)
           return null
         }
       },
