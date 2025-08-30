@@ -1,17 +1,15 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import { useCallback } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
-import { useAuthStore } from '@/entities/auth/model/store'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
 import type { LoginFormData } from '../../model/types'
-import { login as loginApi } from '../api/login'
 
 export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
-  const setAuth = useAuthStore(state => state.setAuth)
   const { isLoading, withLoading } = useLoadingState()
   const router = useRouter()
 
@@ -19,14 +17,19 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
     async (data: LoginFormData) => {
       return withLoading(async () => {
         try {
-          const { user, accessToken } = await loginApi({
+          const result = await signIn('credentials', {
             email: data.email,
             password: data.password,
+            redirect: false,
           })
-          setAuth(user, accessToken) // persist가 자동으로 localStorage에 저장
-          toast.success('Login successful!')
-          form?.clearErrors('root')
-          router.push('/project') // 로그인 성공 시 프로젝트 페이지로 이동
+
+          if (result?.ok) {
+            toast.success('Login successful!')
+            form?.clearErrors('root')
+            router.push('/project')
+          } else {
+            throw new Error('Login failed')
+          }
         } catch (error) {
           const errorMsg = getErrorMessage(error) || 'Login failed.'
           form?.setError('root', { type: 'server', message: errorMsg })
@@ -34,7 +37,7 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
         }
       })
     },
-    [setAuth, form, withLoading, router],
+    [form, withLoading, router],
   )
 
   return {
