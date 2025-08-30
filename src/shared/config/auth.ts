@@ -7,7 +7,7 @@ import { handleApiResponseWithDetailedError } from '@/shared/lib/api-response-ha
 
 let refreshPromise: Promise<Record<string, unknown>> | null = null
 
-async function refreshAccessToken(token: Record<string, unknown>) {
+async function _refreshAccessToken(token: Record<string, unknown>) {
   if (refreshPromise) return await refreshPromise
 
   refreshPromise = performTokenRefresh(token)
@@ -107,9 +107,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
       }
 
-      // NextAuth가 JWT 만료시간을 자동으로 체크하므로
-      // 토큰이 유효하다면 그대로 반환, 만료되었다면 갱신 진행
-      return await refreshAccessToken(token)
+      // 토큰 갱신은 401 에러 발생 시에만 수행
+      // 여기서는 기존 토큰을 그대로 반환
+      return token
     },
     async session({ session, token }) {
       const tokenWithError = token as { error?: string; accessToken?: string }
