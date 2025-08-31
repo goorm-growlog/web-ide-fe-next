@@ -8,45 +8,32 @@ import { toast } from 'sonner'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
 import type { LoginFormData } from '../../model/types'
+import { loginApi } from '../api/login-api'
 
 export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
   const { isLoading, withLoading } = useLoadingState()
   const router = useRouter()
 
+  // 간단한 에러 처리 헬퍼
+  const showError = useCallback(
+    (message: string) => {
+      form?.setError('root', { type: 'server', message })
+      toast.error(message)
+    },
+    [form],
+  )
+
   const handleLogin = useCallback(
     async (data: LoginFormData) => {
       try {
-        const loginResponse = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-          }),
-        })
+        // 1. 백엔드 로그인 API 호출
+        const loginData = await loginApi(data)
 
-        if (!loginResponse.ok) {
-          const errorData = await loginResponse.json()
-          const errorMessage = errorData?.error?.message || 'Login failed'
-          form?.setError('root', { type: 'server', message: errorMessage })
-          toast.error(errorMessage)
-          return
-        }
-
-        const loginData = await loginResponse.json()
-
-        if (!loginData.success) {
-          const errorMessage = loginData?.error?.message || 'Login failed'
-          form?.setError('root', { type: 'server', message: errorMessage })
-          toast.error(errorMessage)
-          return
-        }
-
+        // 2. NextAuth 세션 생성
         const result = await signIn('credentials', {
           email: data.email,
           password: data.password,
-          userData: JSON.stringify(loginData.data),
+          userData: JSON.stringify(loginData),
           redirect: false,
         })
 
@@ -55,17 +42,14 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
           form?.clearErrors('root')
           router.push('/project')
         } else {
-          const errorMessage = 'Failed to create session'
-          form?.setError('root', { type: 'server', message: errorMessage })
-          toast.error(errorMessage)
+          showError('Failed to create session')
         }
       } catch (error) {
         const errorMessage = getErrorMessage(error) || 'Failed to login'
-        form?.setError('root', { type: 'server', message: errorMessage })
-        toast.error(errorMessage)
+        showError(errorMessage)
       }
     },
-    [router, form],
+    [router, form, showError],
   )
 
   const onSubmit = useCallback(
