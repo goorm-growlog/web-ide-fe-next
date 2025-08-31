@@ -1,6 +1,5 @@
-import type { User, UserInfoResponse } from '@/features/auth/model/types'
+import type { User } from '@/features/auth/model/types'
 import { authApi } from '@/shared/api/ky-client'
-import { handleApiResponse } from '@/shared/lib/api-response-handler'
 
 /**
  * 현재 사용자 정보를 조회합니다.
@@ -9,14 +8,28 @@ import { handleApiResponse } from '@/shared/lib/api-response-handler'
  */
 export const getUser = async (): Promise<User> => {
   // 백엔드 API: GET /users/me (인증 필요)
-  const response = await authApi.get('users/me').json<UserInfoResponse>()
+  const response = await authApi.get('users/me').json<{
+    success: boolean
+    data?: {
+      userId: number
+      email: string
+      name: string
+      profileImage?: string
+    }
+    error?: string
+  }>()
 
-  const data = handleApiResponse(response, 'Failed to get user info')
+  if (!response.success || !response.data) {
+    throw new Error(response.error || 'Failed to get user info')
+  }
 
+  // 간단한 인라인 변환
   return {
-    id: data.userId.toString(),
-    email: data.email,
-    name: data.name,
-    profileImage: data.profileImage,
+    id: response.data.userId.toString(),
+    email: response.data.email,
+    name: response.data.name,
+    ...(response.data.profileImage && {
+      profileImage: response.data.profileImage,
+    }),
   }
 }

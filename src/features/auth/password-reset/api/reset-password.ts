@@ -1,5 +1,5 @@
 import { api } from '@/shared/api/ky-client'
-import { handleApiSuccess } from '@/shared/lib/api-response-handler'
+import type { ApiResponse } from '@/shared/types/api'
 import type { PasswordResetData } from '../../model/validation-schema'
 
 /**
@@ -18,10 +18,9 @@ export const resetPassword = async (
         email: payload.email,
       },
     })
-    .json<{
-      success: boolean
-      error?: { code: string; message: string }
-    }>()
+    .json<ApiResponse<void>>()
 
-  handleApiSuccess(response, 'Password reset failed')
+  if (!response.success) {
+    throw new Error(response.error || 'Password reset failed')
+  }
 }

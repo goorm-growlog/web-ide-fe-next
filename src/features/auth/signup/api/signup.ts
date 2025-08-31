@@ -1,5 +1,4 @@
 import { api } from '@/shared/api/ky-client'
-import { handleApiResponse } from '@/shared/lib/api-response-handler'
 import type { ApiResponse } from '@/shared/types/api'
 import type { SignupData, SignupFormData } from '../../model/types'
 
@@ -7,7 +6,7 @@ import type { SignupData, SignupFormData } from '../../model/types'
  * 회원가입 API
  * @param payload 회원가입 요청 데이터
  */
-export const signup = async (payload: SignupFormData) => {
+export const signup = async (payload: SignupFormData): Promise<SignupData> => {
   // 백엔드 API: POST /users/signup
   const response = await api
     .post('users/signup', {
@@ -19,5 +18,9 @@ export const signup = async (payload: SignupFormData) => {
     })
     .json<ApiResponse<SignupData>>()
 
-  return handleApiResponse(response, 'Signup failed')
+  if (!response.success || !response.data) {
+    throw new Error(response.error || 'Signup failed')
+  }
+
+  return response.data
 }

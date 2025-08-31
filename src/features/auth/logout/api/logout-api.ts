@@ -1,12 +1,15 @@
-export const logoutApi = async () => {
-  const response = await fetch('/api/auth/logout', {
-    method: 'POST',
-    credentials: 'include',
-  })
+import { api } from '@/shared/api/ky-client'
 
-  if (!response.ok) {
-    throw new Error('fail to logout')
+import type { ApiResponse } from '@/shared/types/api'
+
+/**
+ * 백엔드 로그아웃 API를 호출합니다.
+ * Redis의 RefreshToken 삭제 및 쿠키 삭제 처리
+ */
+export const logoutApi = async (): Promise<void> => {
+  const response = await api.post('auth/logout').json<ApiResponse<void>>()
+
+  if (!response.success) {
+    throw new Error(response.error || 'Logout failed')
   }
-
-  return response.json()
 }
