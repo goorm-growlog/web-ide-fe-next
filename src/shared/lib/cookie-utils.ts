@@ -51,3 +51,16 @@ export function deleteCookies(
     nextResponse.cookies.delete(cookieName)
   })
 }
+
+/**
+ * 쿠키를 삭제합니다.
+ *
+ * @param nextResponse 클라이언트로 보낼 NextResponse
+ * @param cookieName 삭제할 쿠키명
+ */
+export function forceDeleteCookie(
+  nextResponse: NextResponse,
+  cookieName: string,
+): void {
+  nextResponse.cookies.delete(cookieName)
+}
