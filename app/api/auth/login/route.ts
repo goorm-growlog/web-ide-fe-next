@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { forwardSetCookieHeaders } from '@/shared/lib/cookie-utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,14 +24,7 @@ export async function POST(request: NextRequest) {
     
     // 🔥 핵심: 백엔드에서 받은 쿠키를 클라이언트로 포워딩
     const nextResponse = NextResponse.json(data, { status: 200 })
-    
-    // Set-Cookie 헤더들을 모두 복사
-    const setCookieHeaders = response.headers.getSetCookie?.() || 
-                             response.headers.get('set-cookie')?.split(', ') || []
-    
-    setCookieHeaders.forEach(cookie => {
-      nextResponse.headers.append('Set-Cookie', cookie)
-    })
+    forwardSetCookieHeaders(response, nextResponse)
     
     return nextResponse
   } catch (error) {
