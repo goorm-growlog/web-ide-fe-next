@@ -13,11 +13,9 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
   const { isLoading, withLoading } = useLoadingState()
   const router = useRouter()
 
-  // 복잡한 로그인 처리 로직을 useCallback으로 분리
   const handleLogin = useCallback(
     async (data: LoginFormData) => {
       try {
-        // 1. 커스텀 API Route로 로그인 (쿠키 포워딩)
         const loginResponse = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -39,22 +37,16 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
         const loginData = await loginResponse.json()
 
         if (!loginData.success) {
-          const errorMessage = loginData.error?.message || 'Login failed'
+          const errorMessage = loginData?.error?.message || 'Login failed'
           form?.setError('root', { type: 'server', message: errorMessage })
           toast.error(errorMessage)
           return
         }
 
-        // 2. NextAuth 세션 생성 (이미 쿠키는 설정됨)
         const result = await signIn('credentials', {
           email: data.email,
           password: data.password,
-          // 실제 사용자 정보를 NextAuth에 전달
-          userData: JSON.stringify({
-            userId: loginData.data.userId,
-            name: loginData.data.name,
-            accessToken: loginData.data.accessToken,
-          }),
+          userData: JSON.stringify(loginData.data),
           redirect: false,
         })
 
@@ -63,7 +55,7 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
           form?.clearErrors('root')
           router.push('/project')
         } else {
-          const errorMessage = result?.error || 'Failed to login'
+          const errorMessage = 'Failed to create session'
           form?.setError('root', { type: 'server', message: errorMessage })
           toast.error(errorMessage)
         }
@@ -73,7 +65,7 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
         toast.error(errorMessage)
       }
     },
-    [form, router],
+    [router, form],
   )
 
   const onSubmit = useCallback(

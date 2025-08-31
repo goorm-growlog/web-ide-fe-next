@@ -1,6 +1,6 @@
 import { api } from '@/shared/api/ky-client'
 import { handleApiSuccess } from '@/shared/lib/api-response-handler'
-import type { PasswordResetPayload } from '../../model/types'
+import type { PasswordResetData } from '../../model/validation-schema'
 
 /**
  * 비밀번호 재설정 요청을 수행합니다.
@@ -8,7 +8,7 @@ import type { PasswordResetPayload } from '../../model/types'
  * @throws 요청 실패 시 에러
  */
 export const resetPassword = async (
-  payload: PasswordResetPayload,
+  payload: PasswordResetData,
 ): Promise<void> => {
   // 백엔드 API: POST /auth/reset-password
   const response = await api
