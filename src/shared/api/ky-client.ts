@@ -8,6 +8,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 let isRefreshing = false
 let refreshPromise: Promise<string | null> | null = null
 
+// 🚀 하이브리드: 즉시 사용을 위한 휘발성 AT 캐시 (새로고침 시 초기화)
+let volatileAccessToken: string | null = null
+
 // 자동 로그아웃 시 백엔드 세션(RefreshToken)과 클라이언트 세션을 모두 정리
 async function performCompleteLogout() {
   try {
@@ -18,6 +21,8 @@ async function performCompleteLogout() {
   } catch (error) {
     console.warn('백엔드 로그아웃 실패:', error)
   } finally {
+    // 휘발성 AT 캐시 제거
+    volatileAccessToken = null
     await signOut({ callbackUrl: '/signin' })
   }
 }
@@ -51,8 +56,26 @@ async function performRefresh(): Promise<string | null> {
       .json<{ success: boolean; data?: { accessToken: string } }>()
 
     if (refreshData.success && refreshData.data?.accessToken) {
-      // 세션 직접 갱신 대신, 새 AT만 반환하여 재시도 시 헤더에 주입
-      return refreshData.data.accessToken
+      const newToken = refreshData.data.accessToken
+
+      // 1) 즉시 사용: 메모리 캐시에 저장
+      volatileAccessToken = newToken
+
+      // 2) 백그라운드 동기화: NextAuth 세션으로 토큰 업데이트 이벤트 디스패치 (클라이언트 전용)
+      if (typeof window !== 'undefined') {
+        try {
+          window.dispatchEvent(
+            new CustomEvent('auth:access-token-updated', {
+              detail: { accessToken: newToken },
+            }),
+          )
+        } catch {
+          // noop
+        }
+      }
+
+      // 3) 재시도용 즉시 반환
+      return newToken
     }
 
     return null
@@ -79,10 +102,15 @@ export const authApi = ky.create({
   hooks: {
     beforeRequest: [
       async request => {
+        // 1) 최신성 우선: 휘발성 AT 캐시 사용
+        if (volatileAccessToken) {
+          request.headers.set('Authorization', `Bearer ${volatileAccessToken}`)
+          return
+        }
+
+        // 2) 없으면 NextAuth 세션의 AT 사용
         const session =
           typeof window === 'undefined' ? await auth() : await getSession()
-
-        // AT 주입 (메모리/NextAuth 세션에서)
         if (session?.accessToken) {
           request.headers.set('Authorization', `Bearer ${session.accessToken}`)
         }
