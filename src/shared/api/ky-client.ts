@@ -4,11 +4,8 @@ import { auth } from '@/shared/config/auth'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 
-// 🔒 동시성 락: 토큰 갱신이 진행 중일 때 다른 요청들이 대기하도록 함
 let isRefreshing = false
 let refreshPromise: Promise<string | null> | null = null
-
-// 🚀 하이브리드: 즉시 사용을 위한 휘발성 AT 캐시 (새로고침 시 초기화)
 let volatileAccessToken: string | null = null
 
 // 자동 로그아웃 시 백엔드 세션(RefreshToken)과 클라이언트 세션을 모두 정리
@@ -121,7 +118,7 @@ export const authApi = ky.create({
         // 401 에러 시 토큰 갱신 시도 후 재시도
         if (response.status === 401 && typeof window !== 'undefined') {
           try {
-            // 🔒 동시성 락 사용: 여러 401 에러가 동시에 발생해도 토큰 갱신은 1회만
+            //동시성 락 사용: 여러 401 에러가 동시에 발생해도 토큰 갱신은 1회만
             const newAccessToken = await refreshAccessToken()
 
             if (newAccessToken) {
