@@ -5,12 +5,11 @@ export { useLoginActions } from './login/model/use-login-actions'
 export { useLoginForm } from './login/model/use-login-form'
 export { default as LoginForm } from './login/ui/login-form'
 
-// Types (실제로 사용되는 것들만)
+// Types (Auth feature specific types only)
 export type {
   LoginData,
   LoginFormData,
   SignupFormData,
-  User,
 } from './model/types'
 
 // Password Reset

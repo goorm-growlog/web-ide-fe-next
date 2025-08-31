@@ -1,4 +1,4 @@
-import type { User } from '@/features/auth/model/types'
+import type { User } from '@/entities/users/model/types'
 import { authApi } from '@/shared/api/ky-client'
 
 /**
