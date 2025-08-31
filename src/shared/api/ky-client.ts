@@ -4,8 +4,51 @@ import { auth } from '@/shared/config/auth'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 
+// 🔒 동시성 락: 토큰 갱신이 진행 중일 때 다른 요청들이 대기하도록 함
 let isRefreshing = false
 let refreshPromise: Promise<string | null> | null = null
+
+async function refreshAccessToken(): Promise<string | null> {
+  // 이미 갱신 중이면 기존 Promise 대기
+  if (isRefreshing && refreshPromise) {
+    return await refreshPromise
+  }
+
+  // 새로운 갱신 시작
+  isRefreshing = true
+  refreshPromise = performRefresh()
+
+  try {
+    return await refreshPromise
+  } finally {
+    // 갱신 완료 후 락 해제
+    isRefreshing = false
+    refreshPromise = null
+  }
+}
+
+async function performRefresh(): Promise<string | null> {
+  try {
+    const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: 'POST',
+      credentials: 'include',
+    })
+
+    if (refreshResponse.ok) {
+      const refreshData = await refreshResponse.json()
+
+      if (refreshData.success && refreshData.data?.accessToken) {
+        // 세션 직접 갱신 대신, 새 AT만 반환하여 재시도 시 헤더에 주입
+        return refreshData.data.accessToken
+      }
+    }
+
+    return null
+  } catch (error) {
+    console.warn('토큰 갱신 실패:', error)
+    return null
+  }
+}
 
 const defaultConfig = {
   prefixUrl: API_BASE_URL,
@@ -18,50 +61,6 @@ export const api = ky.create({
   credentials: 'include',
 })
 
-async function refreshAccessToken(): Promise<string | null> {
-  if (isRefreshing && refreshPromise) {
-    return await refreshPromise
-  }
-  isRefreshing = true
-  refreshPromise = performRefresh()
-  try {
-    const result = await refreshPromise
-    return result
-  } finally {
-    isRefreshing = false
-    refreshPromise = null
-  }
-}
-
-async function performRefresh(): Promise<string | null> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    if (!response.ok) {
-      return null
-    }
-    const data = await response.json()
-    if (!data.success || !data.data?.accessToken) {
-      return null
-    }
-    if (typeof window !== 'undefined') {
-      try {
-        window.dispatchEvent(new Event('focus'))
-      } catch {
-        /* ignore error: 세션 갱신 실패 무시 */
-      }
-    }
-    return data.data.accessToken
-  } catch {
-    return null
-  }
-}
-
 export const authApi = ky.create({
   ...defaultConfig,
   credentials: 'include',
@@ -70,39 +69,42 @@ export const authApi = ky.create({
       async request => {
         const session =
           typeof window === 'undefined' ? await auth() : await getSession()
-        if (session?.error === 'RefreshAccessTokenError') {
-          if (typeof window !== 'undefined') {
-            await signOut({ callbackUrl: '/signin' })
-          }
-          throw new Error('Authentication required')
-        }
+
+        // AT 주입 (메모리/NextAuth 세션에서)
         if (session?.accessToken) {
           request.headers.set('Authorization', `Bearer ${session.accessToken}`)
         }
       },
     ],
     afterResponse: [
-      async (request, _options, response) => {
+      async (request, options, response) => {
+        // 401 에러 시 토큰 갱신 시도 후 재시도
         if (response.status === 401 && typeof window !== 'undefined') {
-          const newAccessToken = await refreshAccessToken()
-          if (newAccessToken) {
-            const retryHeaders = new Headers()
-            for (const [key, value] of request.headers.entries()) {
-              retryHeaders.set(key, value)
+          try {
+            // 🔒 동시성 락 사용: 여러 401 에러가 동시에 발생해도 토큰 갱신은 1회만
+            const newAccessToken = await refreshAccessToken()
+
+            if (newAccessToken) {
+              // 새 토큰으로 원래 요청 재시도
+              const newHeaders = new Headers(request.headers)
+              newHeaders.set('Authorization', `Bearer ${newAccessToken}`)
+
+              return fetch(request.url, {
+                method: request.method,
+                headers: newHeaders,
+                body: request.body,
+                credentials: 'include',
+              })
             }
-            retryHeaders.set('Authorization', `Bearer ${newAccessToken}`)
-            const retryResponse = await fetch(request.url, {
-              method: request.method,
-              headers: retryHeaders,
-              body: request.body,
-              credentials: 'include',
-            })
-            return retryResponse
-          } else {
+
+            // 갱신 실패 → 자동 로그아웃
             await signOut({ callbackUrl: '/signin' })
-            throw new Error('Token refresh failed')
+          } catch (error) {
+            console.warn('토큰 갱신 중 오류:', error)
+            await signOut({ callbackUrl: '/signin' })
           }
         }
+
         return response
       },
     ],
