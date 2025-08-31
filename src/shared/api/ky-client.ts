@@ -114,7 +114,7 @@ export const authApi = ky.create({
       },
     ],
     afterResponse: [
-      async (request, options, response) => {
+      async (request, _options, response) => {
         // 401 에러 시 토큰 갱신 시도 후 재시도
         if (response.status === 401 && typeof window !== 'undefined') {
           try {
