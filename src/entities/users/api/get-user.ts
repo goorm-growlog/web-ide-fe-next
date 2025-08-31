@@ -28,6 +28,8 @@ export const getUser = async (): Promise<User> => {
     id: response.data.userId.toString(),
     email: response.data.email,
     name: response.data.name,
-    profileImage: response.data.profileImage,
+    ...(response.data.profileImage && {
+      profileImage: response.data.profileImage,
+    }),
   }
 }
