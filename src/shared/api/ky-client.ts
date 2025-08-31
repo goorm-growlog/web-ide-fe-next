@@ -8,6 +8,20 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 let isRefreshing = false
 let refreshPromise: Promise<string | null> | null = null
 
+// 자동 로그아웃 시 백엔드 세션(RefreshToken)과 클라이언트 세션을 모두 정리
+async function performCompleteLogout() {
+  try {
+    await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+    })
+  } catch (error) {
+    console.warn('백엔드 로그아웃 실패:', error)
+  } finally {
+    await signOut({ callbackUrl: '/signin' })
+  }
+}
+
 async function refreshAccessToken(): Promise<string | null> {
   // 이미 갱신 중이면 기존 Promise 대기
   if (isRefreshing && refreshPromise) {
@@ -29,18 +43,16 @@ async function refreshAccessToken(): Promise<string | null> {
 
 async function performRefresh(): Promise<string | null> {
   try {
-    const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
-      method: 'POST',
-      credentials: 'include',
-    })
+    // ky를 사용하지만 authApi는 사용하지 않음 (무한 재귀 방지)
+    const refreshData = await ky
+      .post(`${API_BASE_URL}/auth/refresh`, {
+        credentials: 'include',
+      })
+      .json<{ success: boolean; data?: { accessToken: string } }>()
 
-    if (refreshResponse.ok) {
-      const refreshData = await refreshResponse.json()
-
-      if (refreshData.success && refreshData.data?.accessToken) {
-        // 세션 직접 갱신 대신, 새 AT만 반환하여 재시도 시 헤더에 주입
-        return refreshData.data.accessToken
-      }
+    if (refreshData.success && refreshData.data?.accessToken) {
+      // 세션 직접 갱신 대신, 새 AT만 반환하여 재시도 시 헤더에 주입
+      return refreshData.data.accessToken
     }
 
     return null
@@ -97,11 +109,11 @@ export const authApi = ky.create({
               })
             }
 
-            // 갱신 실패 → 자동 로그아웃
-            await signOut({ callbackUrl: '/signin' })
+            // 갱신 실패 → 자동 로그아웃 (백엔드/클라이언트 모두 정리)
+            await performCompleteLogout()
           } catch (error) {
             console.warn('토큰 갱신 중 오류:', error)
-            await signOut({ callbackUrl: '/signin' })
+            await performCompleteLogout()
           }
         }
 
