@@ -14,13 +14,17 @@ export default function KakaoSuccessPage() {
 
   useEffect(() => {
     const token = searchParams.get('token')
+    const userId = searchParams.get('userId')
+    const name = searchParams.get('name')
     
-    if (token) {
-      // NextAuth에 토큰 저장하고 프로젝트 페이지로 이동
+    if (token && userId && name) {
+      // NextAuth에 사용자 정보와 토큰 저장
       signIn('credentials', {
-        email: 'kakao-user',
-        password: 'kakao-oauth',
-        userData: JSON.stringify({ accessToken: token }),
+        userData: JSON.stringify({ 
+          userId: parseInt(userId),
+          name,
+          accessToken: token 
+        }),
         redirect: false,
       }).then(() => {
         router.push('/project')

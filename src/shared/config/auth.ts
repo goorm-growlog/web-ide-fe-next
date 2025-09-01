@@ -21,11 +21,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         userData: { type: 'text' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null
-
         try {
-          // 커스텀 API Route에서 전달받은 사용자 정보 사용 (이미 검증됨)
-          if (credentials.userData) {
+          // userData가 있으면 OAuth 로그인으로 처리
+          if (credentials?.userData) {
             const userData = JSON.parse(String(credentials.userData))
             return {
               id: String(userData.userId),
@@ -36,7 +34,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }
           }
 
-          // userData가 없는 경우는 실패로 처리
+          // 일반 이메일/비밀번호 로그인
+          if (credentials?.email && credentials?.password) {
+            // 여기에 일반 로그인 로직 추가 가능
+            return null
+          }
+
           return null
         } catch (_error) {
           // 모든 에러는 null 반환으로 처리
