@@ -48,6 +48,7 @@ const useFileTree = ({ rootItemId, indent }: FileTreeProps) => {
   return {
     containerProps: tree.getContainerProps(),
     items: tree.getItems(),
+    tree,
   }
 }
 
