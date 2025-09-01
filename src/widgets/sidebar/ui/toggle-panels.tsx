@@ -38,7 +38,7 @@ const ITEM_CLASSES = cn(
 )
 
 const CONTENT_CLASSES = cn(
-  'relative flex-shrink-0',
+  'relative h-full flex-shrink-0',
   'transition-all duration-300 ease-out',
 )
 
