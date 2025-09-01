@@ -14,7 +14,7 @@ export const useKakaoLogin = () => {
       if (!baseUrl) {
         throw new Error('API base URL 미설정 (NEXT_PUBLIC_API_BASE_URL)')
       }
-      // 백엔드가 리다이렉트와 콜백 처리를 주도하도록 위임
+      // 백엔드가 카카오 인증을 모두 처리하도록 위임
       window.location.href = `${baseUrl}/auth/kakao`
     } catch (error) {
       const errorMsg = getErrorMessage(error) || 'Kakao 로그인 실패'
