@@ -1,3 +1,5 @@
-const SignupPage = () => <div>Signup Page</div>
+import SignupWidget from '@/widgets/auth/ui/signup-widget'
 
-export default SignupPage
+export default function SignupPage() {
+  return <SignupWidget />
+}
