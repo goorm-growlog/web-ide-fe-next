@@ -1,9 +1,23 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { FormProvider, useForm } from 'react-hook-form'
-import { type FormData, formSchema } from '../model/validation-schema'
+import { z } from 'zod'
+import {
+  emailSchema,
+  nameSchema,
+  signupPasswordSchema,
+} from '../model/validation-schema'
 import FormField from './form-field'
 import PasswordInput from './password-input'
+
+// 스토리북용 간단한 폼 스키마
+const storyFormSchema = z.object({
+  email: emailSchema,
+  name: nameSchema,
+  password: signupPasswordSchema,
+})
+
+type StoryFormData = z.infer<typeof storyFormSchema>
 
 // 메타 구성 (Storybook용)
 const meta: Meta<typeof FormField> = {
@@ -46,8 +60,8 @@ type Story = StoryObj<typeof meta>
 // 기본 예시
 export const Default: Story = {
   render: () => {
-    const methods = useForm<FormData>({
-      resolver: zodResolver(formSchema),
+    const methods = useForm<StoryFormData>({
+      resolver: zodResolver(storyFormSchema),
       defaultValues: {
         email: '',
       },
@@ -77,8 +91,8 @@ export const Default: Story = {
 // 비밀번호 입력 예시
 export const WithPasswordInput: Story = {
   render: () => {
-    const methods = useForm<FormData>({
-      resolver: zodResolver(formSchema),
+    const methods = useForm<StoryFormData>({
+      resolver: zodResolver(storyFormSchema),
       defaultValues: {
         password: '',
       },
@@ -107,8 +121,8 @@ export const WithPasswordInput: Story = {
 // 실시간 검증 데모
 export const LiveValidationForm: Story = {
   render: () => {
-    const methods = useForm<FormData>({
-      resolver: zodResolver(formSchema),
+    const methods = useForm<StoryFormData>({
+      resolver: zodResolver(storyFormSchema),
       mode: 'onChange',
       defaultValues: {
         email: '',
@@ -117,7 +131,7 @@ export const LiveValidationForm: Story = {
       },
     })
 
-    const onSubmit = (data: FormData) => {
+    const onSubmit = (data: StoryFormData) => {
       // 검증 성공 시 데이터 알림
       alert(`Validation success! Data: ${JSON.stringify(data, null, 2)}`)
     }
