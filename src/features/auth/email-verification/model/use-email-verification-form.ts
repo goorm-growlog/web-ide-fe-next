@@ -8,7 +8,9 @@ import {
 export function useEmailVerificationForm() {
   return useForm<EmailVerificationFormData>({
     resolver: zodResolver(emailVerificationSchema),
-    defaultValues: { email: '', code: '' },
-    mode: 'onChange',
+    defaultValues: {
+      email: '',
+      code: '',
+    },
   })
 }
