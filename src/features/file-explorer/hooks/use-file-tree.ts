@@ -12,11 +12,11 @@ import { handleRename } from '@/features/file-explorer/lib/rename-handler'
 import type { FileNode } from '@/features/file-explorer/model/types'
 
 interface FileTreeProps {
-  rootItemId: string
+  rootId: string
   indent: number
 }
 
-const useFileTree = ({ rootItemId, indent }: FileTreeProps) => {
+const useFileTree = ({ rootId: rootItemId, indent }: FileTreeProps) => {
   const fileTree = mockFileTree
 
   const tree = useTree<FileNode>({
