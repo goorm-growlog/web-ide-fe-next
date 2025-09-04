@@ -29,7 +29,8 @@ export const ProjectCard = ({
     onProjectClick?.(project.id)
   }
 
-  const handleMenuAction = (action: ProjectAction) => {
+  const handleMenuAction = (action: ProjectAction) => (e: React.MouseEvent) => {
+    e.stopPropagation()
     onProjectAction?.(project.id, action)
   }
 
@@ -93,24 +94,24 @@ export const ProjectCard = ({
             <Button
               variant="ghost"
               size="sm"
-              className="absolute top-4 right-3 h-3.5 w-3.5 p-0 hover:bg-transparent"
+              className="absolute top-4 right-3 h-3.5 w-3.5 p-0 hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
               onClick={e => e.stopPropagation()}
             >
               <MoreVertical className="h-3.5 w-3.5 text-foreground" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleMenuAction('edit')}>
+            <DropdownMenuItem onClick={handleMenuAction('edit')}>
               수정
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleMenuAction('share')}>
+            <DropdownMenuItem onClick={handleMenuAction('share')}>
               공유
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleMenuAction('settings')}>
+            <DropdownMenuItem onClick={handleMenuAction('settings')}>
               설정
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => handleMenuAction('delete')}
+              onClick={handleMenuAction('delete')}
               className="text-destructive"
             >
               삭제
