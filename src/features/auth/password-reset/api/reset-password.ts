@@ -1,5 +1,5 @@
-import { api } from '../../api/api-client'
-import type { PasswordResetPayload } from '../../model/types'
+import { api } from '@/features/auth/api/api-client'
+import type { PasswordResetPayload } from '@/features/auth/model/types'
 
 /**
  * 비밀번호 재설정 요청을 수행합니다.

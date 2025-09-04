@@ -1,5 +1,5 @@
+import type { RefreshTokenResponse } from '@/features/auth/model/types'
 import { handleApiError } from '@/shared/lib/api-error'
-import type { RefreshTokenResponse } from '../../model/types'
 
 /**
  * 토큰을 갱신합니다.

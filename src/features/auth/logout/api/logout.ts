@@ -1,4 +1,4 @@
-import { fetchWithAuth } from '../../../../shared/api/fetch-with-auth'
+import { fetchWithAuth } from '@/shared/api/fetch-with-auth'
 
 /**
  * 로그아웃을 수행합니다.

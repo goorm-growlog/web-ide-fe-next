@@ -1,5 +1,9 @@
-import { api } from '../../api/api-client'
-import type { LoginPayload, LoginResponse, User } from '../../model/types'
+import { api } from '@/features/auth/api/api-client'
+import type {
+  LoginPayload,
+  LoginResponse,
+  User,
+} from '@/features/auth/model/types'
 
 /**
  * 로그인을 수행합니다.
