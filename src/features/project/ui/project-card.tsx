@@ -92,7 +92,7 @@ export const ProjectCard = ({
             <Button
               variant="ghost"
               size="sm"
-              className="absolute top-4 right-3 h-3.5 w-3.5 p-0 hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="absolute top-2 right-1 h-8 w-8 p-0 hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
               onClick={e => e.stopPropagation()}
             >
               <MoreVertical className="h-3.5 w-3.5 text-foreground" />
@@ -101,8 +101,8 @@ export const ProjectCard = ({
           <DropdownMenuContent
             align="start"
             side="bottom"
-            sideOffset={2}
-            alignOffset={-2}
+            sideOffset={-6}
+            alignOffset={2}
             className="min-w-fit border px-2 py-1 shadow-sm"
           >
             <DropdownMenuItem onClick={handleMenuAction('edit')}>
