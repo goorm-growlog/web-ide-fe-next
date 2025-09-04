@@ -3,7 +3,7 @@
 import type { LucideIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { cn } from '@/shared/lib/utils'
-import { Button } from '@/shared/ui/shadcn/button'
+import { Button } from '@/shared/ui/shadcn'
 
 interface IconButtonProps
   extends Omit<ComponentProps<typeof Button>, 'children'> {
@@ -36,3 +36,4 @@ const IconButton = ({
 }
 
 export default IconButton
+export { IconButton }
