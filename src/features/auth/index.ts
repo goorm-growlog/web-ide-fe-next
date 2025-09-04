@@ -6,7 +6,7 @@ export { useLoginForm } from './login/model/use-login-form'
 export { default as LoginForm } from './login/ui/login-form'
 
 // Types
-export type { LoginData, LoginFormData, User } from './model/types'
+export type { LoginData, LoginFormData } from './model/types'
 
 // Password Reset
 export type { PasswordResetData } from './model/validation-schema'

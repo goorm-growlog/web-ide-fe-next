@@ -1,4 +1,4 @@
-import { api } from '../../api/api-client'
+import { fetchApi } from '@/shared/api/fetch-api'
 import type { PasswordResetPayload } from '../../model/types'
 
 /**
@@ -9,7 +9,7 @@ import type { PasswordResetPayload } from '../../model/types'
 export const resetPassword = async (
   payload: PasswordResetPayload,
 ): Promise<void> => {
-  await api('/api/reset-password', {
+  await fetchApi('/api/reset-password', {
     method: 'POST',
     body: JSON.stringify(payload),
   })

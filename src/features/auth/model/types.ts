@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import type { ApiResponse } from '@/shared/types/api'
+import type { UserInfoData } from '@/shared/types/user'
 import {
   emailSchema,
   loginPasswordSchema,
@@ -30,22 +31,7 @@ export interface RefreshTokenData {
   accessToken: string
 }
 
-export interface UserInfoData {
-  userId: number
-  name: string
-  email: string
-  profileImage?: string
-}
-
 // API 응답 타입 (일관된 구조)
 export type LoginResponse = ApiResponse<LoginData>
 export type RefreshTokenResponse = ApiResponse<RefreshTokenData>
 export type UserInfoResponse = ApiResponse<UserInfoData>
-
-// 사용자 타입 (전역에서 사용)
-export interface User {
-  id: string
-  email: string
-  name?: string
-  profileImage: string | undefined
-}

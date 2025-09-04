@@ -1,5 +1,6 @@
-import { api } from '../../api/api-client'
-import type { LoginPayload, LoginResponse, User } from '../../model/types'
+import { fetchApi } from '@/shared/api/fetch-api'
+import type { User } from '@/shared/types/user'
+import type { LoginPayload, LoginResponse } from '../../model/types'
 
 /**
  * 로그인을 수행합니다.
@@ -10,7 +11,7 @@ import type { LoginPayload, LoginResponse, User } from '../../model/types'
 export const login = async (
   payload: LoginPayload,
 ): Promise<{ user: User; accessToken: string }> => {
-  const response = await api<LoginResponse>('/auth/login', {
+  const response = await fetchApi<LoginResponse>('/auth/login', {
     method: 'POST',
     body: JSON.stringify(payload),
     credentials: 'include', // refreshToken을 HttpOnly 쿠키로 받기 위해

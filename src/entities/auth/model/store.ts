@@ -2,7 +2,7 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { User } from '@/features/auth/model/types'
+import type { User } from '@/shared/types/user'
 
 interface AuthState {
   user: User | null

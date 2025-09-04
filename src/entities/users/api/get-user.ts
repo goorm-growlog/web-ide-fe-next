@@ -1,5 +1,5 @@
 import { api } from '@/entities/users/api-client'
-import type { User, UserInfoData } from '@/features/auth/model/types'
+import type { User, UserInfoData } from '@/shared/types/user'
 
 /**
  * 현재 사용자 정보를 조회합니다.
