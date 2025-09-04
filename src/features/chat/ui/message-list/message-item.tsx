@@ -1,6 +1,9 @@
 import { memo, useCallback, useMemo } from 'react'
 import { shouldShowDateHeader } from '@/features/chat/lib/message-utils'
-import { MESSAGE_TYPES, type Message } from '@/features/chat/model/types'
+import {
+  MESSAGE_TYPES,
+  type Message,
+} from '@/features/chat/model/message-types'
 import { DateHeader } from '@/features/chat/ui/message-items/system-message-item'
 import { MessageContent } from './message-content'
 
@@ -19,7 +22,7 @@ interface MessageItemProps {
  * @param messages - 전체 메시지 배열 (날짜 헤더 계산용)
  * @param currentUserId - 현재 사용자의 ID
  */
-export const MessageItem = memo(
+const MessageItem = memo(
   ({ message, index, messages, currentUserId }: MessageItemProps) => {
     const showDateHeader = useMemo(
       () => shouldShowDateHeader(messages, index),
@@ -66,3 +69,6 @@ export const MessageItem = memo(
     )
   },
 )
+
+export default MessageItem
+export { MessageItem }

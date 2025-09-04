@@ -7,7 +7,7 @@ interface MessageTimeProps {
   className?: string
 }
 
-export const MessageTime = memo(({ sentAt, className }: MessageTimeProps) => {
+const MessageTime = memo(({ sentAt, className }: MessageTimeProps) => {
   return (
     <time
       className={cn(
@@ -23,3 +23,6 @@ export const MessageTime = memo(({ sentAt, className }: MessageTimeProps) => {
     </time>
   )
 })
+
+export default MessageTime
+export { MessageTime }
