@@ -101,18 +101,12 @@ export const ProjectCard = ({
           <DropdownMenuContent
             align="start"
             side="bottom"
-            sideOffset={4}
-            alignOffset={-4}
-            className="min-w-fit px-2 py-1" // 좌우 패딩 줄이고 최소 너비 설정
+            sideOffset={2}
+            alignOffset={-2}
+            className="min-w-fit border px-2 py-1 shadow-sm"
           >
             <DropdownMenuItem onClick={handleMenuAction('edit')}>
               edit
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleMenuAction('share')}>
-              share
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleMenuAction('settings')}>
-              settings
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={handleMenuAction('delete')}
