@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/dropdown-menu'
+import { calculateMemberCount, createStopPropagationHandler } from '../model'
 import type { Project, ProjectAction } from '../model/types'
 
 interface ProjectCardProps {
@@ -29,13 +30,10 @@ export const ProjectCard = ({
     onProjectClick?.(project.id)
   }
 
-  const handleMenuAction = (action: ProjectAction) => (e: React.MouseEvent) => {
-    e.stopPropagation()
-    onProjectAction?.(project.id, action)
-  }
+  const handleMenuAction = (action: ProjectAction) =>
+    createStopPropagationHandler(() => onProjectAction?.(project.id, action))
 
-  const visibleMembers = project.members.slice(0, 3)
-  const remainingCount = Math.max(0, project.memberCount - 3)
+  const { visibleMembers, remainingCount } = calculateMemberCount(project)
 
   return (
     <Card

@@ -25,7 +25,12 @@ export function calculateMemberCount(project: Project): {
   visibleMembers: ProjectMember[]
   remainingCount: number
 } {
-  return getVisibleMembers(project.members, 3)
+  // project.memberCount 대신 실제 멤버 배열 길이와 project.memberCount 중 큰 값 사용
+  const totalMemberCount = Math.max(project.members.length, project.memberCount)
+  const visibleMembers = project.members.slice(0, 3)
+  const remainingCount = Math.max(0, totalMemberCount - 3)
+
+  return { visibleMembers, remainingCount }
 }
 
 /**
