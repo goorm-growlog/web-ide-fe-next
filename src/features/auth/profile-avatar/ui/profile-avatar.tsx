@@ -1,7 +1,7 @@
 import { Camera } from 'lucide-react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
-import type { ProfileAvatarProps } from '../model/types'
-import { useProfileAvatar } from '../model/use-profile-avatar'
+import type { ProfileAvatarProps } from '@/features/auth/profile-avatar/model/types'
+import { useProfileAvatar } from '@/features/auth/profile-avatar/model/use-profile-avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn'
 import styles from './profile-avatar.module.css'
 
 const ProfileAvatar = (props: ProfileAvatarProps) => {
