@@ -6,7 +6,7 @@ import {
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuShortcut,
-} from '@/shared/ui/shadcn/context-menu'
+} from '@/shared/ui/shadcn'
 
 interface FileExplorerContextMenuProps {
   item: ItemInstance<FileNode>
@@ -15,7 +15,7 @@ interface FileExplorerContextMenuProps {
   onNewFolder: (item: ItemInstance<FileNode>) => void
 }
 
-export const FileExplorerContextMenu = ({
+const FileExplorerContextMenu = ({
   item,
   rootId,
   onNewFile,
@@ -59,3 +59,6 @@ export const FileExplorerContextMenu = ({
     </>
   )
 }
+
+export default FileExplorerContextMenu
+export { FileExplorerContextMenu }
