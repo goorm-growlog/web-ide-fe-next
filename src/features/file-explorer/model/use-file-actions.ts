@@ -14,10 +14,6 @@ interface CreateDialogState {
   readonly defaultName: string
 }
 
-interface UseFileActionsProps {
-  readonly rootId: string
-}
-
 interface UseFileActionsReturn {
   readonly createDialog: CreateDialogState
   readonly inputValue: string
@@ -28,9 +24,7 @@ interface UseFileActionsReturn {
   readonly handleCreateCancel: () => void
 }
 
-export const useFileActions = ({
-  rootId,
-}: UseFileActionsProps): UseFileActionsReturn => {
+export const useFileActions = (rootId: string): UseFileActionsReturn => {
   const [createDialog, setCreateDialog] = useState<CreateDialogState>({
     isOpen: false,
     type: 'file',
