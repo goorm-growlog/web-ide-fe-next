@@ -5,8 +5,9 @@
     }
   },
   "language_servers": [
-    "biome",
+    "vtsls",
     "typescript-language-server",
+    "biome",
     "..."
   ],
   "code_actions_on_format": {
@@ -15,6 +16,15 @@
   },
   "format_on_save": "on",
   "lsp": {
+    "vtsls": {
+      "settings": {
+        "typescript": {
+          "preferences": {
+            "importModuleSpecifier": "non-relative"
+          }
+        }
+      }
+    },
     "biome": {
       "settings": {
         "require_config_file": true,
