@@ -8,12 +8,14 @@ interface CreateProjectCardProps {
   height?: string
 }
 
-export function CreateProjectCard({ onClick, height }: CreateProjectCardProps) {
-  const cardHeightClass = height ? `h-[${height}]` : 'h-[150px]'
-
+export function CreateProjectCard({
+  onClick,
+  height = '150px',
+}: CreateProjectCardProps) {
   return (
     <Card
-      className={`group flex w-full cursor-pointer items-center justify-center border-border/40 bg-background transition-colors hover:bg-muted/50 ${cardHeightClass}`}
+      className="group flex w-full cursor-pointer items-center justify-center border-border/40 bg-background transition-colors hover:bg-muted/50"
+      style={{ height }}
       onClick={onClick}
     >
       <div className="flex flex-col items-center gap-2.5">

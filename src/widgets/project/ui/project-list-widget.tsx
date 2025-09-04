@@ -15,6 +15,7 @@ interface ProjectSectionProps {
   columns: number
   maxItems: number
   showCreateCard?: boolean
+  cardHeight: string
   onProjectClick?: (projectId: string) => void
   onProjectAction?: (projectId: string, action: ProjectAction) => void
   onViewAll?: () => void
@@ -27,6 +28,7 @@ function ProjectSection({
   columns,
   maxItems,
   showCreateCard = false,
+  cardHeight,
   onProjectClick,
   onProjectAction,
   onViewAll,
@@ -37,6 +39,8 @@ function ProjectSection({
     0,
     maxItems - (showCreateCard ? 1 : 0),
   )
+
+  const isInvitedSection = title === 'Inviteds'
 
   return (
     <div className="flex flex-col gap-3">
@@ -56,7 +60,7 @@ function ProjectSection({
           {showCreateCard && (
             <CreateProjectCard
               onClick={() => setIsCreateDialogOpen(true)}
-              height={title === '호스트' ? '150px' : '130px'}
+              height={cardHeight}
             />
           )}
 
@@ -64,7 +68,8 @@ function ProjectSection({
             <ProjectCard
               key={project.id}
               project={project}
-              height={title === '호스트' ? '150px' : '130px'}
+              height={cardHeight}
+              variant={isInvitedSection ? 'invited' : 'host'}
               {...(onProjectClick && { onProjectClick })}
               {...(onProjectAction && { onProjectAction })}
             />
@@ -116,6 +121,7 @@ export function ProjectListWidget({
         totalCount={totalHost}
         columns={3}
         maxItems={3}
+        cardHeight="150px"
         showCreateCard
         {...(onProjectClick && { onProjectClick })}
         {...(onProjectAction && { onProjectAction })}
@@ -129,6 +135,7 @@ export function ProjectListWidget({
         totalCount={totalInvited}
         columns={2}
         maxItems={4}
+        cardHeight="115px"
         {...(onProjectClick && { onProjectClick })}
         {...(onProjectAction && { onProjectAction })}
         {...(onViewAllInvited && { onViewAll: onViewAllInvited })}

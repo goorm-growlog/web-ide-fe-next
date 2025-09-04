@@ -13,13 +13,15 @@ import type { Project, ProjectAction } from '../model/types'
 interface ProjectCardProps {
   project: Project
   height?: string
+  variant?: 'host' | 'invited'
   onProjectClick?: (projectId: string) => void
   onProjectAction?: (projectId: string, action: ProjectAction) => void
 }
 
 export const ProjectCard = ({
   project,
-  height = 'h-[150px]',
+  height = '150px',
+  variant = 'host',
   onProjectClick,
   onProjectAction,
 }: ProjectCardProps) => {
@@ -34,16 +36,15 @@ export const ProjectCard = ({
   const visibleMembers = project.members.slice(0, 3)
   const remainingCount = Math.max(0, project.memberCount - 3)
 
-  const cardHeightClass = height ? `h-[${height}]` : 'h-[150px]'
-
   return (
     <Card
-      className={`group relative w-full cursor-pointer border-border/60 bg-transparent transition-none hover:border-border/60 ${cardHeightClass}`}
+      className="group relative w-full cursor-pointer border-border/60 bg-transparent transition-all duration-200 hover:border-border/60 hover:shadow-md"
+      style={{ height }}
       onClick={handleCardClick}
     >
       <CardContent className="flex h-full flex-col justify-between p-3">
         {/* Project Info */}
-        <div className="flex flex-col gap-[11px]">
+        <div className="flex flex-col gap-1">
           <div className="flex items-center justify-start gap-2.5">
             <h3 className="w-[104px] truncate font-semibold text-foreground/80 text-sm leading-5">
               {project.name}
@@ -63,7 +64,9 @@ export const ProjectCard = ({
         </div>
 
         {/* User Icons */}
-        <div className="flex items-center justify-end gap-0 pr-[9px]">
+        <div
+          className={`flex w-full flex-wrap items-start justify-end gap-0 pr-1 ${variant === 'invited' ? '-mt-2' : 'mt-7'}`}
+        >
           {visibleMembers.map(member => (
             <Avatar
               key={member.id}
