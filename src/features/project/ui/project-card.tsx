@@ -100,21 +100,27 @@ export const ProjectCard = ({
               <MoreVertical className="h-3.5 w-3.5 text-foreground" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent
+            align="start"
+            side="bottom"
+            sideOffset={4}
+            alignOffset={-4}
+            className="min-w-fit px-2 py-1" // 좌우 패딩 줄이고 최소 너비 설정
+          >
             <DropdownMenuItem onClick={handleMenuAction('edit')}>
-              수정
+              edit
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleMenuAction('share')}>
-              공유
+              share
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleMenuAction('settings')}>
-              설정
+              settings
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={handleMenuAction('delete')}
               className="text-destructive"
             >
-              삭제
+              delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
