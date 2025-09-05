@@ -10,15 +10,15 @@ import {
 import { useMemo } from 'react'
 import { isItemDropZone } from '@/features/file-explorer/lib/drop-zone-utils'
 import type { FileNode } from '@/features/file-explorer/model/types'
+import { INDENT_SIZE_PX } from '@/shared/constants/ui'
 import { cn } from '@/shared/lib/utils'
 
 interface FileItemProps {
   item: ItemInstance<FileNode>
-  indent: number
   iconSize: number
 }
 
-const FileItem = ({ item, indent, iconSize }: FileItemProps) => {
+const FileItem = ({ item, iconSize }: FileItemProps) => {
   const level = item.getItemMeta().level
   const isFolder = item.isFolder()
   const isExpanded = item.isExpanded()
@@ -26,8 +26,8 @@ const FileItem = ({ item, indent, iconSize }: FileItemProps) => {
   const isFocused = item.isFocused()
 
   const paddingLeft = useMemo(
-    () => level * indent + iconSize,
-    [level, indent, iconSize],
+    () => level * INDENT_SIZE_PX + iconSize,
+    [level, iconSize],
   )
 
   const iconElement = useMemo(() => {
