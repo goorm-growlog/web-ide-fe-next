@@ -1,5 +1,3 @@
-import type { ItemInstance } from '@headless-tree/core'
-
 export interface FolderNode {
   name: string
   isFolder: true
@@ -16,4 +14,9 @@ export type FileNode = FolderNode | FileItemNode
 
 export type ItemType = 'file' | 'folder'
 
-export type FileSystemItem = ItemInstance<FileNode>
+export type FileActionType =
+  | 'newFile'
+  | 'newFolder'
+  | 'copyPath'
+  | 'delete'
+  | 'rename'

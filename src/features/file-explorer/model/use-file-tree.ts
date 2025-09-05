@@ -10,13 +10,13 @@ import { mockFileTree } from '@/features/file-explorer/fixtures/mock'
 import { handleDrop } from '@/features/file-explorer/lib/drop-handler'
 import { handleRename } from '@/features/file-explorer/lib/rename-handler'
 import type { FileNode } from '@/features/file-explorer/model/types'
+import { INDENT_SIZE_PX } from '@/shared/constants/ui'
 
 interface FileTreeProps {
   rootId: string
-  indent: number
 }
 
-const useFileTree = ({ rootId: rootItemId, indent }: FileTreeProps) => {
+const useFileTree = ({ rootId: rootItemId }: FileTreeProps) => {
   const fileTree = mockFileTree
 
   const tree = useTree<FileNode>({
@@ -31,7 +31,7 @@ const useFileTree = ({ rootId: rootItemId, indent }: FileTreeProps) => {
         },
       getChildren: (itemId: string) => fileTree[itemId]?.children ?? [],
     },
-    indent,
+    indent: INDENT_SIZE_PX,
     canReorder: false,
     canDrop: (_, target) => target.item.isFolder(),
     onDrop: handleDrop,

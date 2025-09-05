@@ -1,8 +1,10 @@
 import type { ItemInstance } from '@headless-tree/core'
 import { type RefObject, useCallback } from 'react'
-import type { FileNode } from '@/features/file-explorer/model/types'
+import type {
+  FileActionType,
+  FileNode,
+} from '@/features/file-explorer/model/types'
 import type { FileCreateDialogRef } from '@/features/file-explorer/ui/file-create-dialog'
-import type { FileActionType } from '@/features/file-explorer/ui/file-item-context-menu'
 import { useFileOperations } from './use-file-operations'
 
 interface DialogActions {
@@ -18,7 +20,7 @@ export interface FileActionHandlers {
   readonly dialogActions: DialogActions
 }
 
-export const useFileExplorerActions = (
+export const useFileActions = (
   rootId: string,
   dialogRef?: RefObject<FileCreateDialogRef | null>,
 ): FileActionHandlers => {
