@@ -10,9 +10,7 @@ export const handleDrop = (
 
   try {
     console.debug(
-      'Dropped items: [{}] => {}',
-      items.map(item => item.getItemName).join(', '),
-      target,
+      `Dropped items: [${items.map(item => item.getItemName).join(', ')}] => ${target}`,
     )
   } catch (error) {
     console.error('Drop operation failed:', error)
