@@ -1,4 +1,9 @@
 import { MoreVertical } from 'lucide-react'
+import {
+  calculateMemberCount,
+  createStopPropagationHandler,
+} from '@/features/project/model/project-utils'
+import type { Project, ProjectAction } from '@/features/project/model/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
 import { Button } from '@/shared/ui/shadcn/button'
 import { Card, CardContent } from '@/shared/ui/shadcn/card'
@@ -8,8 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/dropdown-menu'
-import { calculateMemberCount, createStopPropagationHandler } from '../model'
-import type { Project, ProjectAction } from '../model/types'
 
 interface ProjectCardProps {
   project: Project

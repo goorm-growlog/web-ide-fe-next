@@ -1,5 +1,6 @@
 'use client'
 
+import { useCreateProject } from '@/features/project/project-create/model/use-create-project'
 import {
   Dialog,
   DialogContent,
@@ -7,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/ui/shadcn/dialog'
-import { useCreateProject } from '../model/use-create-project'
 import { CreateProjectForm } from './create-project-form'
 
 interface CreateProjectDialogProps {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { CreateProjectData } from '../../model/types'
+import type { CreateProjectData } from '@/features/project/model/types'
 
 export function useCreateProject() {
   const [isLoading, setIsLoading] = useState(false)

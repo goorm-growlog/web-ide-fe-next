@@ -1,7 +1,7 @@
 'use client'
 
-import type { ProjectEventHandlers } from '../model/event-handlers'
-import type { Project } from '../model/types'
+import type { ProjectEventHandlers } from '@/features/project/model/event-handlers'
+import type { Project } from '@/features/project/model/types'
 import { ProjectCard } from './project-card'
 
 interface ProjectGridProps extends ProjectEventHandlers {

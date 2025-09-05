@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import type { GetProjectsResponse } from '../../model/api'
-import type { Project } from '../../model/types'
+import type { GetProjectsResponse } from '@/features/project/model/api'
+import type { Project } from '@/features/project/model/types'
 
 // 임시 더미 데이터
 const generateMockProject = (
