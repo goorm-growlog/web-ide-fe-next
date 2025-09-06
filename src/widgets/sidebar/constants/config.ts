@@ -1,9 +1,13 @@
 import { FilesIcon, SearchIcon, SettingsIcon, Share2Icon } from 'lucide-react'
+import type {
+  SidebarConfig,
+  SidebarState,
+  Tab,
+} from 'src/widgets/sidebar/model/types'
 import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel'
 import InvitePanel from '@/features/invite/ui/invite-panel'
 import SearchPanel from '@/features/search/ui/search-panel'
 import SettingsPanel from '@/features/setting/ui/setting-panel'
-import type { SidebarConfig, SidebarState, Tab } from './types'
 
 export const DEFAULT_SIDEBAR_CONFIG: SidebarConfig = {
   primaryMinSize: 2.5,

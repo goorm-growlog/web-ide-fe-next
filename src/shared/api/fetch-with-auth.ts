@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/entities/auth/model/store'
+import { refreshToken } from '@/features/auth/refresh/api/refresh'
 import { handleApiError } from '@/shared/lib/api-error'
-import { refreshToken } from '../../features/auth/refresh/api/refresh'
 
 /**
  * 통합 API 클라이언트 (인증 + 비인증)

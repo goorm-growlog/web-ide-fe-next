@@ -1,8 +1,8 @@
 import './globals.css'
 
-import AppToaster from '@/shared/ui/app-toaster'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
+import AppToaster from '@/shared/ui/app-toaster'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

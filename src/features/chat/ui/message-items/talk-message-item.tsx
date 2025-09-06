@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react'
-import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/chat-config'
+import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/config'
 import { parseChatMessage } from '@/features/chat/lib/code-link-utils'
-import type { TalkMessage } from '@/features/chat/model/types'
+import type { TalkMessage } from '@/features/chat/model/message-types'
 import { OtherUserAvatar } from '@/features/chat/ui/shared/other-user-avatar'
 import { cn } from '@/shared/lib/utils'
 import { TalkMessageContent } from './talk-message-content'
@@ -18,7 +18,7 @@ interface TalkMessageItemProps {
  * @todo 사용자 정보를 전역 스토어에서 가져오기
  * @todo 프로필 이미지, 사용자명 등을 실제 데이터로 교체
  */
-export const TalkMessageItem = memo(
+const TalkMessageItem = memo(
   ({
     message,
     isOwnMessage = false,
@@ -82,3 +82,6 @@ export const TalkMessageItem = memo(
     )
   },
 )
+
+export default TalkMessageItem
+export { TalkMessageItem }

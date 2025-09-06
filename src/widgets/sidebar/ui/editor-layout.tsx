@@ -1,15 +1,12 @@
 'use client'
 
 import { memo, type ReactNode } from 'react'
-import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/chat-config'
+import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/config'
 import { ChatPanel } from '@/features/chat/ui/chat-panel'
 import { cn } from '@/shared/lib/utils'
-import ResizableGrowHandle from '@/shared/ui/resizable-grow-handle'
-import {
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@/shared/ui/shadcn/resizable'
-import { DEFAULT_SIDEBAR_CONFIG } from '@/widgets/sidebar/model/constants'
+import { ResizableGrowHandle } from '@/shared/ui/resizable-grow-handle'
+import { ResizablePanel, ResizablePanelGroup } from '@/shared/ui/shadcn'
+import { DEFAULT_SIDEBAR_CONFIG } from '@/widgets/sidebar/constants/config'
 import {
   useActiveTab,
   useLayout,

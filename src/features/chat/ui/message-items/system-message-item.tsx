@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 import { getSystemMessageText } from '@/features/chat/lib/message-utils'
-import type { SystemMessage } from '@/features/chat/model/types'
+import type { SystemMessage } from '@/features/chat/model/message-types'
 import { formatDate } from '@/shared/lib/date-utils'
 import { cn } from '@/shared/lib/utils'
-import { Badge } from '@/shared/ui/shadcn/badge'
+import { Badge } from '@/shared/ui/shadcn'
 
 const SystemMessageLayout = ({
   children,
@@ -15,7 +15,7 @@ const SystemMessageLayout = ({
   <div className={cn('my-8 flex justify-center', className)}>{children}</div>
 )
 
-export const SystemMessageItem = ({ message }: { message: SystemMessage }) => (
+const SystemMessageItem = ({ message }: { message: SystemMessage }) => (
   <SystemMessageLayout>
     <Badge
       variant="secondary"
@@ -35,3 +35,6 @@ export const DateHeader = ({ date }: { date: string }) => {
     </SystemMessageLayout>
   )
 }
+
+export default SystemMessageItem
+export { SystemMessageItem }

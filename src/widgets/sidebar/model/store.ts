@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { INITIAL_STATE } from '@/widgets/sidebar/model/constants'
+import { INITIAL_STATE } from '@/widgets/sidebar/constants/config'
 import type { SidebarStore, TabKey } from './types'
 
 export const useSidebarStore = create<SidebarStore>()(

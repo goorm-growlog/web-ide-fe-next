@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { useState } from 'react'
-import { Button } from '@/shared/ui/shadcn/button'
+import { Button } from '@/shared/ui/shadcn'
 import PasswordResetDialog from './password-reset-dialog'
 
 const meta = {

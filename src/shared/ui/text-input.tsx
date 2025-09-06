@@ -1,8 +1,7 @@
 'use client'
 
 import { type KeyboardEvent, useState } from 'react'
-import { Button } from '@/shared/ui/shadcn/button'
-import { Input } from '@/shared/ui/shadcn/input'
+import { Button, Input } from '@/shared/ui/shadcn'
 
 interface TextInputProps {
   placeholder?: string

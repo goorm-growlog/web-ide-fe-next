@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, useMemo } from 'react'
-import type { Message } from '@/features/chat/model/types'
+import type { Message } from '@/features/chat/model/message-types'
 import { EmptyMessageList } from './empty-message-list'
 import { MessageItem } from './message-item'
 
@@ -19,35 +19,36 @@ interface MessageListProps {
  * @param messages - 렌더링할 채팅 메시지 배열
  * @param currentUserId - 현재 로그인한 사용자의 ID
  */
-export const MessageList = memo(
-  ({ messages, currentUserId }: MessageListProps) => {
-    const messageKeys = useMemo(
-      () =>
-        messages.map(
-          (message, index) => `${message.userId}-${message.sentAt}-${index}`,
-        ),
-      [messages],
-    )
+const MessageList = memo(({ messages, currentUserId }: MessageListProps) => {
+  const messageKeys = useMemo(
+    () =>
+      messages.map(
+        (message, index) => `${message.userId}-${message.sentAt}-${index}`,
+      ),
+    [messages],
+  )
 
-    if (messages.length === 0) return <EmptyMessageList />
+  if (messages.length === 0) return <EmptyMessageList />
 
-    return (
-      <ul className="m-0 list-none overflow-x-hidden p-0">
-        <li className="sr-only" id="message-list-description">
-          {messages.length}개의 메시지가 있습니다
-        </li>
-        {messages.map((message, index) => (
-          <MessageItem
-            key={messageKeys[index]}
-            message={message}
-            index={index}
-            messages={messages}
-            currentUserId={currentUserId}
-          />
-        ))}
-      </ul>
-    )
-  },
-)
+  return (
+    <ul className="m-0 list-none overflow-x-hidden p-0">
+      <li className="sr-only" id="message-list-description">
+        {messages.length}개의 메시지가 있습니다
+      </li>
+      {messages.map((message, index) => (
+        <MessageItem
+          key={messageKeys[index]}
+          message={message}
+          index={index}
+          messages={messages}
+          currentUserId={currentUserId}
+        />
+      ))}
+    </ul>
+  )
+})
 
 MessageList.displayName = 'MessageList'
+
+export default MessageList
+export { MessageList }
