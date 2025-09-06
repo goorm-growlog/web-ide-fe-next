@@ -8,7 +8,7 @@ const meta: Meta<typeof FileExplorerPanel> = {
     layout: 'centered',
   },
   args: {
-    rootItemId: '/',
+    rootId: '/',
   },
   tags: ['autodocs'],
 }
@@ -20,20 +20,20 @@ export const Default: Story = {}
 
 export const CustomIndent: Story = {
   args: {
-    rootItemId: '/',
+    rootId: '/',
   },
 }
 
 export const CustomRoot: Story = {
   args: {
-    rootItemId: '/src',
+    rootId: '/src',
   },
 }
 
 // 스크롤 테스트를 위한 새로운 stories
 export const WithLongFileNames: Story = {
   args: {
-    rootItemId: '/',
+    rootId: '/',
   },
   parameters: {
     docs: {
@@ -47,7 +47,7 @@ export const WithLongFileNames: Story = {
 
 export const InNarrowContainer: Story = {
   args: {
-    rootItemId: '/',
+    rootId: '/',
   },
   decorators: [
     Story => (
@@ -67,7 +67,7 @@ export const InNarrowContainer: Story = {
 
 export const InVeryNarrowContainer: Story = {
   args: {
-    rootItemId: '/',
+    rootId: '/',
   },
   decorators: [
     Story => (
@@ -88,7 +88,7 @@ export const InVeryNarrowContainer: Story = {
 
 export const InWideContainer: Story = {
   args: {
-    rootItemId: '/',
+    rootId: '/',
   },
   decorators: [
     Story => (
@@ -109,7 +109,7 @@ export const InWideContainer: Story = {
 
 export const WithManyFiles: Story = {
   args: {
-    rootItemId: '/',
+    rootId: '/',
   },
   decorators: [
     Story => (
@@ -129,7 +129,7 @@ export const WithManyFiles: Story = {
 
 export const SidebarSimulation: Story = {
   args: {
-    rootItemId: '/',
+    rootId: '/',
   },
   decorators: [
     Story => (
@@ -167,7 +167,7 @@ export const SidebarSimulation: Story = {
 
 export const ResizableContainer: Story = {
   args: {
-    rootItemId: '/',
+    rootId: '/',
   },
   decorators: [
     Story => (

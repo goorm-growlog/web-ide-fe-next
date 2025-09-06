@@ -16,7 +16,7 @@ interface CodeLinkProps {
  * @param url - 이동할 내부 링크 URL
  * @param className - 컴포넌트 스타일 클래스
  */
-export const CodeLink = ({ text, url, className }: CodeLinkProps) => {
+const CodeLink = ({ text, url, className }: CodeLinkProps) => {
   return (
     <Link
       href={url}
@@ -31,3 +31,6 @@ export const CodeLink = ({ text, url, className }: CodeLinkProps) => {
     </Link>
   )
 }
+
+export default CodeLink
+export { CodeLink }

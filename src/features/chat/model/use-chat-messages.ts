@@ -2,9 +2,9 @@ import { useCallback, useState } from 'react'
 import {
   DEFAULT_USER_CONFIG,
   MESSAGE_CONFIG,
-} from '@/features/chat/constants/chat-config'
+} from '@/features/chat/constants/config'
 import { mockMessages } from '@/features/chat/fixtures/mock'
-import type { Message, TalkMessage } from '@/features/chat/model/types'
+import type { Message, TalkMessage } from '@/features/chat/model/message-types'
 
 interface UseChatMessagesReturn {
   messages: Message[]

@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react'
 import { cn } from '@/shared/lib/utils'
-import { TAB_DEFINITIONS } from '@/widgets/sidebar/model/constants'
+import { TAB_DEFINITIONS } from '@/widgets/sidebar/constants/config'
 import type { TabKey } from '@/widgets/sidebar/model/types'
 import TabSwitcher from '@/widgets/sidebar/ui/tab-switcher'
 import TogglePanels from '@/widgets/sidebar/ui/toggle-panels'

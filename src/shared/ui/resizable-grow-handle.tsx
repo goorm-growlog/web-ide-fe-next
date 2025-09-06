@@ -24,3 +24,4 @@ const ResizableGrowHandle = ({
 }
 
 export default ResizableGrowHandle
+export { ResizableGrowHandle }
