@@ -1,3 +1,5 @@
+import { api, apiHelpers } from '@/shared/api/ky-client'
+import type { ApiResponse } from '@/shared/types/api'
 import type { LoginData, LoginFormData } from '../../model/types'
 
 /**
@@ -6,26 +8,14 @@ import type { LoginData, LoginFormData } from '../../model/types'
  * @returns 로그인 성공 시 사용자 데이터와 액세스 토큰
  */
 export const loginApi = async (data: LoginFormData): Promise<LoginData> => {
-  const response = await fetch('/api/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({
-      email: data.email,
-      password: data.password,
-    }),
-  })
+  const response = await api
+    .post('auth/login', {
+      json: {
+        email: data.email,
+        password: data.password,
+      },
+    })
+    .json<ApiResponse<LoginData>>()
 
-  if (!response.ok) {
-    const errorData = await response.json()
-    throw new Error(errorData?.error?.message || 'Login failed')
-  }
-
-  const loginData = await response.json()
-
-  if (!loginData.success) {
-    throw new Error(loginData?.error?.message || 'Login failed')
-  }
-
-  return loginData.data
+  return apiHelpers.extractData(response)
 }

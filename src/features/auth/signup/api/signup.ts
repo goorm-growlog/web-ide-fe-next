@@ -1,4 +1,4 @@
-import { api } from '@/shared/api/ky-client'
+import { api, apiHelpers } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
 import type { SignupData, SignupFormData } from '../../model/types'
 
@@ -18,9 +18,5 @@ export const signup = async (payload: SignupFormData): Promise<SignupData> => {
     })
     .json<ApiResponse<SignupData>>()
 
-  if (!response.success || !response.data) {
-    throw new Error(response.error || 'Signup failed')
-  }
-
-  return response.data
+  return apiHelpers.extractData(response)
 }
