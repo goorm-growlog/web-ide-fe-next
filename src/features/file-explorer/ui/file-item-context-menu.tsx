@@ -33,7 +33,7 @@ const FileItemContextMenu = ({
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger>{children}</ContextMenuTrigger>
+      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem onClick={() => onAction('newFile', item)}>
           {FILE_EXPLORER_TEXTS.NEW_FILE}
