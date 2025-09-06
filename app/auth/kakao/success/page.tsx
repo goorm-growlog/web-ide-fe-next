@@ -24,7 +24,7 @@ function KakaoSuccessHandler() {
         try {
           const result = await signIn('credentials', {
             userData: JSON.stringify({ 
-              userId: parseInt(userId),
+              userId: parseInt(userId, 10),
               name: decodeURIComponent(name),
               accessToken: token 
             }),
