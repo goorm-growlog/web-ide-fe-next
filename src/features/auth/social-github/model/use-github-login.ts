@@ -1,9 +1,9 @@
 'use client'
 
+import { signIn } from 'next-auth/react'
 import { useCallback } from 'react'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/shared/types/error'
-import { initiateGitHubAuth } from '../api/github-auth'
 
 /**
  * GitHub 소셜 로그인 액션 훅
@@ -11,7 +11,7 @@ import { initiateGitHubAuth } from '../api/github-auth'
 export const useGitHubLogin = () => {
   const login = useCallback(async () => {
     try {
-      await initiateGitHubAuth()
+      await signIn('github', { callbackUrl: '/project' })
     } catch (error) {
       const errorMsg = getErrorMessage(error) || 'GitHub 로그인 실패'
       toast.error(errorMsg)
