@@ -50,23 +50,65 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
 
   callbacks: {
-    async jwt({ token, account, user }) {
-      // 로그인 시에만 토큰 저장
+    async signIn({ user, account }) {
+      // GitHub OAuth의 경우만 백엔드 연동 처리
+      if (account?.provider === 'github') {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/login`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                provider: 'github',
+                providerId: account.providerAccountId,
+                email: user.email,
+                name: user.name,
+                avatar: user.image,
+              }),
+            },
+          )
+
+          if (!response.ok) {
+            return '/signin?error=AccessDenied' // 에러와 함께 로그인 페이지로 리디렉션
+          }
+
+          const data = await response.json()
+          // 백엔드에서 받은 토큰을 user 객체에 저장
+          user.accessToken = data.accessToken
+          return true
+        } catch {
+          return '/signin?error=AccessDenied' // 에러와 함께 로그인 페이지로 리디렉션
+        }
+      }
+
+      // Kakao 및 기타 provider는 기존 로직 유지
+      return true
+    },
+    async jwt({ token, account, user, profile }) {
+      // 로그인 시에만 정보 저장
       if (account && user) {
         const userWithToken = user as { accessToken?: string }
         return {
           ...token,
           accessToken: userWithToken.accessToken,
+          provider: account.provider,
+          providerId: account.providerAccountId,
+          providerProfile: profile,
         }
       }
 
-      // 단순히 토큰 반환 (만료시간 체크 제거)
       return token
     },
     async session({ session, token }) {
       return {
         ...session,
         accessToken: token.accessToken,
+        provider: token.provider,
+        providerId: token.providerId,
+        providerProfile: token.providerProfile,
       }
     },
   },
@@ -79,6 +121,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 declare module 'next-auth' {
   interface Session {
     accessToken?: string
+    provider?: string
+    providerId?: string
+    providerProfile?: Record<string, unknown>
   }
 
   interface User {
