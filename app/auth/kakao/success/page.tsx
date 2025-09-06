@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
+import { toast } from 'sonner'
 
 /**
  * 카카오 로그인 성공 페이지
@@ -18,25 +19,31 @@ export default function KakaoSuccessPage() {
     const name = searchParams.get('name')
     
     if (token && userId && name) {
-      // NextAuth에 사용자 정보와 토큰 저장
       signIn('credentials', {
         userData: JSON.stringify({ 
           userId: parseInt(userId),
-          name,
+          name: decodeURIComponent(name),
           accessToken: token 
         }),
         redirect: false,
-      }).then(() => {
-        router.push('/project')
+      }).then((result) => {
+        if (result?.error) {
+          toast.error('fail to login. please try again.')
+          router.push('/auth/signin')
+        } else {
+          toast.success(`login success!`)
+          router.push('/project')
+        }
       })
     } else {
-      router.push('/signin')
+      toast.error('login invalid. please try again.')
+      router.push('/auth/signin')
     }
   }, [router, searchParams])
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-lg">로그인 완료 중...</p>
+      <p className="text-lg">login in progress...</p>
     </div>
   )
 }
