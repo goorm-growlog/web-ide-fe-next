@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react'
 import { useCallback } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
+import { mutate } from 'swr'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
 import type { LoginFormData } from '../../model/types'
@@ -40,6 +41,10 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
         if (result?.ok) {
           toast.success('Login successful!')
           form?.clearErrors('root')
+
+          // 로그인 성공 시 사용자 정보 새로 불러오기
+          mutate('/users/me')
+
           router.push('/project')
         } else {
           showError('Failed to create session')
