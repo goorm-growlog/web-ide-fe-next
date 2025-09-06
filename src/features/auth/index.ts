@@ -15,8 +15,9 @@ export type { PasswordResetData } from './model/validation-schema'
 export { usePasswordResetActions } from './password-reset/model/use-password-reset-actions'
 export { default as PasswordResetDialog } from './password-reset/ui/password-reset-dialog'
 // Profile Avatar
-export type { ProfileAvatarProps } from './profile-avatar'
-export { ProfileAvatar, useProfileAvatar } from './profile-avatar'
+export type { ProfileAvatarProps } from './profile-avatar/model/types'
+export { useProfileAvatar } from './profile-avatar/model/use-profile-avatar'
+export { default as ProfileAvatar } from './profile-avatar/ui/profile-avatar'
 // Session
 export { useSessionSync } from './session/model/use-session-sync'
 export { SessionSyncProvider } from './session/ui/session-sync-provider'
