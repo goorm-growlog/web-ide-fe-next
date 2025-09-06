@@ -35,7 +35,7 @@ async function performRefresh(): Promise<string | null> {
       .post(`${API_BASE_URL}/auth/refresh`, {
         credentials: 'include',
       })
-      .json<{ success: boolean; data?: { accessToken: string } }>()
+      .json<ApiResponse<{ accessToken: string }>>()
 
     if (response.success && response.data?.accessToken) {
       // NextAuth 세션 업데이트
@@ -49,7 +49,8 @@ async function performRefresh(): Promise<string | null> {
       return response.data.accessToken
     }
     return null
-  } catch {
+  } catch (error) {
+    console.error('Token refresh failed:', error)
     return null
   }
 }
@@ -95,7 +96,7 @@ export const authApi = ky.create({
         if (response.status === 401 && typeof window !== 'undefined') {
           const newToken = await refreshToken()
           if (newToken) {
-            // 새 토큰으로 재시도
+            // 새 토큰으로 재시도 (fetch 사용 - 훅 우회)
             const newHeaders = new Headers(request.headers)
             newHeaders.set('Authorization', `Bearer ${newToken}`)
             return fetch(request.url, {
