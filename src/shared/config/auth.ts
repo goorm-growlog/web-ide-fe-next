@@ -4,7 +4,7 @@ import GitHub from 'next-auth/providers/github'
 import Kakao from 'next-auth/providers/kakao'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET || 'dev-secret',
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID || '',
