@@ -29,7 +29,7 @@ export function CreateProjectForm({
   } = useForm<CreateProjectFormData>({
     resolver: zodResolver(createProjectSchema),
     defaultValues: {
-      name: '',
+      projectName: '',
       description: '',
     },
   })
@@ -37,14 +37,16 @@ export function CreateProjectForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="name">Project Name</Label>
+        <Label htmlFor="projectName">Project Name</Label>
         <Input
-          id="name"
+          id="projectName"
           placeholder="Enter project name"
-          {...register('name')}
+          {...register('projectName')}
         />
-        {errors.name && (
-          <p className="text-destructive text-sm">{errors.name.message}</p>
+        {errors.projectName && (
+          <p className="text-destructive text-sm">
+            {errors.projectName.message}
+          </p>
         )}
       </div>
 

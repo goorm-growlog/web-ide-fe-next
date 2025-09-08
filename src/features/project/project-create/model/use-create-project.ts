@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createProject as createProjectApi } from '@/features/project/api/project-api'
 import type { CreateProjectData } from '@/features/project/model/types'
 
 export function useCreateProject() {
@@ -12,14 +13,13 @@ export function useCreateProject() {
     setError(null)
 
     try {
-      // TODO: API 호출 구현
-      console.log('Creating project:', data)
+      const project = await createProjectApi(data)
 
-      // 임시 delay 시뮬레이션
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // 성공 시 로직
-      return { success: true, projectId: `project_${Date.now()}` }
+      return {
+        success: true,
+        projectId: project.projectId.toString(),
+        project,
+      }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to create project'

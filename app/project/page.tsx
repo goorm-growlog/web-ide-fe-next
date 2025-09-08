@@ -2,6 +2,8 @@
 
 import { ProjectListWidget } from '@/widgets/project/ui/project-list-widget'
 import { useProjectList } from '@/features/project/project-list/model/use-project-list'
+import { useLogout } from '@/features/auth/logout/model/use-logout'
+import { Button } from '@/shared/ui/shadcn/button'
 import { useRouter } from 'next/navigation'
 
 export default function ProjectPage() {
@@ -15,14 +17,19 @@ export default function ProjectPage() {
   } = useProjectList()
   
   const router = useRouter()
+  const { logout } = useLogout()
 
-  const handleProjectClick = (projectId: string) => {
+  const handleProjectClick = (projectId: number) => {
     router.push(`/project/${projectId}`)
   }
 
-  const handleProjectAction = (projectId: string, action: string) => {
+  const handleProjectAction = (projectId: number, action: string) => {
     console.log('Project action:', { projectId, action })
     // TODO: 실제 액션 구현
+  }
+
+  const handleLogout = () => {
+    logout()
   }
 
   const handleViewAllHost = () => {
@@ -54,6 +61,17 @@ export default function ProjectPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-8">
       <div className="w-full max-w-[844px]">
+        {/* 임시 로그아웃 버튼 */}
+        <div className="mb-4 flex justify-end">
+          <Button 
+            variant="outline" 
+            onClick={handleLogout}
+            className="text-sm"
+          >
+            로그아웃
+          </Button>
+        </div>
+        
         <ProjectListWidget
           hostProjects={hostProjects}
           invitedProjects={invitedProjects}

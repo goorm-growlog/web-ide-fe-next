@@ -17,8 +17,8 @@ interface ProjectSectionProps {
   maxItems: number
   showCreateCard?: boolean
   cardHeight: string
-  onProjectClick?: (projectId: string) => void
-  onProjectAction?: (projectId: string, action: ProjectAction) => void
+  onProjectClick?: (projectId: number) => void
+  onProjectAction?: (projectId: number, action: ProjectAction) => void
   onViewAll?: () => void
 }
 
@@ -66,7 +66,7 @@ function ProjectSection({
 
           {displayedProjects.map(project => (
             <ProjectCard
-              key={project.id}
+              key={project.projectId}
               project={project}
               height={cardHeight}
               variant={variant}
@@ -96,8 +96,8 @@ interface ProjectListWidgetProps {
   invitedProjects: Project[]
   totalHost: number
   totalInvited: number
-  onProjectClick?: (projectId: string) => void
-  onProjectAction?: (projectId: string, action: ProjectAction) => void
+  onProjectClick?: (projectId: number) => void
+  onProjectAction?: (projectId: number, action: ProjectAction) => void
   onViewAllHost?: () => void
   onViewAllInvited?: () => void
 }

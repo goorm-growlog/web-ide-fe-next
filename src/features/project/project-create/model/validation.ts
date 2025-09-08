@@ -1,10 +1,10 @@
 import { z } from 'zod'
 
 /**
- * Project creation form validation schema
+ * Project creation form validation schema (API 스키마 기반)
  */
 export const createProjectSchema = z.object({
-  name: z
+  projectName: z
     .string()
     .min(1, 'Please enter a project name')
     .max(50, 'Project name must be 50 characters or less')

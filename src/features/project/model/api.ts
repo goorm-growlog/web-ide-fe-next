@@ -1,6 +1,7 @@
-// API 관련 타입 정의
+// API 관련 타입 정의 (실제 API 스키마 기반)
 
-import type { CreateProjectData, Project } from './types'
+import type { ApiResponse } from '@/shared/types/api'
+import type { Project } from './types'
 
 export interface GetProjectsResponse {
   hostProjects: Project[]
@@ -9,14 +10,26 @@ export interface GetProjectsResponse {
   totalInvited: number
 }
 
-export interface CreateProjectRequest extends CreateProjectData {}
-
-export interface CreateProjectResponse {
-  project: Project
+// API 스키마 기반 타입들
+export interface CreateProjectRequest {
+  projectName: string
+  description?: string
+  imageId?: number
 }
 
-export interface ProjectAPIError {
-  code: string
-  message: string
-  details?: Record<string, unknown>
+export interface ProjectResponse {
+  projectId: number
+  projectName: string
+  description: string
+  ownerName: string
+  memberNames: string[]
+  myRole: string
+  status: string
+  createdAt: string
+  updatedAt: string
 }
+
+// API 응답 타입들
+export type ProjectListApiResponse = ApiResponse<ProjectResponse[]>
+export type CreateProjectApiResponse = ApiResponse<ProjectResponse>
+export type ProjectDetailApiResponse = ApiResponse<ProjectResponse>

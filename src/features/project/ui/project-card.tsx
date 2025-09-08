@@ -18,8 +18,8 @@ interface ProjectCardProps {
   project: Project
   height?: string
   variant?: 'host' | 'invited'
-  onProjectClick?: (projectId: string) => void
-  onProjectAction?: (projectId: string, action: ProjectAction) => void
+  onProjectClick?: (projectId: number) => void
+  onProjectAction?: (projectId: number, action: ProjectAction) => void
 }
 
 export const ProjectCard = ({
@@ -30,11 +30,13 @@ export const ProjectCard = ({
   onProjectAction,
 }: ProjectCardProps) => {
   const handleCardClick = () => {
-    onProjectClick?.(project.id)
+    onProjectClick?.(project.projectId)
   }
 
   const handleMenuAction = (action: ProjectAction) =>
-    createStopPropagationHandler(() => onProjectAction?.(project.id, action))
+    createStopPropagationHandler(() =>
+      onProjectAction?.(project.projectId, action),
+    )
 
   const { visibleMembers, remainingCount } = calculateMemberCount(project)
 
@@ -48,14 +50,14 @@ export const ProjectCard = ({
         {/* Project Info */}
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-start gap-2.5">
-            <h3 className="w-[104px] truncate font-semibold text-foreground/80 text-sm leading-5">
-              {project.name}
+            <h3 className="max-w-[104px] truncate font-semibold text-foreground/80 text-sm leading-5">
+              {project.projectName}
             </h3>
             <div className="flex h-3 w-3 flex-shrink-0 items-center justify-center">
               {/* Status Indicator */}
               <div
                 className={`h-3 w-3 rounded-full ${
-                  project.status === 'active' ? 'bg-green-500' : 'bg-red-500'
+                  project.status === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'
                 }`}
               />
             </div>
@@ -69,14 +71,14 @@ export const ProjectCard = ({
         <div
           className={`flex w-full flex-wrap items-start justify-end gap-0 pr-1 ${variant === 'invited' ? '-mt-2' : 'mt-7'}`}
         >
-          {visibleMembers.map(member => (
+          {visibleMembers.map((memberName, index) => (
             <Avatar
-              key={member.id}
+              key={`${project.projectId}-member-${index}`}
               className="-mr-[9px] h-8 w-8 border-2 border-background"
             >
-              <AvatarImage src={member.avatar} alt={member.name} />
+              <AvatarImage src="" alt={memberName} />
               <AvatarFallback className="bg-muted text-xs">
-                {member.name.charAt(0).toUpperCase()}
+                {memberName.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           ))}

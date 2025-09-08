@@ -1,30 +1,29 @@
-// 프로젝트 관련 핵심 타입 정의
+// 프로젝트 관련 핵심 타입 정의 (API 스키마 기반)
 
 export interface ProjectMember {
-  id: string
+  userId: number
   name: string
-  avatar?: string
   email: string
-  role: 'owner' | 'member'
+  profileImageUrl?: string
+  role: 'OWNER' | 'READ' | 'WRITE'
 }
 
 export interface Project {
-  id: string
-  name: string
+  projectId: number
+  projectName: string
   description: string
-  createdAt: Date
-  updatedAt: Date
-  owner: ProjectMember
-  members: ProjectMember[]
-  memberCount: number
-  status: 'active' | 'inactive'
-  isOwner: boolean
-  isInvited: boolean
+  ownerName: string
+  memberNames: string[]
+  myRole: string
+  status: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface CreateProjectData {
-  name: string
+  projectName: string
   description?: string
+  imageId?: number
 }
 
 export type ProjectStatus = 'host' | 'invited'
