@@ -1,18 +1,18 @@
 'use client'
 
+
+import { useRouter } from 'next/navigation'
 import { ProjectListWidget } from '@/widgets/project/ui/project-list-widget'
 import { useProjectList } from '@/features/project/project-list/model/use-project-list'
 import { MainHeader } from '@/widgets/header/ui/main-header'
-import { useRouter } from 'next/navigation'
 
 export default function ProjectPage() {
   const {
     hostProjects,
     invitedProjects,
-    totalHost,
-    totalInvited,
     isLoading,
-    error
+    error,
+    refetch
   } = useProjectList()
   
   const router = useRouter()
@@ -23,7 +23,13 @@ export default function ProjectPage() {
 
   const handleProjectAction = (projectId: number, action: string) => {
     console.log('Project action:', { projectId, action })
-    // TODO: 실제 액션 구현
+    // TODO: 실제 액션 구현 (edit, delete 등)
+  }
+
+  const handleProjectCreated = (projectId: string) => {
+    console.log('Project created:', projectId)
+    // 프로젝트 목록 새로고침
+    refetch()
   }
 
   const handleViewAllHost = () => {
@@ -49,12 +55,11 @@ export default function ProjectPage() {
             <ProjectListWidget
               hostProjects={hostProjects}
               invitedProjects={invitedProjects}
-              totalHost={totalHost}
-              totalInvited={totalInvited}
               onProjectClick={handleProjectClick}
               onProjectAction={handleProjectAction}
               onViewAllHost={handleViewAllHost}
               onViewAllInvited={handleViewAllInvited}
+              onProjectCreated={handleProjectCreated}
             />
           </div>
         )}

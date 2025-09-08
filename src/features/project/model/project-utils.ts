@@ -25,10 +25,8 @@ export function calculateMemberCount(project: Project): {
   visibleMembers: string[]
   remainingCount: number
 } {
-  // API에서는 memberNames로만 제공되므로 이를 사용
-  const totalMemberCount = project.memberNames.length
   const visibleMembers = project.memberNames.slice(0, 3)
-  const remainingCount = Math.max(0, totalMemberCount - 3)
+  const remainingCount = Math.max(0, project.memberNames.length - 3)
 
   return { visibleMembers, remainingCount }
 }
