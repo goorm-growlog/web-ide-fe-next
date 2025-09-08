@@ -10,6 +10,7 @@ import { ProjectCard } from '@/features/project/ui/project-card'
 
 interface ProjectSectionProps {
   title: string
+  variant: 'host' | 'invited'
   projects: Project[]
   totalCount: number
   columns: number
@@ -23,6 +24,7 @@ interface ProjectSectionProps {
 
 function ProjectSection({
   title,
+  variant,
   projects,
   totalCount,
   columns,
@@ -39,8 +41,6 @@ function ProjectSection({
     0,
     maxItems - (showCreateCard ? 1 : 0),
   )
-
-  const isInvitedSection = title === 'Inviteds'
 
   return (
     <div className="flex flex-col gap-3">
@@ -69,7 +69,7 @@ function ProjectSection({
               key={project.id}
               project={project}
               height={cardHeight}
-              variant={isInvitedSection ? 'invited' : 'host'}
+              variant={variant}
               {...(onProjectClick && { onProjectClick })}
               {...(onProjectAction && { onProjectAction })}
             />
@@ -117,6 +117,7 @@ export function ProjectListWidget({
       {/* Host Section */}
       <ProjectSection
         title="Host"
+        variant="host"
         projects={hostProjects}
         totalCount={totalHost}
         columns={3}
@@ -131,6 +132,7 @@ export function ProjectListWidget({
       {/* Invited Section */}
       <ProjectSection
         title="Inviteds"
+        variant="invited"
         projects={invitedProjects}
         totalCount={totalInvited}
         columns={2}
