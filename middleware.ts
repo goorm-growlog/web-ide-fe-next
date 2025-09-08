@@ -14,9 +14,11 @@ export default auth(req => {
   }
 
   // 이미 로그인한 사용자 → 로그인/회원가입 페이지 접근 시 프로젝트로 리다이렉트
+  // 단, 로그아웃 중인 경우(callbackUrl 파라미터 있음)는 예외
   if (
     isAuthenticated &&
-    (pathname.startsWith('/signin') || pathname.startsWith('/signup'))
+    (pathname.startsWith('/signin') || pathname.startsWith('/signup')) &&
+    !req.nextUrl.searchParams.has('callbackUrl')
   ) {
     return Response.redirect(new URL('/project', req.url))
   }

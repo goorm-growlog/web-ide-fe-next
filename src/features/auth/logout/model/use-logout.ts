@@ -7,14 +7,23 @@ import type { ApiResponse } from '@/shared/types/api'
 
 export const useLogout = () => {
   const logout = useCallback(async () => {
-    // 백엔드 로그아웃 (비동기로 실행하되 기다리지 않음)
-    authApi
-      .post('auth/logout')
-      .json<ApiResponse<null>>()
-      .catch(() => void 0) // 의도적으로 에러 무시
+    try {
+      // 백엔드 로그아웃
+      await authApi.post('auth/logout').json<ApiResponse<null>>()
+    } catch {
+      // 백엔드 실패해도 클라이언트 로그아웃은 진행
+    }
 
-    // 즉시 리다이렉트
-    await signOut({ callbackUrl: '/signin', redirect: true })
+    try {
+      // NextAuth signOut
+      await signOut({
+        callbackUrl: '/signin',
+        redirect: true,
+      })
+    } catch {
+      // 수동 리다이렉트
+      window.location.href = '/signin'
+    }
   }, [])
 
   return { logout }
