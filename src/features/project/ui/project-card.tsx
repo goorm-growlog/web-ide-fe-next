@@ -1,8 +1,5 @@
 import { MoreVertical } from 'lucide-react'
-import {
-  calculateMemberCount,
-  createStopPropagationHandler,
-} from '@/features/project/model/project-utils'
+import { calculateMemberCount } from '@/features/project/model/project-utils'
 import type { Project, ProjectAction } from '@/features/project/model/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
 import { Button } from '@/shared/ui/shadcn/button'
@@ -29,14 +26,12 @@ export const ProjectCard = ({
   onProjectClick,
   onProjectAction,
 }: ProjectCardProps) => {
-  const handleCardClick = () => {
-    onProjectClick?.(project.projectId)
-  }
+  const handleCardClick = () => onProjectClick?.(project.projectId)
 
-  const handleMenuAction = (action: ProjectAction) =>
-    createStopPropagationHandler(() =>
-      onProjectAction?.(project.projectId, action),
-    )
+  const handleMenuAction = (action: ProjectAction) => (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onProjectAction?.(project.projectId, action)
+  }
 
   const { visibleMembers, remainingCount } = calculateMemberCount(project)
 
@@ -47,14 +42,12 @@ export const ProjectCard = ({
       onClick={handleCardClick}
     >
       <CardContent className="flex h-full flex-col justify-between p-3">
-        {/* Project Info */}
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-start gap-2.5">
             <h3 className="max-w-[104px] truncate font-semibold text-foreground/80 text-sm leading-5">
               {project.projectName}
             </h3>
             <div className="flex h-3 w-3 flex-shrink-0 items-center justify-center">
-              {/* Status Indicator */}
               <div
                 className={`h-3 w-3 rounded-full ${
                   project.status === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'
@@ -67,21 +60,17 @@ export const ProjectCard = ({
           </p>
         </div>
 
-        {/* User Icons */}
         <div
           className={`flex w-full flex-wrap items-start justify-end gap-0 pr-1 ${variant === 'invited' ? '-mt-2' : 'mt-7'}`}
         >
           {visibleMembers.map((member, index) => (
             <Avatar
-              key={`${project.projectId}-member-${member.userId}`}
+              key={`${project.projectId}-member-${index}`}
               className="-mr-[9px] h-8 w-8 border-2 border-background"
             >
-              <AvatarImage
-                src={member.profileImageUrl || ''}
-                alt={member.name}
-              />
+              <AvatarImage src={member.profileImageUrl} alt={member.name} />
               <AvatarFallback className="bg-muted text-xs">
-                {member.name.charAt(0).toUpperCase()}
+                {member.name[0]?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
           ))}
@@ -94,7 +83,6 @@ export const ProjectCard = ({
           )}
         </div>
 
-        {/* Menu Button */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
