@@ -55,7 +55,9 @@ function ProjectSection({
 
       {/* Empty state for invited projects when there are no projects */}
       {!showCreateCard && displayedProjects.length === 0 ? (
-        <EmptyInvitedState />
+        <div className="flex flex-1 items-center justify-center">
+          <EmptyInvitedState />
+        </div>
       ) : (
         <div
           className={`grid gap-[18px] ${columns === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}
@@ -126,7 +128,7 @@ export function ProjectListWidget({
         columns={3}
         maxItems={3}
         cardHeight="150px"
-        showCreateCard
+        showCreateCard={hostProjects.length < 3}
         {...(onProjectClick && { onProjectClick })}
         {...(onProjectAction && { onProjectAction })}
         {...(onViewAllHost && { onViewAll: onViewAllHost })}
