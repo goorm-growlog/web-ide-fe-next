@@ -43,7 +43,10 @@ function ProjectSection({
   )
 
   return (
-    <div className="flex flex-col gap-3">
+    <div
+      className="flex flex-col gap-3"
+      style={{ height: cardHeight === '150px' ? '150px' : '260px' }}
+    >
       <ProjectSectionHeader
         title={title}
         totalCount={totalCount}
