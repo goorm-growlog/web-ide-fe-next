@@ -46,7 +46,7 @@ export default function ProjectPage() {
   return (
     <>
       <MainHeader />
-      <main className="flex min-h-screen items-center justify-center bg-white pt-[71px]">
+      <main className="fixed inset-0 flex items-center justify-center bg-white">
         {isLoading ? (
           <ProjectListSkeleton />
         ) : error ? (
