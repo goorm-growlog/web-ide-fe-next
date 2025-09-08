@@ -1,18 +1,18 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/shared/ui/shadcn/button'
 import { Input } from '@/shared/ui/shadcn/input'
 import { Label } from '@/shared/ui/shadcn/label'
 import { Textarea } from '@/shared/ui/shadcn/textarea'
-
-interface FormData {
-  name: string
-  description: string
-}
+import {
+  type CreateProjectFormData,
+  createProjectSchema,
+} from '../model/validation'
 
 interface CreateProjectFormProps {
-  onSubmit: (data: FormData) => void
+  onSubmit: (data: CreateProjectFormData) => void
   onCancel: () => void
   isLoading?: boolean
 }
@@ -26,7 +26,8 @@ export function CreateProjectForm({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<CreateProjectFormData>({
+    resolver: zodResolver(createProjectSchema),
     defaultValues: {
       name: '',
       description: '',
@@ -36,17 +37,11 @@ export function CreateProjectForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">프로젝트 이름</Label>
+        <Label htmlFor="name">Project Name</Label>
         <Input
           id="name"
-          placeholder="프로젝트 이름을 입력해주세요"
-          {...register('name', {
-            required: '프로젝트 이름을 입력해주세요',
-            maxLength: {
-              value: 50,
-              message: '프로젝트 이름은 50자 이하로 입력해주세요',
-            },
-          })}
+          placeholder="Enter project name"
+          {...register('name')}
         />
         {errors.name && (
           <p className="text-destructive text-sm">{errors.name.message}</p>
@@ -54,17 +49,12 @@ export function CreateProjectForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">설명 (선택사항)</Label>
+        <Label htmlFor="description">Description (Optional)</Label>
         <Textarea
           id="description"
-          placeholder="프로젝트에 대한 설명을 입력해주세요"
+          placeholder="Enter project description"
           rows={3}
-          {...register('description', {
-            maxLength: {
-              value: 100,
-              message: '설명은 100자 이하로 입력해주세요',
-            },
-          })}
+          {...register('description')}
         />
         {errors.description && (
           <p className="text-destructive text-sm">
@@ -80,10 +70,10 @@ export function CreateProjectForm({
           onClick={onCancel}
           disabled={isLoading}
         >
-          취소
+          Cancel
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? '생성 중...' : '생성하기'}
+          {isLoading ? 'Creating...' : 'Create Project'}
         </Button>
       </div>
     </form>
