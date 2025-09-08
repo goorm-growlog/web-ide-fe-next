@@ -15,14 +15,14 @@ export const useLogout = () => {
     }
 
     try {
-      // NextAuth signOut
+      // NextAuth signOut - 메인 페이지로 리다이렉트
       await signOut({
-        callbackUrl: '/signin',
+        callbackUrl: '/',
         redirect: true,
       })
     } catch {
       // 수동 리다이렉트
-      window.location.href = '/signin'
+      window.location.href = '/'
     }
   }, [])
 
