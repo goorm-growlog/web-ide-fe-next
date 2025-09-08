@@ -1,4 +1,4 @@
-import { useSidebarStore } from 'src/widgets/sidebar/model/sidebar-store'
+import { useSidebarStore } from '@/widgets/sidebar/model/store'
 
 export const useActiveTab = () => {
   const activeTab = useSidebarStore(state => state.activeTab)

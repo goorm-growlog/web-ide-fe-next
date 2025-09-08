@@ -7,10 +7,10 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/shared/ui/shadcn/accordion'
+} from '@/shared/ui/shadcn'
+import { TAB_DEFINITIONS } from '@/widgets/sidebar/constants/config'
 import { useOpenPanels } from '@/widgets/sidebar/model/hooks'
 import type { PanelKey, TabKey } from '@/widgets/sidebar/model/types'
-import { TAB_DEFINITIONS } from '../model/constants'
 
 const PANEL_CONFIG = {
   HEADER_HEIGHT: 40, // h-10 = 2.5rem = 40px
@@ -38,7 +38,7 @@ const ITEM_CLASSES = cn(
 )
 
 const CONTENT_CLASSES = cn(
-  'relative flex-shrink-0',
+  'relative h-full flex-shrink-0',
   'transition-all duration-300 ease-out',
 )
 

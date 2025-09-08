@@ -1,24 +1,33 @@
 'use client'
 
-import { useCallback } from 'react'
+import { signIn } from 'next-auth/react'
+import { useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
-import { getErrorMessage } from '@/shared/types/error'
-import { initiateGitHubAuth } from '../api/github-auth'
 
 /**
  * GitHub 소셜 로그인 액션 훅
  */
 export const useGitHubLogin = () => {
-  const login = useCallback(async () => {
-    try {
-      await initiateGitHubAuth()
-    } catch (error) {
-      const errorMsg = getErrorMessage(error) || 'GitHub 로그인 실패'
-      toast.error(errorMsg)
+  // URL 파라미터에서 에러 감지
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const error = urlParams.get('error')
+
+    if (error === 'AccessDenied') {
+      toast.error('fail to github login.')
+      // URL에서 에러 파라미터 제거
+      const newUrl = new URL(window.location.href)
+      newUrl.searchParams.delete('error')
+      window.history.replaceState({}, '', newUrl.pathname)
     }
   }, [])
 
-  return {
-    login,
-  }
+  const login = useCallback(async () => {
+    // 일반적인 NextAuth 리디렉션 방식 사용
+    await signIn('github', {
+      callbackUrl: '/project',
+    })
+  }, [])
+
+  return { login }
 }

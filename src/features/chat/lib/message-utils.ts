@@ -2,7 +2,7 @@ import {
   MESSAGE_TYPES,
   type Message,
   type SystemMessage,
-} from '@/features/chat/model/types'
+} from '@/features/chat/model/message-types'
 
 /**
  * 날짜 헤더 표시 여부를 결정하는 함수

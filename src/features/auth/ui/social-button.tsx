@@ -6,32 +6,23 @@ interface SocialButtonProps {
   className?: string
 }
 
-const PROVIDER_STYLES = {
-  kakao: 'bg-yellow-400 hover:bg-yellow-500',
-  github: 'bg-black hover:bg-gray-800',
-}
-
-const PROVIDER_ICON = {
-  kakao: '/kakao-logo.svg',
-  github: '/github-logo.svg',
-}
-
-const PROVIDER_ALT = {
-  kakao: '카카오 로그인',
-  github: '깃허브 로그인',
-}
+const PROVIDER_COLORS = {
+  kakao: '#FEE500',
+  github: '#24292e',
+} as const
 
 const SocialButton = ({ provider, onClick, className }: SocialButtonProps) => (
   <button
     type="button"
     onClick={onClick}
-    className={`flex h-12 w-12 items-center justify-center rounded-md transition-colors ${PROVIDER_STYLES[provider]} ${className ?? ''}`}
+    className={`flex h-12 w-12 items-center justify-center rounded-md transition-colors hover:opacity-80 ${className ?? ''}`}
+    style={{ backgroundColor: PROVIDER_COLORS[provider] }}
   >
     <Image
-      src={PROVIDER_ICON[provider]}
-      alt={PROVIDER_ALT[provider]}
-      width={16}
-      height={16}
+      src={`/${provider}-logo.svg`}
+      alt={`${provider} 로그인`}
+      width={20}
+      height={20}
       className={provider === 'kakao' ? 'brightness-0 filter' : ''}
     />
   </button>

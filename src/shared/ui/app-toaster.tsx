@@ -11,3 +11,4 @@ const AppToaster = () => (
 )
 
 export default AppToaster
+export { AppToaster }

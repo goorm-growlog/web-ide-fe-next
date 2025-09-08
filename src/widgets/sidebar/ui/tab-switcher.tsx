@@ -2,7 +2,7 @@
 
 import { memo, useMemo } from 'react'
 import { cn } from '@/shared/lib/utils'
-import IconButton from '@/shared/ui/icon-button'
+import { IconButton } from '@/shared/ui/icon-button'
 import type { Tab, TabKey } from '@/widgets/sidebar/model/types'
 
 interface TabSwitcherProps {

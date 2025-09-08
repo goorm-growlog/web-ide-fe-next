@@ -1,7 +1,7 @@
 import type { StoryObj } from '@storybook/nextjs-vite'
 import { FileText, Search, Settings, Terminal, User } from 'lucide-react'
 import { fn } from 'storybook/test'
-import IconButton from '@/shared/ui/icon-button'
+import { IconButton } from '@/shared/ui/icon-button'
 
 const meta = {
   title: 'Shared/IconButton',

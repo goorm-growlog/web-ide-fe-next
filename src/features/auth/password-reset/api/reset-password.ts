@@ -1,5 +1,6 @@
-import { fetchApi } from '@/shared/api/fetch-api'
-import type { PasswordResetPayload } from '../../model/types'
+import { api, apiHelpers } from '@/shared/api/ky-client'
+import type { ApiResponse } from '@/shared/types/api'
+import type { PasswordResetData } from '../../model/validation-schema'
 
 /**
  * 비밀번호 재설정 요청을 수행합니다.
@@ -7,10 +8,17 @@ import type { PasswordResetPayload } from '../../model/types'
  * @throws 요청 실패 시 에러
  */
 export const resetPassword = async (
-  payload: PasswordResetPayload,
+  payload: PasswordResetData,
 ): Promise<void> => {
-  await fetchApi('/api/reset-password', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
+  // 백엔드 API: POST /auth/reset-password
+  const response = await api
+    .post('auth/reset-password', {
+      json: {
+        name: payload.name,
+        email: payload.email,
+      },
+    })
+    .json<ApiResponse<void>>()
+
+  apiHelpers.checkSuccess(response)
 }

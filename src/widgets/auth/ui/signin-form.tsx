@@ -1,15 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  LoginForm,
-  type PasswordResetData,
-  PasswordResetDialog,
-  useLoginActions,
-  useLoginForm,
-  usePasswordResetActions,
-} from '@/features/auth'
-import { SocialLoginWidget } from '@/widgets/social-login'
+import { useLoginActions } from '@/features/auth/login/model/use-login-actions'
+import { useLoginForm } from '@/features/auth/login/model/use-login-form'
+import LoginForm from '@/features/auth/login/ui/login-form'
+import type { PasswordResetData } from '@/features/auth/model/validation-schema'
+import { usePasswordResetActions } from '@/features/auth/password-reset/model/use-password-reset-actions'
+import PasswordResetDialog from '@/features/auth/password-reset/ui/password-reset-dialog'
+import SocialLoginWidget from '@/widgets/social-login/ui/social-login-widget'
 
 const SigninForm = () => {
   const [isPasswordResetDialogOpen, setIsPasswordResetDialogOpen] =

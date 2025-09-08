@@ -1,15 +1,12 @@
 import { getInitials } from '@/shared/lib/string-utils'
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn'
 
 interface OtherUserAvatarProps {
   userImg: string
   username: string
 }
 
-export const OtherUserAvatar = ({
-  userImg,
-  username,
-}: OtherUserAvatarProps) => (
+const OtherUserAvatar = ({ userImg, username }: OtherUserAvatarProps) => (
   <Avatar className={'-mt-1 h-9 w-9 shrink-0 self-start'}>
     <AvatarImage src={userImg} />
     <AvatarFallback
@@ -19,3 +16,6 @@ export const OtherUserAvatar = ({
     </AvatarFallback>
   </Avatar>
 )
+
+export default OtherUserAvatar
+export { OtherUserAvatar }

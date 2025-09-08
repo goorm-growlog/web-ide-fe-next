@@ -1,5 +1,5 @@
 import { getPartText } from '@/features/chat/lib/code-link-utils'
-import type { MessagePart } from '@/features/chat/model/types'
+import type { MessagePart } from '@/features/chat/model/code-link-types'
 import { CodeLink } from '@/features/chat/ui/shared/code-link'
 import { MessageTime } from '@/features/chat/ui/shared/message-time'
 import { cn } from '@/shared/lib/utils'
@@ -12,7 +12,7 @@ interface TalkMessageContentProps {
   className?: string
 }
 
-export const TalkMessageContent = ({
+const TalkMessageContent = ({
   parts,
   content,
   sentAt,
@@ -57,3 +57,6 @@ export const TalkMessageContent = ({
     </div>
   )
 }
+
+export default TalkMessageContent
+export { TalkMessageContent }
