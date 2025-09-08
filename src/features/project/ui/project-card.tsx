@@ -71,14 +71,17 @@ export const ProjectCard = ({
         <div
           className={`flex w-full flex-wrap items-start justify-end gap-0 pr-1 ${variant === 'invited' ? '-mt-2' : 'mt-7'}`}
         >
-          {visibleMembers.map((memberName, index) => (
+          {visibleMembers.map((member, index) => (
             <Avatar
-              key={`${project.projectId}-member-${index}`}
+              key={`${project.projectId}-member-${member.userId}`}
               className="-mr-[9px] h-8 w-8 border-2 border-background"
             >
-              <AvatarImage src="" alt={memberName} />
+              <AvatarImage
+                src={member.profileImageUrl || ''}
+                alt={member.name}
+              />
               <AvatarFallback className="bg-muted text-xs">
-                {memberName.charAt(0).toUpperCase()}
+                {member.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           ))}

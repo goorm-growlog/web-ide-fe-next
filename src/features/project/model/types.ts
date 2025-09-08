@@ -14,6 +14,7 @@ export interface Project {
   description: string
   ownerName: string
   memberNames: string[]
+  memberProfiles: ProjectMember[] // 확장된 멤버 정보
   myRole: string
   status: string
   createdAt: string

@@ -17,6 +17,14 @@ export interface CreateProjectRequest {
   imageId?: number
 }
 
+export interface MemberDto {
+  userId: number
+  name: string
+  email: string
+  profileImageUrl?: string
+  role: 'OWNER' | 'READ' | 'WRITE'
+}
+
 export interface ProjectResponse {
   projectId: number
   projectName: string
@@ -28,6 +36,9 @@ export interface ProjectResponse {
   createdAt: string
   updatedAt: string
 }
+
+// API 응답 타입들
+export type ProjectMembersApiResponse = ApiResponse<MemberDto[]>
 
 // API 응답 타입들
 export type ProjectListApiResponse = ApiResponse<ProjectResponse[]>
