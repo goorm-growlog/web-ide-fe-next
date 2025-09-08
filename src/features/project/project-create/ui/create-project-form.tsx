@@ -35,7 +35,7 @@ export function CreateProjectForm({
   })
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="name">Project Name</Label>
         <Input
@@ -50,20 +50,20 @@ export function CreateProjectForm({
 
       <div className="space-y-2">
         <Label htmlFor="description">Description (Optional)</Label>
-        <div className="w-full overflow-hidden">
-          <Textarea
-            id="description"
-            placeholder="Enter project description"
-            rows={3}
-            className="!max-w-full w-full resize-none"
-            style={
-              {
-                fieldSizing: 'fixed',
-              } as React.CSSProperties
-            }
-            {...register('description')}
-          />
-        </div>
+        <Textarea
+          id="description"
+          placeholder="Enter project description"
+          rows={3}
+          className="resize-none"
+          style={
+            {
+              fieldSizing: 'fixed',
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'hsl(var(--muted-foreground) / 0.3) transparent',
+            } as React.CSSProperties
+          }
+          {...register('description')}
+        />
         {errors.description && (
           <p className="text-destructive text-sm">
             {errors.description.message}

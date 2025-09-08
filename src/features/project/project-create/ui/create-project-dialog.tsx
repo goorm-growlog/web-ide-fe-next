@@ -44,12 +44,10 @@ export function CreateProjectDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
+      <DialogContent className="[&>button]:hidden">
+        <DialogHeader className="mb-4 pt-2">
           <DialogTitle>Create New Project</DialogTitle>
-          <DialogDescription>
-            Create a new project to start collaborating with your team.
-          </DialogDescription>
+          <DialogDescription>Create a new project.</DialogDescription>
         </DialogHeader>
 
         {error && (
