@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { ProjectListWidget } from '@/widgets/project/ui/project-list-widget'
 import { useProjectList } from '@/features/project/project-list/model/use-project-list'
 import { MainHeader } from '@/widgets/header/ui/main-header'
+import { ProjectListSkeleton } from '@/shared/ui/project-skeleton'
 
 export default function ProjectPage() {
   const {
@@ -47,7 +48,7 @@ export default function ProjectPage() {
       <MainHeader />
       <main className="flex min-h-screen items-center justify-center bg-white pt-[71px]">
         {isLoading ? (
-          <div className="text-lg text-foreground">Loading projects...</div>
+          <ProjectListSkeleton />
         ) : error ? (
           <div className="text-destructive">Error: {error}</div>
         ) : (
