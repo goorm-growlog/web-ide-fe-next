@@ -32,7 +32,7 @@ export function ProjectGrid({
     <div className={`grid ${gridCols} gap-[18px]`}>
       {displayedProjects.map(project => (
         <ProjectCard
-          key={project.id}
+          key={project.projectId}
           project={project}
           {...(cardHeight && { height: cardHeight })}
           {...(onProjectClick && { onProjectClick })}

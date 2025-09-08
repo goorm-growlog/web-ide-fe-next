@@ -3,9 +3,9 @@
 import type { ProjectAction } from './types'
 
 // 기본 이벤트 핸들러들
-export type ProjectClickHandler = (projectId: string) => void
+export type ProjectClickHandler = (projectId: number) => void
 export type ProjectActionHandler = (
-  projectId: string,
+  projectId: number,
   action: ProjectAction,
 ) => void
 

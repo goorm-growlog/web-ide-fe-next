@@ -26,7 +26,7 @@ export function CreateProjectDialog({
 
   const handleSubmit = async (data: CreateProjectFormData) => {
     const projectData = {
-      name: data.name,
+      projectName: data.projectName,
       ...(data.description && { description: data.description }),
     }
 

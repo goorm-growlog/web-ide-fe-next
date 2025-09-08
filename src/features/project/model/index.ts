@@ -2,10 +2,12 @@
 
 // API Types
 export type {
+  CreateProjectApiResponse,
   CreateProjectRequest,
-  CreateProjectResponse,
   GetProjectsResponse,
-  ProjectAPIError,
+  ProjectDetailApiResponse,
+  ProjectListApiResponse,
+  ProjectResponse,
 } from './api'
 // Event Handlers
 export type {
