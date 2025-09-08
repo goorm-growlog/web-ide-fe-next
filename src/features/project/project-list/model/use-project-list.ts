@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { GetProjectsResponse } from '@/features/project/model/api'
 import type { Project } from '@/features/project/model/types'
 
@@ -80,32 +80,32 @@ export function useProjectList() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setIsLoading(true)
+  const fetchProjects = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
 
-        // 임시 delay 시뮬레이션
-        await new Promise(resolve => setTimeout(resolve, 500))
+      // 임시 delay 시뮬레이션
+      await new Promise(resolve => setTimeout(resolve, 500))
 
-        setData(mockData)
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to fetch projects'
-        setError(errorMessage)
-      } finally {
-        setIsLoading(false)
-      }
+      setData(mockData)
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to fetch projects'
+      setError(errorMessage)
+    } finally {
+      setIsLoading(false)
     }
-
-    fetchProjects()
   }, [])
 
-  const refetch = () => {
-    setData(null)
-    setError(null)
-    // 재실행을 위해 useEffect 트리거
-  }
+  useEffect(() => {
+    fetchProjects()
+  }, [fetchProjects])
+
+  const refetch = useCallback(async () => {
+    // 직접 fetchProjects 함수를 호출하여 데이터 재요청
+    await fetchProjects()
+  }, [fetchProjects])
 
   return {
     hostProjects: data?.hostProjects ?? [],
