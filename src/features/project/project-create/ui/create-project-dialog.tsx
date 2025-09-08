@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/ui/shadcn/dialog'
+import type { CreateProjectFormData } from '../model/validation'
 import { CreateProjectForm } from './create-project-form'
 
 interface CreateProjectDialogProps {
@@ -23,7 +24,7 @@ export function CreateProjectDialog({
 }: CreateProjectDialogProps) {
   const { createProject, isLoading, error } = useCreateProject()
 
-  const handleSubmit = async (data: { name: string; description: string }) => {
+  const handleSubmit = async (data: CreateProjectFormData) => {
     const projectData = {
       name: data.name,
       ...(data.description && { description: data.description }),
@@ -45,9 +46,9 @@ export function CreateProjectDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>새 프로젝트 만들기</DialogTitle>
+          <DialogTitle>Create New Project</DialogTitle>
           <DialogDescription>
-            새로운 프로젝트를 만들어 협업을 시작해보세요.
+            Create a new project to start collaborating with your team.
           </DialogDescription>
         </DialogHeader>
 
