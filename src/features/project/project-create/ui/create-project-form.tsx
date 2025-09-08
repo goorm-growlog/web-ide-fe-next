@@ -50,12 +50,20 @@ export function CreateProjectForm({
 
       <div className="space-y-2">
         <Label htmlFor="description">Description (Optional)</Label>
-        <Textarea
-          id="description"
-          placeholder="Enter project description"
-          rows={3}
-          {...register('description')}
-        />
+        <div className="w-full overflow-hidden">
+          <Textarea
+            id="description"
+            placeholder="Enter project description"
+            rows={3}
+            className="!max-w-full w-full resize-none"
+            style={
+              {
+                fieldSizing: 'fixed',
+              } as React.CSSProperties
+            }
+            {...register('description')}
+          />
+        </div>
         {errors.description && (
           <p className="text-destructive text-sm">
             {errors.description.message}
