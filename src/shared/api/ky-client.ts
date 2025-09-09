@@ -92,8 +92,11 @@ export const authApi = ky.create({
     ],
     afterResponse: [
       async (request, _options, response) => {
-        // 401 에러 시 토큰 갱신 후 재시도
-        if (response.status === 401 && typeof window !== 'undefined') {
+        // 401, 403 에러 시 토큰 갱신 후 재시도
+        if (
+          (response.status === 401 || response.status === 403) &&
+          typeof window !== 'undefined'
+        ) {
           const newToken = await refreshToken()
           if (newToken) {
             // 새 토큰으로 재시도 (fetch 사용 - 훅 우회)
@@ -109,6 +112,21 @@ export const authApi = ky.create({
             // 갱신 실패 시 로그아웃
             await signOut({ callbackUrl: '/signin' })
           }
+        }
+
+        // 403 에러 시 권한 부족 처리
+        if (response.status === 403 && typeof window !== 'undefined') {
+          console.warn(`권한이 없습니다: ${request.url}`)
+          // 권한 부족 이벤트 발생 (UI에서 처리할 수 있도록)
+          window.dispatchEvent(
+            new CustomEvent('auth:permission-denied', {
+              detail: {
+                url: request.url,
+                method: request.method,
+                status: response.status,
+              },
+            }),
+          )
         }
 
         if (!response.ok) {
