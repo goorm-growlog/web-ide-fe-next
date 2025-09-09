@@ -114,21 +114,6 @@ export const authApi = ky.create({
           }
         }
 
-        // 403 에러 시 권한 부족 처리
-        if (response.status === 403 && typeof window !== 'undefined') {
-          console.warn(`권한이 없습니다: ${request.url}`)
-          // 권한 부족 이벤트 발생 (UI에서 처리할 수 있도록)
-          window.dispatchEvent(
-            new CustomEvent('auth:permission-denied', {
-              detail: {
-                url: request.url,
-                method: request.method,
-                status: response.status,
-              },
-            }),
-          )
-        }
-
         if (!response.ok) {
           await handleApiError(response, 'API request failed')
         }
