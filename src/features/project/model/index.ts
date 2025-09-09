@@ -17,10 +17,11 @@ export type {
   ProjectEventHandlers,
   ProjectListEventHandlers,
 } from './event-handlers'
+// Services
+export { getEnrichedProjectsByType } from './project-service'
 // Utils
 export {
   calculateMemberCount,
-  createStopPropagationHandler,
   getVisibleMembers,
 } from './project-utils'
 // Types
