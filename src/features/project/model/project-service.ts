@@ -4,6 +4,10 @@
 import { getProjectMembers, getProjects } from '../api/project-api'
 import type { Project } from './types'
 
+// 프로젝트 목록 표시 제한
+const MAX_HOST_PROJECTS = 3
+const MAX_INVITED_PROJECTS = 4
+
 /**
  * 프로젝트와 멤버 정보를 결합하는 비즈니스 로직
  * @param project - 기본 프로젝트 정보
@@ -48,8 +52,11 @@ export async function getEnrichedProjectsByType(): Promise<{
   ])
 
   // 2단계: 표시할 프로젝트만 선별 (UI에서 실제로 보여줄 개수만)
-  const displayHostProjects = allHostProjects.slice(0, 3)
-  const displayInvitedProjects = allInvitedProjects.slice(0, 4)
+  const displayHostProjects = allHostProjects.slice(0, MAX_HOST_PROJECTS)
+  const displayInvitedProjects = allInvitedProjects.slice(
+    0,
+    MAX_INVITED_PROJECTS,
+  )
 
   // 3단계: 선별된 프로젝트만 멤버 정보 조회 (API 호출 최소화)
   const [enrichedHostProjects, enrichedInvitedProjects] = await Promise.all([

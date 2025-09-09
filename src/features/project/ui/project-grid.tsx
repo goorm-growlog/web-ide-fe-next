@@ -1,14 +1,15 @@
 'use client'
 
-import type { ProjectEventHandlers } from '@/features/project/model/event-handlers'
-import type { Project } from '@/features/project/model/types'
+import type { Project, ProjectAction } from '@/features/project/model/types'
 import { ProjectCard } from './project-card'
 
-interface ProjectGridProps extends ProjectEventHandlers {
+interface ProjectGridProps {
   projects: Project[]
   columns: number
   maxItems?: number
   cardHeight?: string
+  onProjectClick?: (projectId: number) => void
+  onProjectAction?: (projectId: number, action: ProjectAction) => void
 }
 
 export function ProjectGrid({

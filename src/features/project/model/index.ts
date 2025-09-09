@@ -9,21 +9,11 @@ export type {
   ProjectListApiResponse,
   ProjectResponse,
 } from './api'
-// Event Handlers
-export type {
-  CreateProjectEventHandlers,
-  ProjectActionHandler,
-  ProjectClickHandler,
-  ProjectEventHandlers,
-  ProjectListEventHandlers,
-} from './event-handlers'
+export type { MemberCountResult, MemberDisplayInfo } from './project-members'
+export { calculateMemberCount } from './project-members'
 // Services
 export { getEnrichedProjectsByType } from './project-service'
-// Utils
-export {
-  calculateMemberCount,
-  getVisibleMembers,
-} from './project-utils'
+
 // Types
 export type {
   CreateProjectData,

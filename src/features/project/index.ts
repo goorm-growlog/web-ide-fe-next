@@ -1,7 +1,5 @@
 // Project Feature Main Public API
 
-// Constants
-export * from './constants/ui-constants'
 // Model (types, utils, event handlers)
 export * from './model'
 

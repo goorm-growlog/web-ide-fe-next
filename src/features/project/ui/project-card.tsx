@@ -1,15 +1,7 @@
-import { MoreVertical } from 'lucide-react'
-import { calculateMemberCount } from '@/features/project/model/project-utils'
 import type { Project, ProjectAction } from '@/features/project/model/types'
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
-import { Button } from '@/shared/ui/shadcn/button'
 import { Card, CardContent } from '@/shared/ui/shadcn/card'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/shared/ui/shadcn/dropdown-menu'
+import { ProjectCardMenu } from './project-card-menu'
+import { ProjectMemberAvatars } from './project-member-avatars'
 
 interface ProjectCardProps {
   project: Project
@@ -27,13 +19,6 @@ export const ProjectCard = ({
   onProjectAction,
 }: ProjectCardProps) => {
   const handleCardClick = () => onProjectClick?.(project.projectId)
-
-  const handleMenuAction = (action: ProjectAction) => (e: React.MouseEvent) => {
-    e.stopPropagation()
-    onProjectAction?.(project.projectId, action)
-  }
-
-  const { visibleMembers, remainingCount } = calculateMemberCount(project)
 
   return (
     <Card
@@ -60,58 +45,12 @@ export const ProjectCard = ({
           </p>
         </div>
 
-        <div
-          className={`flex w-full flex-wrap items-start justify-end gap-0 pr-1 ${variant === 'invited' ? '-mt-2' : 'mt-7'}`}
-        >
-          {visibleMembers.map((member, index) => (
-            <Avatar
-              key={`${project.projectId}-member-${index}`}
-              className="-mr-[9px] h-8 w-8 border-2 border-background"
-            >
-              <AvatarImage src={member.profileImageUrl} alt={member.name} />
-              <AvatarFallback className="bg-muted text-xs">
-                {member.name[0]?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-          ))}
-          {remainingCount > 0 && (
-            <div className="-mr-[9px] flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-muted-foreground">
-              <span className="font-medium text-background text-sm">
-                +{remainingCount}
-              </span>
-            </div>
-          )}
-        </div>
+        <ProjectMemberAvatars project={project} variant={variant} />
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute top-2 right-1 h-8 w-8 p-0 hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
-              onClick={e => e.stopPropagation()}
-            >
-              <MoreVertical className="h-3.5 w-3.5 text-foreground" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="start"
-            side="bottom"
-            sideOffset={-6}
-            alignOffset={2}
-            className="min-w-fit border px-2 py-1 shadow-sm"
-          >
-            <DropdownMenuItem onClick={handleMenuAction('edit')}>
-              edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={handleMenuAction('delete')}
-              className="text-destructive"
-            >
-              delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <ProjectCardMenu
+          projectId={project.projectId}
+          onProjectAction={onProjectAction}
+        />
       </CardContent>
     </Card>
   )
