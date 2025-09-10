@@ -1,11 +1,11 @@
 'use client'
 
-import { GitHubLoginButton } from '@/features/auth/social-github'
-import { KakaoLoginButton } from '@/features/auth/social-kakao'
+import { GitHubLoginButton } from '@/features/social-auth/social-github'
+import { KakaoLoginButton } from '@/features/social-auth/social-kakao'
 
 /**
- * 소셜 로그인 위젯
- * GitHub과 Kakao 로그인 버튼을 포함한 소셜 로그인 UI
+ * ?�셜 로그???�젯
+ * GitHub�?Kakao 로그??버튼???�함???�셜 로그??UI
  */
 const SocialLoginWidget = () => {
   return (

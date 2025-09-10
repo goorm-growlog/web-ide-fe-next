@@ -22,3 +22,9 @@ export type {
   ProjectMember,
   ProjectStatus,
 } from './model/types'
+// UI Components (도메인 특화 컴포넌트)
+export * from './ui/project-card'
+export * from './ui/project-card-menu'
+export * from './ui/project-grid'
+export * from './ui/project-member-avatars'
+export * from './ui/project-skeleton'

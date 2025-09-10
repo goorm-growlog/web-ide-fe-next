@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { ProjectListWidget } from '@/widgets/project/ui/project-list-widget'
 import { useProjectList } from '@/features/project/project-list/model/use-project-list'
 import { MainHeader } from '@/widgets/header/ui/main-header'
-import { ProjectListSkeleton } from '@/shared/ui/project-skeleton'
+import { ProjectCardSkeleton } from '@/entities/project'
 
 export default function ProjectPage() {
   const {
@@ -39,7 +39,7 @@ export default function ProjectPage() {
   }
 
   const renderContent = () => {
-    if (isLoading) return <ProjectListSkeleton />
+    if (isLoading) return <ProjectCardSkeleton />
     if (error) return <div className="text-destructive">Error: {error}</div>
     
     return (

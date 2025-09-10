@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { useLoginActions } from '@/features/auth/login/model/use-login-actions'
-import { useLoginForm } from '@/features/auth/login/model/use-login-form'
-import LoginForm from '@/features/auth/login/ui/login-form'
-import type { PasswordResetData } from '@/features/auth/password-reset/model/schema'
-import { usePasswordResetActions } from '@/features/auth/password-reset/model/use-password-reset-actions'
-import PasswordResetDialog from '@/features/auth/password-reset/ui/password-reset-dialog'
+import { useLoginActions } from '@/features/core-auth/login/model/use-login-actions'
+import { useLoginForm } from '@/features/core-auth/login/model/use-login-form'
+import LoginForm from '@/features/core-auth/login/ui/login-form'
+import type { PasswordResetData } from '@/features/verification/password-reset/model/schema'
+import { usePasswordResetActions } from '@/features/verification/password-reset/model/use-password-reset-actions'
+import PasswordResetDialog from '@/features/verification/password-reset/ui/password-reset-dialog'
 import SocialLoginWidget from '@/widgets/social-login/ui/social-login-widget'
 
 const SigninForm = () => {

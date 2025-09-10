@@ -1,8 +1,8 @@
 'use client'
 
 import { useUser } from '@/entities/users'
-import { useProfileEditForm } from '@/features/auth/profile-edit/model/use-profile-edit-form'
-import ProfileEditForm from '@/features/auth/profile-edit/ui/profile-edit-form'
+import { useProfileEditForm } from '@/features/profile/profile-edit/model/use-profile-edit-form'
+import ProfileEditForm from '@/features/profile/profile-edit/ui/profile-edit-form'
 
 const ProfilePage = () => {
   const { user, isLoading: userLoading } = useUser()

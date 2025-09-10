@@ -1,7 +1,7 @@
 'use client'
 
 import type { Project, ProjectAction } from '@/entities/project'
-import { ProjectCard } from '@/shared/ui/project-card'
+import { ProjectCard } from '@/entities/project'
 import { EmptyInvitedState } from './empty-invited-state'
 import { ProjectSectionHeader } from './project-section-header'
 

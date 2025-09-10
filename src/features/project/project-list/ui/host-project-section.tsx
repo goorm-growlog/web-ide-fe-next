@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { Project, ProjectAction } from '@/entities/project'
-import { ProjectCard } from '@/shared/ui/project-card'
+import { ProjectCard } from '@/entities/project'
 import { CreateProjectCard } from '../../project-create/ui/create-project-card'
 import { CreateProjectDialog } from '../../project-create/ui/create-project-dialog'
 import { ProjectSectionHeader } from './project-section-header'
