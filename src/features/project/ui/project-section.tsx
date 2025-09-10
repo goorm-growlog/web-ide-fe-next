@@ -1,4 +1,4 @@
-import type { Project, ProjectAction } from '../model/types'
+import type { Project, ProjectAction } from '@/entities/project'
 import { HostProjectSection } from './host-project-section'
 import { InvitedProjectSection } from './invited-project-section'
 

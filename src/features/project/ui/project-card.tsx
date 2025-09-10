@@ -1,4 +1,4 @@
-import type { Project, ProjectAction } from '@/features/project/model/types'
+import type { Project, ProjectAction } from '@/entities/project'
 import { Card, CardContent } from '@/shared/ui/shadcn/card'
 import { ProjectCardMenu } from './project-card-menu'
 import { ProjectMemberAvatars } from './project-member-avatars'

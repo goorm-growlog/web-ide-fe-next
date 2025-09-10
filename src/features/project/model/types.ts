@@ -1,32 +1,13 @@
-// 프로젝트 관련 핵심 타입 정의 (API 스키마 기반)
+// 프로젝트 feature의 로컬 타입 정의 (entities/project에서 import)
 
-export interface ProjectMember {
-  userId: number
-  name: string
-  email: string
-  profileImageUrl?: string
-  role: 'OWNER' | 'READ' | 'WRITE'
-}
+// 핵심 타입들은 entities/project에서 가져옴
+export type {
+  CreateProjectData,
+  Project,
+  ProjectMember,
+} from '@/entities/project'
 
-export interface Project {
-  projectId: number
-  projectName: string
-  description: string
-  ownerName: string
-  memberNames: string[]
-  memberProfiles: ProjectMember[] // 확장된 멤버 정보
-  myRole: string
-  status: string
-  createdAt: string
-  updatedAt: string
-}
-
-export interface CreateProjectData {
-  projectName: string
-  description?: string
-  imageId?: number
-}
-
+// Feature에 특화된 추가 타입들
 export type ProjectStatus = 'host' | 'invited'
 
 export type ProjectAction = 'edit' | 'delete' | 'share' | 'settings'

@@ -1,46 +1,11 @@
-// API 관련 타입 정의 (실제 API 스키마 기반)
+// Feature layer에 특화된 API 응답 타입 정의
 
-import type { ApiResponse } from '@/shared/types/api'
-import type { Project } from './types'
+import type { Project } from '@/entities/project'
 
+// 프로젝트 목록 API 응답 형태 (feature에서 사용하는 조합된 응답)
 export interface GetProjectsResponse {
   hostProjects: Project[]
   invitedProjects: Project[]
   totalHost: number
   totalInvited: number
 }
-
-// API 스키마 기반 타입들
-export interface CreateProjectRequest {
-  projectName: string
-  description?: string
-  imageId?: number
-}
-
-export interface MemberDto {
-  userId: number
-  name: string
-  email: string
-  profileImageUrl?: string
-  role: 'OWNER' | 'READ' | 'WRITE'
-}
-
-export interface ProjectResponse {
-  projectId: number
-  projectName: string
-  description: string
-  ownerName: string
-  memberNames: string[]
-  myRole: string
-  status: string
-  createdAt: string
-  updatedAt: string
-}
-
-// API 응답 타입들
-export type ProjectMembersApiResponse = ApiResponse<MemberDto[]>
-
-// API 응답 타입들
-export type ProjectListApiResponse = ApiResponse<ProjectResponse[]>
-export type CreateProjectApiResponse = ApiResponse<ProjectResponse>
-export type ProjectDetailApiResponse = ApiResponse<ProjectResponse>

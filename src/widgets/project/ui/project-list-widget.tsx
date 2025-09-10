@@ -1,12 +1,9 @@
 'use client'
 
-import {
-  type Project,
-  type ProjectAction,
-  ProjectSection,
-} from '@/features/project'
+import type { Project, ProjectAction } from '@/entities/project'
+import { ProjectSection } from '@/features/project'
 
-interface ProjectListWidgetProps {
+export interface ProjectListWidgetProps {
   hostProjects: Project[]
   invitedProjects: Project[]
   onProjectClick?: (projectId: number) => void

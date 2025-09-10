@@ -1,5 +1,5 @@
 import { MoreVertical } from 'lucide-react'
-import type { ProjectAction } from '@/features/project/model/types'
+import type { ProjectAction } from '@/entities/project'
 import { Button } from '@/shared/ui/shadcn/button'
 import {
   DropdownMenu,

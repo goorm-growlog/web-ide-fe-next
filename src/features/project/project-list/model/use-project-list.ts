@@ -1,8 +1,8 @@
 'use client'
 
 import useSWR from 'swr'
+import { getEnrichedProjectsByType } from '@/entities/project'
 import type { GetProjectsResponse } from '@/features/project/model/api'
-import { getEnrichedProjectsByType } from '@/features/project/model/project-service'
 
 /**
  * 프로젝트 목록을 조회합니다.
@@ -11,8 +11,12 @@ export function useProjectList() {
   const { data, error, isLoading, mutate } = useSWR(
     'project-list',
     async (): Promise<GetProjectsResponse> => {
-      const { hostProjects, invitedProjects } =
-        await getEnrichedProjectsByType()
+      const { hostProjects, invitedProjects } = await getEnrichedProjectsByType(
+        {
+          maxHostProjects: 3,
+          maxInvitedProjects: 4,
+        },
+      )
 
       return {
         hostProjects,

@@ -1,6 +1,6 @@
 'use client'
 
-import type { Project, ProjectAction } from '../model/types'
+import type { Project, ProjectAction } from '@/entities/project'
 import { EmptyInvitedState } from '../project-list/ui/empty-invited-state'
 import { ProjectSectionHeader } from '../project-list/ui/project-section-header'
 import { ProjectCard } from './project-card'
