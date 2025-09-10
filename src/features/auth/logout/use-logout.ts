@@ -2,40 +2,28 @@
 
 import { signOut } from 'next-auth/react'
 import { useCallback } from 'react'
-import { mutate } from 'swr'
-import { logoutApi } from '@/entities/auth'
-import { tokenManager } from '../lib/token-manager'
+import { apiHelpers, authApi } from '@/shared/api/ky-client'
+import type { ApiResponse } from '@/shared/types/api'
 
 export const useLogout = () => {
   const logout = useCallback(async () => {
     try {
-      // 1. 백엔드 로그아웃 API 호출 (현재 토큰으로)
-      const currentToken = await tokenManager.getAccessToken()
-      if (currentToken) {
-        await logoutApi()
-      }
-    } catch (error) {
-      console.warn('백엔드 로그아웃 실패:', error)
-      // 백엔드 실패해도 클라이언트 정리는 진행
-    } finally {
-      // 2. 토큰 정리 (백엔드 중심)
-      tokenManager.clearTokens()
-
-      // 3. SWR 캐시 정리
-      mutate(() => true, undefined, { revalidate: false })
-
-      // 4. NextAuth 세션 종료
-      try {
-        await signOut({
-          callbackUrl: '/signin',
-          redirect: true,
-        })
-      } catch (error) {
-        console.warn('NextAuth 로그아웃 실패:', error)
-        // 수동 리다이렉트
-        window.location.href = '/signin'
-      }
+      // 1) 백엔드 로그아웃: Redis의 RefreshToken 제거 및 쿠키 삭제
+      const response = await authApi
+        .post('auth/logout')
+        .json<ApiResponse<null>>()
+      apiHelpers.checkSuccess(response)
+    } catch (_error) {
+      // 서버 로그아웃 실패 시에도 클라이언트 세션 정리는 진행
     }
+
+    // 2) NextAuth 세션 종료 및 리다이렉트 (캐시 클리어 없이 바로 리다이렉트)
+    await signOut({
+      callbackUrl: '/signin',
+    })
+
+    // signOut은 리다이렉트를 수행하므로 이후 코드는 실행되지 않음
+    // SWR 캐시는 새로운 페이지에서 자연스럽게 초기화됨
   }, [])
 
   return { logout }
