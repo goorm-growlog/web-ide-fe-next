@@ -21,21 +21,20 @@ export default function ProjectPage() {
     router.push(`/project/${projectId}`)
   }
 
-  const handleProjectAction = (projectId: number, action: string) => {
-    console.log('Project action:', { projectId, action })
+  const handleProjectAction = (_projectId: number, _action: string) => {
+    // Handle project action
   }
 
-  const handleProjectCreated = (projectId: string) => {
-    console.log('Project created:', projectId)
+  const handleProjectCreated = (_projectId: string) => {
     refetch()
   }
 
   const handleViewAllHost = () => {
-    console.log('View all host projects')
+    // Handle view all host projects
   }
 
   const handleViewAllInvited = () => {
-    console.log('View all invited projects')
+    // Handle view all invited projects
   }
 
   const renderContent = () => {

@@ -49,11 +49,7 @@ async function enrichProjectWithMembers(project: Project): Promise<Project> {
     const { getProjectMembers } = await import('../api/project')
     const memberProfiles = await getProjectMembers(project.projectId)
     return { ...project, memberProfiles }
-  } catch (error) {
-    console.warn(
-      `Failed to fetch members for project ${project.projectId}:`,
-      error,
-    )
+  } catch {
     return project // 실패시 기본 정보만 반환
   }
 }

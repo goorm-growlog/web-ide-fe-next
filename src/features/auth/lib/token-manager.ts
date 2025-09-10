@@ -116,8 +116,7 @@ class TokenManager {
       }
 
       throw new Error('Invalid refresh response')
-    } catch (error) {
-      console.error('토큰 갱신 실패:', error)
+    } catch {
       this.clearTokens()
       return false
     }
@@ -135,8 +134,7 @@ class TokenManager {
         this.refreshToken = data.refreshToken
         this.tokenExpiry = data.expiresAt
       }
-    } catch (error) {
-      console.error('토큰 복원 실패:', error)
+    } catch {
       this.clearTokens()
     }
   }

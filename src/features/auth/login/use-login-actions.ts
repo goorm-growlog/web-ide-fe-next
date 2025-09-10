@@ -51,7 +51,7 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
         })
 
         if (result?.ok) {
-          toast.success('로그인 성공!')
+          toast.success('Login successful!')
           form?.clearErrors('root')
 
           // 사용자 정보 캐시 갱신
@@ -59,10 +59,10 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
 
           router.push('/project')
         } else {
-          throw new Error('세션 생성 실패')
+          throw new Error('Failed to create session')
         }
       } catch (error) {
-        const errorMessage = getErrorMessage(error) || '로그인 실패'
+        const errorMessage = getErrorMessage(error) || 'Login failed'
         showError(errorMessage)
 
         // 토큰 정리

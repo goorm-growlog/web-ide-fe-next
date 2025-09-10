@@ -17,7 +17,6 @@ async function getToken(): Promise<string | null> {
  * 토큰 초기화 (로그아웃 시)
  */
 function clearToken() {
-  console.log('🧹 토큰 초기화')
   tokenManager.clearTokens()
 }
 
@@ -60,8 +59,6 @@ export const authApi = ky.create({
           (response.status === 401 || response.status === 403) &&
           typeof window !== 'undefined'
         ) {
-          console.log('🔒 토큰 만료, 갱신 또는 로그아웃 처리...')
-
           // 토큰 재발급 시도 (TokenManager가 내부적으로 처리)
           const newToken = await tokenManager.getAccessToken()
 
@@ -76,7 +73,6 @@ export const authApi = ky.create({
               credentials: 'include',
             })
           } else {
-            console.log('🚪 로그아웃 처리')
             clearToken()
             await signOut({ callbackUrl: '/signin' })
           }

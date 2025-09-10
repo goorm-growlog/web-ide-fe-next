@@ -47,23 +47,22 @@ function KakaoSuccessHandler() {
           })
 
           if (result?.error) {
-            toast.error('로그인에 실패했습니다. 다시 시도해주세요.')
+            toast.error('Login failed. Please try again.')
             router.push('/signin')
           } else {
-            toast.success('로그인 성공!')
+            toast.success('Login successful!')
             
             // SWR 캐시 갱신 - 사용자 정보 즉시 반영
             await mutate('/users/me')
             
             router.push('/project')
           }
-        } catch (error) {
-          console.error('카카오 로그인 처리 중 오류:', error)
-          toast.error('로그인 처리 중 오류가 발생했습니다.')
+        } catch {
+          toast.error('An error occurred during login processing.')
           router.push('/signin')
         }
       } else {
-        toast.error('로그인 정보가 유효하지 않습니다. 다시 시도해주세요.')
+        toast.error('Login information is invalid. Please try again.')
         router.push('/signin')
       }
     }
@@ -75,7 +74,7 @@ function KakaoSuccessHandler() {
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-4 text-lg">카카오 로그인 처리 중...</p>
+        <p className="mt-4 text-lg">Processing Kakao login...</p>
       </div>
     </div>
   )
@@ -89,7 +88,7 @@ export default function KakaoSuccessPage() {
   return (
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-lg">login in progress...</p>
+        <p className="text-lg">Login in progress...</p>
       </div>
     }>
       <KakaoSuccessHandler />

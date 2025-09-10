@@ -62,7 +62,6 @@ export const HostProjectSection = ({
           open={isCreateDialogOpen}
           onOpenChange={setIsCreateDialogOpen}
           onSuccess={projectId => {
-            console.log('Project created:', projectId)
             onProjectCreated?.(projectId)
             setIsCreateDialogOpen(false)
           }}
