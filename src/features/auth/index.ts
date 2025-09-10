@@ -20,11 +20,7 @@ export { default as PasswordResetDialog } from './password-reset/ui/password-res
 export type { ProfileAvatarProps } from './profile-avatar/model/types'
 export { useProfileAvatar } from './profile-avatar/model/use-profile-avatar'
 export { default as ProfileAvatar } from './profile-avatar/ui/profile-avatar'
-export {
-  ProfileEditForm,
-  useProfileEditActions,
-  useProfileEditForm,
-} from './profile-edit'
+export * from './profile-edit'
 // Session
 export { useSessionSync } from './session/model/use-session-sync'
 export { SessionSyncProvider } from './session/ui/session-sync-provider'
