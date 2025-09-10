@@ -24,6 +24,7 @@ interface AuthProviderProps {
 /**
  * 인증 상태를 전역으로 공유하는 Context Provider
  * 한 번만 useSession을 호출하여 모든 하위 컴포넌트에서 공유
+ * App Layer에서 전역 상태를 관리
  */
 export function AuthProvider({ children }: AuthProviderProps) {
   const authState = useAuthProvider()

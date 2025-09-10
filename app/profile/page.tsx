@@ -2,7 +2,7 @@
 
 import { useProfileEditForm } from '@/features/profile/profile-edit/model/use-profile-edit-form'
 import ProfileEditForm from '@/features/profile/profile-edit/ui/profile-edit-form'
-import { useAuth } from '@/shared/contexts/auth-context'
+import { useAuth } from '@/app/providers/auth-provider'
 
 const ProfilePage = () => {
   const { user, isLoading: userLoading, isSocialLogin } = useAuth()

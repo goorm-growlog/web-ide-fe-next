@@ -3,8 +3,8 @@
 import { SessionProvider } from 'next-auth/react'
 import type { ReactNode } from 'react'
 import { SWRConfig } from 'swr'
+import { AuthProvider } from '@/app/providers/auth-provider'
 import { swrConfig } from '@/shared/config/swr'
-import { AuthProvider } from '@/shared/contexts/auth-context'
 
 interface ProvidersProps {
   children: ReactNode
