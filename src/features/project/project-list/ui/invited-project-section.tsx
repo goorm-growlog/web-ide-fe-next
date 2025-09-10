@@ -1,9 +1,9 @@
 'use client'
 
 import type { Project, ProjectAction } from '@/entities/project'
-import { EmptyInvitedState } from '../project-list/ui/empty-invited-state'
-import { ProjectSectionHeader } from '../project-list/ui/project-section-header'
-import { ProjectCard } from './project-card'
+import { ProjectCard } from '@/shared/ui/project-card'
+import { EmptyInvitedState } from './empty-invited-state'
+import { ProjectSectionHeader } from './project-section-header'
 
 interface InvitedProjectSectionProps {
   projects: Project[]

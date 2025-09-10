@@ -1,8 +1,15 @@
 'use client'
 
 import useSWR from 'swr'
-import { getEnrichedProjectsByType } from '@/entities/project'
-import type { GetProjectsResponse } from '@/features/project/model/api'
+import { getEnrichedProjectsByType, type Project } from '@/entities/project'
+
+// 이 훅의 반환 값에만 사용되므로, 타입을 지역적으로 정의합니다.
+interface GetProjectsResponse {
+  hostProjects: Project[]
+  invitedProjects: Project[]
+  totalHost: number
+  totalInvited: number
+}
 
 /**
  * 프로젝트 목록을 조회합니다.
