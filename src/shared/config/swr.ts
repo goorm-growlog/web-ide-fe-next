@@ -1,13 +1,18 @@
 'use client'
 
 import type { SWRConfiguration } from 'swr'
-import { authApi } from '@/shared/api/ky-client'
+import { apiHelpers, authApi } from '@/shared/api/ky-client'
+import type { ApiResponse } from '@/shared/types/api'
 
 /**
  * SWR의 기본 fetcher 함수
  * authApi를 사용하여 자동으로 인증 토큰을 포함해서 요청합니다.
+ * apiHelpers.extractData를 사용하여 일관된 데이터 추출을 수행합니다.
  */
-const fetcher = (url: string) => authApi.get(url).json()
+const fetcher = async (url: string) => {
+  const response = await authApi.get(url).json<ApiResponse<unknown>>()
+  return apiHelpers.extractData(response)
+}
 
 /**
  * SWR 전역 설정 - 단순하고 실용적으로

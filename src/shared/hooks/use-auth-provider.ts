@@ -51,12 +51,12 @@ export const useAuthProvider = () => {
   }, [refreshUser])
 
   // API 응답을 User 타입으로 안전하게 변환
-  const user: User | undefined = userData?.data
+  const user: User | undefined = userData
     ? {
-        id: userData.data.userId?.toString() || '',
-        email: userData.data.email || '',
-        name: userData.data.name || '',
-        profileImage: userData.data.profileImage,
+        id: userData.userId?.toString() || '',
+        email: userData.email || '',
+        name: userData.name || '',
+        profileImage: userData.profileImage,
       }
     : undefined
 
