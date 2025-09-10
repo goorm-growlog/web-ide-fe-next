@@ -1,4 +1,4 @@
-// 프로젝트 엔티티 API 클라이언트
+// 프로젝트 엔티티 API 클라이언트 - 순수 CRUD 작업만 담당
 
 import { apiHelpers, authApi } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
@@ -40,18 +40,28 @@ export type ProjectMembersApiResponse = ApiResponse<MemberDto[]>
 /**
  * ProjectResponse를 Project 타입으로 변환합니다.
  */
-function transformToProject(
-  projectResponse: ProjectResponse,
-  memberProfiles: ProjectMember[] = [],
-): Project {
+function transformToProject(projectResponse: ProjectResponse): Project {
   return {
     ...projectResponse,
-    memberProfiles,
+    memberProfiles: [], // 기본값으로 빈 배열 설정
   }
 }
 
 /**
- * 프로젝트 목록을 조회합니다.
+ * MemberDto를 ProjectMember 타입으로 변환합니다.
+ */
+function transformToProjectMember(dto: MemberDto): ProjectMember {
+  return {
+    userId: dto.userId,
+    name: dto.name,
+    email: dto.email,
+    ...(dto.profileImageUrl && { profileImageUrl: dto.profileImageUrl }),
+    role: dto.role,
+  }
+}
+
+/**
+ * 프로젝트 목록을 조회합니다. (순수 CRUD)
  */
 export async function getProjects(type?: 'own' | 'joined'): Promise<Project[]> {
   const searchParams = type ? { type } : {}
@@ -61,14 +71,23 @@ export async function getProjects(type?: 'own' | 'joined'): Promise<Project[]> {
     .json<ProjectListApiResponse>()
 
   const projectResponses = apiHelpers.extractData(response)
-
-  return projectResponses.map(projectResponse =>
-    transformToProject(projectResponse, []),
-  )
+  return projectResponses.map(transformToProject)
 }
 
 /**
- * 새로운 프로젝트를 생성합니다.
+ * 프로젝트 상세 정보를 조회합니다. (순수 CRUD)
+ */
+export async function getProject(projectId: number): Promise<Project> {
+  const response = await authApi
+    .get(`projects/${projectId}`)
+    .json<ProjectDetailApiResponse>()
+
+  const projectResponse = apiHelpers.extractData(response)
+  return transformToProject(projectResponse)
+}
+
+/**
+ * 새로운 프로젝트를 생성합니다. (순수 CRUD)
  */
 export async function createProject(data: CreateProjectData): Promise<Project> {
   const requestData: CreateProjectRequest = {
@@ -82,49 +101,11 @@ export async function createProject(data: CreateProjectData): Promise<Project> {
     .json<CreateProjectApiResponse>()
 
   const projectResponse = apiHelpers.extractData(response)
-  return transformToProject(projectResponse, [])
+  return transformToProject(projectResponse)
 }
 
 /**
- * 프로젝트 상세 정보를 조회합니다.
- */
-export async function getProject(projectId: number): Promise<Project> {
-  const response = await authApi
-    .get(`projects/${projectId}`)
-    .json<ProjectDetailApiResponse>()
-
-  const projectResponse = apiHelpers.extractData(response)
-  return transformToProject(projectResponse, [])
-}
-
-/**
- * 프로젝트 정보를 수정합니다.
- */
-export async function updateProject(
-  projectId: number,
-  data: { projectName?: string; description?: string },
-): Promise<Project> {
-  const response = await authApi
-    .patch(`projects/${projectId}`, { json: data })
-    .json<ProjectDetailApiResponse>()
-
-  const projectResponse = apiHelpers.extractData(response)
-  return transformToProject(projectResponse, [])
-}
-
-/**
- * 프로젝트를 삭제합니다.
- */
-export async function deleteProject(projectId: number): Promise<string> {
-  const response = await authApi
-    .delete(`projects/${projectId}`)
-    .json<ApiResponse<string>>()
-
-  return apiHelpers.extractData(response)
-}
-
-/**
- * 프로젝트 멤버 목록을 조회합니다.
+ * 프로젝트 멤버 목록을 조회합니다. (순수 CRUD)
  */
 export async function getProjectMembers(
   projectId: number,
@@ -134,12 +115,5 @@ export async function getProjectMembers(
     .json<ProjectMembersApiResponse>()
 
   const memberDtos = apiHelpers.extractData(response)
-
-  return memberDtos.map(dto => ({
-    userId: dto.userId,
-    name: dto.name,
-    email: dto.email,
-    ...(dto.profileImageUrl && { profileImageUrl: dto.profileImageUrl }),
-    role: dto.role,
-  }))
+  return memberDtos.map(transformToProjectMember)
 }

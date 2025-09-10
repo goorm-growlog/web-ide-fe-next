@@ -1,19 +1,20 @@
-// 프로젝트 엔티티 Public API
+// 프로젝트 엔티티 Public API (FSD 원칙)
 
-// API
+// API (순수 CRUD)
 export * from './api/project'
-// Hooks
+
+// Hooks (데이터 페칭)
 export * from './hooks/use-project'
+// Utils (순수 함수들)
 export type {
   MemberCountResult,
   MemberDisplayInfo,
 } from './model/project-service'
-// Services
 export {
   calculateMemberCount,
   getEnrichedProjectsByType,
 } from './model/project-service'
-// Types
+// Types (비즈니스 모델)
 export type {
   CreateProjectData,
   Project,

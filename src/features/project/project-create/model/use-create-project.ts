@@ -13,6 +13,7 @@ export function useCreateProject() {
     setError(null)
 
     try {
+      // FSD 원칙 - entities API 직접 사용
       const project = await createProjectApi(data)
 
       return {

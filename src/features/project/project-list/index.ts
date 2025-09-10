@@ -1,6 +1,6 @@
-// Project List Module Public API
+// Project List Module Public API (FSD 원칙)
 
-// Hooks
+// Hooks (비즈니스 로직)
 export { useProjectList } from './model/use-project-list'
 
 // UI Components

@@ -1,10 +1,11 @@
 'use client'
 
 import useSWR from 'swr'
-import { getEnrichedProjectsByType, type Project } from '@/entities/project'
+import type { Project } from '@/entities/project'
+import { getEnrichedProjectsByType } from '@/entities/project'
 
 // 이 훅의 반환 값에만 사용되므로, 타입을 지역적으로 정의합니다.
-interface GetProjectsResponse {
+interface ProjectListData {
   hostProjects: Project[]
   invitedProjects: Project[]
   totalHost: number
@@ -12,12 +13,12 @@ interface GetProjectsResponse {
 }
 
 /**
- * 프로젝트 목록을 조회합니다.
+ * 프로젝트 목록을 조회합니다. (FSD 원칙 - hooks에서 비즈니스 로직 처리)
  */
 export function useProjectList() {
   const { data, error, isLoading, mutate } = useSWR(
     'project-list',
-    async (): Promise<GetProjectsResponse> => {
+    async (): Promise<ProjectListData> => {
       const { hostProjects, invitedProjects } = await getEnrichedProjectsByType(
         {
           maxHostProjects: 3,
