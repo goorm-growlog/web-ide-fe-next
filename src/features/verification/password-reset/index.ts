@@ -1,8 +1,3 @@
-// Password Reset Feature
-
-// API
-export * from './api/reset-password'
-
 // Model
 export * from './model/schema'
 export * from './model/use-password-reset-actions'

@@ -1,9 +1,3 @@
-// Login Feature
-
-// API
-export * from './api/login-api'
-export * from './api/types'
-
 // Model
 export * from './model/schema'
 export * from './model/use-login-actions'

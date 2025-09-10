@@ -1,11 +1,11 @@
 'use client'
 
-import { useUser } from '@/entities/users'
 import { useProfileEditForm } from '@/features/profile/profile-edit/model/use-profile-edit-form'
 import ProfileEditForm from '@/features/profile/profile-edit/ui/profile-edit-form'
+import { useAuth } from '@/shared/contexts/auth-context'
 
 const ProfilePage = () => {
-  const { user, isLoading: userLoading } = useUser()
+  const { user, isLoading: userLoading, isSocialLogin } = useAuth()
   const { form } = useProfileEditForm({ defaultName: user?.name })
 
   if (userLoading) {
@@ -31,6 +31,7 @@ const ProfilePage = () => {
         <ProfileEditForm
           form={form}
           user={user}
+          isSocialLogin={isSocialLogin}
         />
       </div>
     </div>

@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import ProfileAvatar from '@/features/profile/profile-avatar/ui/profile-avatar'
-import { useAuthProvider } from '@/shared/hooks/use-auth-provider'
 import type { User } from '@/shared/types/user'
 import FormField from '@/shared/ui/form-field'
 import { Button, Form } from '@/shared/ui/shadcn'
@@ -15,13 +14,17 @@ import PasswordSection from './password-section'
 interface ProfileEditFormProps {
   form: UseFormReturn<ProfileEditFormData>
   user: User | undefined
+  isSocialLogin?: boolean
 }
 
-const ProfileEditForm = ({ form, user }: ProfileEditFormProps) => {
+const ProfileEditForm = ({
+  form,
+  user,
+  isSocialLogin = false,
+}: ProfileEditFormProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null)
 
-  const { isSocialLogin } = useAuthProvider()
   const { isLoading, handleUpdateProfile, handleDeleteAccount } =
     useProfileEditActions()
 

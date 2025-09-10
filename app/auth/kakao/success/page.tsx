@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { toast } from 'sonner'
 import { mutate } from 'swr'
+import { kakaoLoginApi } from '@/entities/auth'
 
 /**
  * 카카오 로그인 성공 처리 컴포넌트
@@ -22,18 +23,26 @@ function KakaoSuccessHandler() {
       
       if (token && userId && name) {
         try {
+          // 1. Entities API를 통해 카카오 로그인 처리
+          const loginData = await kakaoLoginApi({
+            userId: parseInt(userId, 10),
+            name: decodeURIComponent(name),
+            accessToken: token
+          })
+
+          // 2. NextAuth 세션 생성
           const result = await signIn('credentials', {
             userData: JSON.stringify({ 
               userId: parseInt(userId, 10),
               name: decodeURIComponent(name),
-              accessToken: token 
+              accessToken: loginData.accessToken 
             }),
             redirect: false,
           })
 
           if (result?.error) {
             toast.error('로그인에 실패했습니다. 다시 시도해주세요.')
-            router.push('/auth/signin')
+            router.push('/signin')
           } else {
             toast.success('로그인 성공!')
             
@@ -45,11 +54,11 @@ function KakaoSuccessHandler() {
         } catch (error) {
           console.error('카카오 로그인 처리 중 오류:', error)
           toast.error('로그인 처리 중 오류가 발생했습니다.')
-          router.push('/auth/signin')
+          router.push('/signin')
         }
       } else {
         toast.error('로그인 정보가 유효하지 않습니다. 다시 시도해주세요.')
-        router.push('/auth/signin')
+        router.push('/signin')
       }
     }
 

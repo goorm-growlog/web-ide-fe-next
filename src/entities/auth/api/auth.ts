@@ -86,6 +86,50 @@ export const resetPasswordApi = async (
 }
 
 /**
+ * 깃헙 소셜 로그인 API
+ */
+export const githubLoginApi = async (data: {
+  id: string
+  name: string | null
+  email: string | null
+  avatarUrl: string | null
+}): Promise<{ accessToken: string }> => {
+  const response = await api
+    .post('auth/login/github', {
+      json: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        avatarUrl: data.avatarUrl,
+      },
+    })
+    .json<ApiResponse<{ accessToken: string }>>()
+
+  return apiHelpers.extractData(response)
+}
+
+/**
+ * 카카오 소셜 로그인 API
+ */
+export const kakaoLoginApi = async (data: {
+  userId: number
+  name: string
+  accessToken: string
+}): Promise<{ accessToken: string }> => {
+  const response = await api
+    .post('auth/login/kakao', {
+      json: {
+        userId: data.userId,
+        name: data.name,
+        accessToken: data.accessToken,
+      },
+    })
+    .json<ApiResponse<{ accessToken: string }>>()
+
+  return apiHelpers.extractData(response)
+}
+
+/**
  * 로그아웃 API
  */
 export const logoutApi = async (): Promise<void> => {

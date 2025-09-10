@@ -3,8 +3,8 @@
 import { ChevronDown, LogOut, UserRoundPen } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useUser } from '@/entities/users'
 import { useLogout } from '@/features/core-auth/logout/model/use-logout'
+import { useAuth } from '@/shared/contexts/auth-context'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
 import {
   DropdownMenu,
@@ -15,7 +15,7 @@ import {
 
 export function MainHeader() {
   const { logout } = useLogout()
-  const { user, isLoading } = useUser()
+  const { user, isLoading } = useAuth()
 
   const getInitial = (name?: string) => {
     if (!name) return 'U'

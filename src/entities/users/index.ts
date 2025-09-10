@@ -11,8 +11,7 @@ export {
   uploadProfileImage,
 } from './api/get-user'
 
-// Hooks
-export { useUser } from './hooks/use-user'
+// Hooks - useUser는 useAuthProvider로 통합됨
 
 // Types
 export type { User } from './model/types'

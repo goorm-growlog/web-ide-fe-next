@@ -14,10 +14,11 @@ interface ProjectListData {
 
 /**
  * 프로젝트 목록을 조회합니다. (FSD 원칙 - hooks에서 비즈니스 로직 처리)
+ * 전역 SWR 설정을 활용하여 일관성 있는 캐싱과 에러 처리
  */
 export function useProjectList() {
   const { data, error, isLoading, mutate } = useSWR(
-    'project-list',
+    'projects/enriched?maxHost=3&maxInvited=4', // URL 기반으로 표준화
     async (): Promise<ProjectListData> => {
       const { hostProjects, invitedProjects } = await getEnrichedProjectsByType(
         {
@@ -33,10 +34,7 @@ export function useProjectList() {
         totalInvited: invitedProjects.length,
       }
     },
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 30000, // 30초 캐싱
-    },
+    // 전역 설정을 사용하므로 개별 설정 제거
   )
 
   return {
@@ -45,7 +43,7 @@ export function useProjectList() {
     totalHost: data?.totalHost ?? 0,
     totalInvited: data?.totalInvited ?? 0,
     isLoading,
-    error: error?.message,
+    error: error?.message || null, // 일관된 에러 처리
     refetch: mutate,
   }
 }

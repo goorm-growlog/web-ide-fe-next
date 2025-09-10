@@ -8,7 +8,6 @@ export * from './login'
 // Logout
 export * from './logout'
 
-// Session
-export * from './session'
+// Session - useAuthProvider로 통합됨
 // Signup
 export * from './signup'

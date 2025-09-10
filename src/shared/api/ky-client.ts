@@ -1,36 +1,65 @@
 import ky from 'ky'
 import { getSession, signOut } from 'next-auth/react'
-import { auth } from '@/shared/config/auth'
 import { handleApiError } from '@/shared/lib/api-error'
 import type { ApiResponse } from '@/shared/types/api'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 
-// 토큰 갱신 상태 관리 (간단한 락)
-let isRefreshing = false
-let refreshPromise: Promise<string | null> | null = null
+// 메인 브랜치 방식: 단순한 토큰 관리
+let currentToken: string | null = null
 
-// 토큰 갱신 함수 (동시 요청 방지)
-async function refreshToken(): Promise<string | null> {
-  // 이미 갱신 중이면 기존 Promise 대기
-  if (isRefreshing && refreshPromise) {
-    return await refreshPromise
-  }
-
-  // 새로운 갱신 시작
-  isRefreshing = true
-  refreshPromise = performRefresh()
-
+/**
+ * 토큰 가져오기 - 메인 브랜치의 단순한 방식
+ */
+async function getToken(): Promise<string | null> {
   try {
-    return await refreshPromise
-  } finally {
-    isRefreshing = false
-    refreshPromise = null
+    // 현재 토큰이 있으면 재사용
+    if (currentToken) {
+      return currentToken
+    }
+
+    // NextAuth에서 세션 가져오기 (필요할 때만)
+    console.log('🔄 세션에서 토큰 가져오는 중...')
+    const session = await getSession()
+    const accessToken = session?.accessToken || null
+
+    // 현재 토큰 업데이트
+    currentToken = accessToken
+    console.log('✅ 토큰 업데이트:', !!accessToken)
+
+    return accessToken
+  } catch (error) {
+    console.error('❌ 토큰 가져오기 실패:', error)
+    return null
   }
 }
 
-async function performRefresh(): Promise<string | null> {
+/**
+ * 토큰 초기화 (로그아웃 시)
+ */
+function clearToken() {
+  console.log('🧹 토큰 초기화')
+  currentToken = null
+}
+
+/**
+ * 토큰 변경 이벤트 처리 - SessionSyncProvider와 연동
+ */
+if (typeof window !== 'undefined') {
+  window.addEventListener('token-changed', (event: Event) => {
+    const customEvent = event as CustomEvent
+    const { accessToken } = customEvent.detail || {}
+    console.log('🔄 토큰 변경 이벤트 수신:', !!accessToken)
+    currentToken = accessToken
+  })
+}
+
+/**
+ * 토큰 갱신 - 메인 브랜치의 단순한 방식
+ */
+async function refreshToken(): Promise<string | null> {
   try {
+    console.log('🔄 토큰 갱신 시작...')
     const response = await ky
       .post(`${API_BASE_URL}/auth/refresh`, {
         credentials: 'include',
@@ -38,7 +67,10 @@ async function performRefresh(): Promise<string | null> {
       .json<ApiResponse<{ accessToken: string }>>()
 
     if (response.success && response.data?.accessToken) {
-      // NextAuth 세션 업데이트
+      currentToken = response.data.accessToken
+      console.log('✅ 토큰 갱신 성공')
+
+      // 토큰 업데이트 이벤트 발생
       if (typeof window !== 'undefined') {
         window.dispatchEvent(
           new CustomEvent('auth:access-token-updated', {
@@ -48,9 +80,11 @@ async function performRefresh(): Promise<string | null> {
       }
       return response.data.accessToken
     }
+
+    console.log('❌ 토큰 갱신 실패: 응답 데이터 없음')
     return null
   } catch (error) {
-    console.error('Token refresh failed:', error)
+    console.error('❌ 토큰 갱신 실패:', error)
     return null
   }
 }
@@ -82,24 +116,24 @@ export const authApi = ky.create({
   hooks: {
     beforeRequest: [
       async request => {
-        // NextAuth 세션에서 토큰 가져오기
-        const session =
-          typeof window === 'undefined' ? await auth() : await getSession()
-        if (session?.accessToken) {
-          request.headers.set('Authorization', `Bearer ${session.accessToken}`)
+        const token = await getToken()
+        if (token) {
+          request.headers.set('Authorization', `Bearer ${token}`)
         }
       },
     ],
     afterResponse: [
       async (request, _options, response) => {
-        // 401, 403 에러 시 토큰 갱신 후 재시도
         if (
           (response.status === 401 || response.status === 403) &&
           typeof window !== 'undefined'
         ) {
+          console.log('🔒 토큰 만료, 갱신 시도...')
+          clearToken()
+
           const newToken = await refreshToken()
           if (newToken) {
-            // 새 토큰으로 재시도 (fetch 사용 - 훅 우회)
+            // 새 토큰으로 재시도
             const newHeaders = new Headers(request.headers)
             newHeaders.set('Authorization', `Bearer ${newToken}`)
             return fetch(request.url, {
@@ -109,11 +143,10 @@ export const authApi = ky.create({
               credentials: 'include',
             })
           } else {
-            // 갱신 실패 시 로그아웃
+            console.log('🚪 로그아웃 처리')
             await signOut({ callbackUrl: '/signin' })
           }
         }
-
         if (!response.ok) {
           await handleApiError(response, 'API request failed')
         }

@@ -2,6 +2,7 @@ import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GitHub from 'next-auth/providers/github'
 import Kakao from 'next-auth/providers/kakao'
+import { githubLoginApi } from '@/entities/auth'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-dev',
@@ -53,27 +54,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // GitHub OAuth의 경우만 백엔드 연동 처리
       if (account?.provider === 'github') {
         try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/login/github`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                id: account.providerAccountId,
-                name: user.name,
-                email: user.email,
-                avatarUrl: user.image,
-              }),
-            },
-          )
+          const data = await githubLoginApi({
+            id: account.providerAccountId,
+            name: user.name ?? null,
+            email: user.email ?? null,
+            avatarUrl: user.image ?? null,
+          })
 
-          if (!response.ok) {
-            return '/signin?error=AccessDenied' // 에러와 함께 로그인 페이지로 리디렉션
-          }
-
-          const data = await response.json()
           // 백엔드에서 받은 토큰을 user 객체에 저장
           user.accessToken = data.accessToken
           return true

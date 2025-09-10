@@ -40,7 +40,7 @@ export type ProjectMembersApiResponse = ApiResponse<MemberDto[]>
 /**
  * ProjectResponse를 Project 타입으로 변환합니다.
  */
-function transformToProject(projectResponse: ProjectResponse): Project {
+export function transformToProject(projectResponse: ProjectResponse): Project {
   return {
     ...projectResponse,
     memberProfiles: [], // 기본값으로 빈 배열 설정
@@ -50,7 +50,7 @@ function transformToProject(projectResponse: ProjectResponse): Project {
 /**
  * MemberDto를 ProjectMember 타입으로 변환합니다.
  */
-function transformToProjectMember(dto: MemberDto): ProjectMember {
+export function transformToProjectMember(dto: MemberDto): ProjectMember {
   return {
     userId: dto.userId,
     name: dto.name,
