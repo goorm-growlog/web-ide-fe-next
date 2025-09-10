@@ -3,7 +3,7 @@
 import { ChevronDown, LogOut, UserRoundPen } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useLogout } from '@/features/core-auth/logout/model/use-logout'
+import { useLogout } from '@/features/auth'
 import { useAuth } from '@/shared/contexts/auth-context'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
 import {

@@ -1,7 +1,6 @@
 'use client'
 
-import { GitHubLoginButton } from '@/features/social-auth/social-github'
-import { KakaoLoginButton } from '@/features/social-auth/social-kakao'
+import { GitHubLoginButton, KakaoLoginButton } from '@/features/auth/social'
 
 /**
  * ?�셜 로그???�젯

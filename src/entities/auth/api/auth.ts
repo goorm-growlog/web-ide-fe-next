@@ -1,15 +1,11 @@
 import { api, apiHelpers } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
 
-// Auth 관련 타입들
+// Auth 관련 타입들 - API 문서에 맞춰 수정
 export interface LoginData {
+  userId: number
+  name: string
   accessToken: string
-  refreshToken: string
-  user: {
-    id: string
-    email: string
-    name: string
-  }
 }
 
 export interface SignupData {

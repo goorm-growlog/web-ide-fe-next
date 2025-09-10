@@ -29,3 +29,20 @@ export const currentPasswordSchema = z
   .string()
   .min(1, CURRENT_PASSWORD_REQUIRED_MSG)
 export const newPasswordSchema = z.string().min(8, NEW_PASSWORD_REQUIRED_MSG)
+
+// 로그인 스키마
+export const loginSchema = z.object({
+  email: emailSchema,
+  password: loginPasswordSchema,
+})
+
+// 회원가입 스키마
+export const signupSchema = z.object({
+  email: emailSchema,
+  name: nameSchema,
+  password: signupPasswordSchema,
+})
+
+// 타입 정의
+export type LoginFormData = z.infer<typeof loginSchema>
+export type SignupFormData = z.infer<typeof signupSchema>

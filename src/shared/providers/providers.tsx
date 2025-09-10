@@ -5,7 +5,6 @@ import type { ReactNode } from 'react'
 import { SWRConfig } from 'swr'
 import { swrConfig } from '@/shared/config/swr'
 import { AuthProvider } from '@/shared/contexts/auth-context'
-import { SessionSyncProvider } from './session-sync-provider'
 
 interface ProvidersProps {
   children: ReactNode
@@ -18,10 +17,8 @@ export const Providers = ({ children }: ProvidersProps) => (
     refetchOnWindowFocus={false}
     refetchWhenOffline={false}
   >
-    <SessionSyncProvider>
-      <SWRConfig value={swrConfig}>
-        <AuthProvider>{children}</AuthProvider>
-      </SWRConfig>
-    </SessionSyncProvider>
+    <SWRConfig value={swrConfig}>
+      <AuthProvider>{children}</AuthProvider>
+    </SWRConfig>
   </SessionProvider>
 )

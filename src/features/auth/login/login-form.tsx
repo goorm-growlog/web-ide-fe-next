@@ -2,7 +2,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import FormField from '@/shared/ui/form-field'
 import PasswordInput from '@/shared/ui/password-input'
 import { Button, Form } from '@/shared/ui/shadcn'
-import type { LoginFormData } from '../model/schema'
+import type { LoginFormData } from '../lib/validation'
 
 interface LoginFormProps {
   form: UseFormReturn<LoginFormData>

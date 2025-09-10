@@ -6,6 +6,7 @@ import { signIn } from 'next-auth/react'
 import { toast } from 'sonner'
 import { mutate } from 'swr'
 import { kakaoLoginApi } from '@/entities/auth'
+import { tokenManager } from '@/features/auth/lib/token-manager'
 
 /**
  * 카카오 로그인 성공 처리 컴포넌트
@@ -23,19 +24,24 @@ function KakaoSuccessHandler() {
       
       if (token && userId && name) {
         try {
-          // 1. Entities API를 통해 카카오 로그인 처리
+          // 1. 백엔드 Kakao API 호출하여 사용자 생성/로그인 처리
           const loginData = await kakaoLoginApi({
             userId: parseInt(userId, 10),
             name: decodeURIComponent(name),
             accessToken: token
           })
 
-          // 2. NextAuth 세션 생성
+          // 2. TokenManager에 백엔드 토큰 저장 (백엔드 중심 관리)
+          tokenManager.setTokens({
+            accessToken: loginData.accessToken,
+            refreshToken: '', // Kakao 소셜 로그인은 refresh token 없음
+          })
+
+          // 3. NextAuth 세션 생성 (세션 상태만 관리)
           const result = await signIn('credentials', {
             userData: JSON.stringify({ 
               userId: parseInt(userId, 10),
               name: decodeURIComponent(name),
-              accessToken: loginData.accessToken 
             }),
             redirect: false,
           })

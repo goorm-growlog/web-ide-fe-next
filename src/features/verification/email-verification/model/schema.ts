@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { codeSchema, emailSchema } from '@/features/core-auth/lib/validation'
+import { codeSchema, emailSchema } from '@/features/auth/lib/validation'
 
 export const emailVerificationSchema = z.object({
   email: emailSchema,

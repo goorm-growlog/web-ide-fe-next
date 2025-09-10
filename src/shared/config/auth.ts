@@ -7,10 +7,14 @@ import { githubLoginApi } from '@/entities/auth'
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-dev',
   providers: [
+    // GitHub OAuth - NextAuth로 완전 처리
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID || '',
       clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
     }),
+
+    // Kakao OAuth - NextAuth Provider는 설정되어 있지만 실제로는 백엔드 직접 방식 사용
+    // 현재는 호환성을 위해 설정만 유지, 실제 로그인은 백엔드 /auth/kakao 사용
     Kakao({
       clientId: process.env.KAKAO_CLIENT_ID || '',
     }),
@@ -22,7 +26,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         try {
-          // userData가 있으면 OAuth 로그인으로 처리
+          // Credentials 로그인은 기본 세션 정보만 관리
+          // 실제 토큰은 TokenManager가 별도 관리
           if (credentials?.userData) {
             const userData = JSON.parse(String(credentials.userData))
             return {
@@ -30,19 +35,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               email: String(credentials.email),
               name: userData.name,
               image: null,
-              accessToken: userData.accessToken,
             }
-          }
-
-          // 일반 이메일/비밀번호 로그인
-          if (credentials?.email && credentials?.password) {
-            // 여기에 일반 로그인 로직 추가 가능
-            return null
           }
 
           return null
         } catch (_error) {
-          // 모든 에러는 null 반환으로 처리
           return null
         }
       },
@@ -51,9 +48,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   callbacks: {
     async signIn({ user, account }) {
-      // GitHub OAuth의 경우만 백엔드 연동 처리
+      // GitHub 로그인 - NextAuth Provider 방식
       if (account?.provider === 'github') {
         try {
+          // 백엔드 GitHub API 호출하여 사용자 생성/로그인 처리
           const data = await githubLoginApi({
             id: account.providerAccountId,
             name: user.name ?? null,
@@ -61,24 +59,38 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             avatarUrl: user.image ?? null,
           })
 
-          // 백엔드에서 받은 토큰을 user 객체에 저장
-          user.accessToken = data.accessToken
+          // TokenManager에 백엔드 토큰 저장
+          const { tokenManager } = await import(
+            '@/features/auth/lib/token-manager'
+          )
+          tokenManager.setTokens({
+            accessToken: data.accessToken,
+            refreshToken: '', // GitHub 소셜 로그인은 refresh token 없음
+          })
+
           return true
         } catch {
-          return '/signin?error=AccessDenied' // 에러와 함께 로그인 페이지로 리디렉션
+          return '/signin?error=AccessDenied'
         }
       }
 
-      // Kakao 및 기타 provider는 기존 로직 유지
+      // Kakao 로그인 - 실제로는 사용하지 않음 (백엔드 직접 방식 사용)
+      // 이 콜백이 호출되지 않도록 구현되어 있음
+      if (account?.provider === 'kakao') {
+        console.warn(
+          'Kakao 로그인은 백엔드 직접 방식을 사용합니다. 이 콜백이 호출되면 안됩니다.',
+        )
+        return true
+      }
+
+      // Credentials 로그인 - 이미 TokenManager에서 토큰 처리됨
       return true
     },
     async jwt({ token, account, user, profile }) {
-      // 로그인 시에만 정보 저장
+      // 로그인 시에만 정보 저장 (토큰은 TokenManager가 별도 관리)
       if (account && user) {
-        const userWithToken = user as { accessToken?: string }
         return {
           ...token,
-          accessToken: userWithToken.accessToken,
           provider: account.provider,
           providerId: account.providerAccountId,
           providerProfile: profile,
@@ -90,7 +102,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       return {
         ...session,
-        accessToken: token.accessToken,
         provider: token.provider,
         providerId: token.providerId,
         providerProfile: token.providerProfile,
@@ -105,13 +116,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 // 타입 확장
 declare module 'next-auth' {
   interface Session {
-    accessToken?: string
     provider?: string
     providerId?: string
     providerProfile?: Record<string, unknown>
-  }
-
-  interface User {
-    accessToken?: string
   }
 }

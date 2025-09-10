@@ -10,37 +10,11 @@ import type { User } from '@/shared/types/user'
  * shared 레이어에서 NextAuth 의존성 관리
  */
 export const useAuthProvider = () => {
-  const {
-    data: session,
-    status,
-    update,
-  } = useSession({
+  const { data: session, status } = useSession({
     required: false,
     // NextAuth 자동 재검증 완전 비활성화
     onUnauthenticated: () => undefined, // 콜백 비활성화
   })
-
-  // 토큰 갱신 이벤트를 감지하여 NextAuth 세션을 동기화
-  useEffect(() => {
-    const handleTokenUpdate = (event: Event) => {
-      const custom = event as CustomEvent<{ accessToken?: string }>
-      const newToken = custom.detail?.accessToken
-      if (!newToken) return
-
-      void update({ accessToken: newToken })
-    }
-
-    window.addEventListener(
-      'auth:access-token-updated',
-      handleTokenUpdate as EventListener,
-    )
-    return () => {
-      window.removeEventListener(
-        'auth:access-token-updated',
-        handleTokenUpdate as EventListener,
-      )
-    }
-  }, [update])
 
   // 사용자 정보 조회 (세션이 있을 때만)
   const {
@@ -52,6 +26,30 @@ export const useAuthProvider = () => {
     status === 'authenticated' ? 'users/me' : null,
     // fetcher는 전역 설정에서 자동으로 사용됨 (authApi 사용)
   )
+
+  // 토큰 업데이트 이벤트 감지 (TokenManager와 연동)
+  useEffect(() => {
+    const handleTokenUpdate = (event: Event) => {
+      const custom = event as CustomEvent<{ accessToken?: string }>
+      console.log('🔄 토큰 업데이트 이벤트 수신:', !!custom.detail?.accessToken)
+
+      // SWR 캐시 갱신 (새 토큰으로 사용자 정보 재조회)
+      if (custom.detail?.accessToken) {
+        void refreshUser()
+      }
+    }
+
+    window.addEventListener(
+      'auth:token-updated',
+      handleTokenUpdate as EventListener,
+    )
+    return () => {
+      window.removeEventListener(
+        'auth:token-updated',
+        handleTokenUpdate as EventListener,
+      )
+    }
+  }, [refreshUser])
 
   // API 응답을 User 타입으로 안전하게 변환
   const user: User | undefined = userData

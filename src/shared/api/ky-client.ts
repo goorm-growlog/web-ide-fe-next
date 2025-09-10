@@ -1,37 +1,16 @@
 import ky from 'ky'
-import { getSession, signOut } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
+import { tokenManager } from '@/features/auth/lib/token-manager'
 import { handleApiError } from '@/shared/lib/api-error'
 import type { ApiResponse } from '@/shared/types/api'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 
-// 메인 브랜치 방식: 단순한 토큰 관리
-let currentToken: string | null = null
-
 /**
- * 토큰 가져오기 - 메인 브랜치의 단순한 방식
+ * 토큰 가져오기 - 백엔드 중심 방식
  */
 async function getToken(): Promise<string | null> {
-  try {
-    // 현재 토큰이 있으면 재사용
-    if (currentToken) {
-      return currentToken
-    }
-
-    // NextAuth에서 세션 가져오기 (필요할 때만)
-    console.log('🔄 세션에서 토큰 가져오는 중...')
-    const session = await getSession()
-    const accessToken = session?.accessToken || null
-
-    // 현재 토큰 업데이트
-    currentToken = accessToken
-    console.log('✅ 토큰 업데이트:', !!accessToken)
-
-    return accessToken
-  } catch (error) {
-    console.error('❌ 토큰 가져오기 실패:', error)
-    return null
-  }
+  return await tokenManager.getAccessToken()
 }
 
 /**
@@ -39,54 +18,7 @@ async function getToken(): Promise<string | null> {
  */
 function clearToken() {
   console.log('🧹 토큰 초기화')
-  currentToken = null
-}
-
-/**
- * 토큰 변경 이벤트 처리 - SessionSyncProvider와 연동
- */
-if (typeof window !== 'undefined') {
-  window.addEventListener('token-changed', (event: Event) => {
-    const customEvent = event as CustomEvent
-    const { accessToken } = customEvent.detail || {}
-    console.log('🔄 토큰 변경 이벤트 수신:', !!accessToken)
-    currentToken = accessToken
-  })
-}
-
-/**
- * 토큰 갱신 - 메인 브랜치의 단순한 방식
- */
-async function refreshToken(): Promise<string | null> {
-  try {
-    console.log('🔄 토큰 갱신 시작...')
-    const response = await ky
-      .post(`${API_BASE_URL}/auth/refresh`, {
-        credentials: 'include',
-      })
-      .json<ApiResponse<{ accessToken: string }>>()
-
-    if (response.success && response.data?.accessToken) {
-      currentToken = response.data.accessToken
-      console.log('✅ 토큰 갱신 성공')
-
-      // 토큰 업데이트 이벤트 발생
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(
-          new CustomEvent('auth:access-token-updated', {
-            detail: { accessToken: response.data.accessToken },
-          }),
-        )
-      }
-      return response.data.accessToken
-    }
-
-    console.log('❌ 토큰 갱신 실패: 응답 데이터 없음')
-    return null
-  } catch (error) {
-    console.error('❌ 토큰 갱신 실패:', error)
-    return null
-  }
+  tokenManager.clearTokens()
 }
 
 // 기본 API 클라이언트 (인증 불필요)
@@ -128,10 +60,11 @@ export const authApi = ky.create({
           (response.status === 401 || response.status === 403) &&
           typeof window !== 'undefined'
         ) {
-          console.log('🔒 토큰 만료, 갱신 시도...')
-          clearToken()
+          console.log('🔒 토큰 만료, 갱신 또는 로그아웃 처리...')
 
-          const newToken = await refreshToken()
+          // 토큰 재발급 시도 (TokenManager가 내부적으로 처리)
+          const newToken = await tokenManager.getAccessToken()
+
           if (newToken) {
             // 새 토큰으로 재시도
             const newHeaders = new Headers(request.headers)
@@ -144,6 +77,7 @@ export const authApi = ky.create({
             })
           } else {
             console.log('🚪 로그아웃 처리')
+            clearToken()
             await signOut({ callbackUrl: '/signin' })
           }
         }

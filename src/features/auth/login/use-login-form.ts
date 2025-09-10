@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { type LoginFormData, loginSchema } from './schema'
+import { type LoginFormData, loginSchema } from '../lib/validation'
 
 export const useLoginForm = () => {
   const form = useForm<LoginFormData>({
