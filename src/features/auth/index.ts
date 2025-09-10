@@ -4,11 +4,12 @@
 export { useLoginActions } from './login/model/use-login-actions'
 export { useLoginForm } from './login/model/use-login-form'
 export { default as LoginForm } from './login/ui/login-form'
-
 // Types (Auth feature specific types only)
+// Profile Edit
 export type {
   LoginData,
   LoginFormData,
+  ProfileEditFormData,
   SignupFormData,
 } from './model/types'
 // Password Reset
@@ -19,6 +20,11 @@ export { default as PasswordResetDialog } from './password-reset/ui/password-res
 export type { ProfileAvatarProps } from './profile-avatar/model/types'
 export { useProfileAvatar } from './profile-avatar/model/use-profile-avatar'
 export { default as ProfileAvatar } from './profile-avatar/ui/profile-avatar'
+export {
+  ProfileEditForm,
+  useProfileEditActions,
+  useProfileEditForm,
+} from './profile-edit'
 // Session
 export { useSessionSync } from './session/model/use-session-sync'
 export { SessionSyncProvider } from './session/ui/session-sync-provider'
