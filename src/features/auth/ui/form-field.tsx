@@ -5,6 +5,7 @@ import type {
   FieldPath,
   FieldValues,
 } from 'react-hook-form'
+import { cn } from '@/shared/lib/utils'
 import {
   FormControl,
   FormItem,
@@ -46,7 +47,7 @@ const FormField = <
     <ShadcnFormField
       {...props}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className={cn('gap-1', className)}>
           <FormLabel>{label}</FormLabel>
           <FormControl>
             {typeof children === 'function'
