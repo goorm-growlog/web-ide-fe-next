@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { mutate } from 'swr'
-import type { ProfileEditFormData } from '@/features/auth/model/types'
 import {
   deleteAccount,
   updatePassword,
   updateUserName,
   uploadProfileImage,
 } from '../api/profile-edit-api'
+import type { ProfileEditFormData } from './schema'
 
 // 개별 업데이트 함수들을 분리하여 복잡도 감소
 const createUpdatePromises = (

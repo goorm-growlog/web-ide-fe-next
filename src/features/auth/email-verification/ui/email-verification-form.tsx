@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form'
-import FormField from '@/features/auth/ui/form-field'
-import InputWithButton from '@/features/auth/ui/input-with-button'
+import FormField from '@/shared/ui/form-field'
+import InputWithButton from '@/shared/ui/input-with-button'
 import { useCodeVerification } from '../model/use-code-verification'
 import { useEmailSend } from '../model/use-email-send'
 import { useEmailVerificationForm } from '../model/use-email-verification-form'

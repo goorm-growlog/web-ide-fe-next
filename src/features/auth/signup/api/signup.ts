@@ -1,6 +1,7 @@
 import { api, apiHelpers } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
-import type { SignupData, SignupFormData } from '../../model/types'
+import type { SignupFormData } from '../model/schema'
+import type { SignupData } from './types'
 
 /**
  * 회원가입 API

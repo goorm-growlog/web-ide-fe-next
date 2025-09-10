@@ -3,8 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import type { ProfileEditFormData } from '@/features/auth/model/types'
-import { profileEditSchema } from '@/features/auth/model/validation-schema'
+import type { ProfileEditFormData } from './schema'
+import { profileEditSchema } from './schema'
 
 interface UseProfileEditFormProps {
   defaultName?: string | undefined

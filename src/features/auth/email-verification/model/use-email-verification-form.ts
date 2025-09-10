@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import {
   type EmailVerificationFormData,
   emailVerificationSchema,
-} from '@/features/auth/model/validation-schema'
+} from './schema'
 
 export function useEmailVerificationForm() {
   return useForm<EmailVerificationFormData>({

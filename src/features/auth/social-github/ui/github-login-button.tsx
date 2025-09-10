@@ -1,6 +1,6 @@
 'use client'
 
-import SocialButton from '@/features/auth/ui/social-button'
+import SocialButton from '@/shared/ui/auth/social-button'
 import { useGitHubLogin } from '../model/use-github-login'
 
 /**

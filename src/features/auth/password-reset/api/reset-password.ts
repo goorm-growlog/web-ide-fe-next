@@ -1,6 +1,6 @@
 import { api, apiHelpers } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
-import type { PasswordResetData } from '../../model/validation-schema'
+import type { PasswordResetData } from '../model/schema'
 
 /**
  * 비밀번호 재설정 요청을 수행합니다.

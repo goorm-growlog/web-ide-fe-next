@@ -5,8 +5,8 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import FormField from '@/features/auth/ui/form-field'
-import PasswordInput from '@/features/auth/ui/password-input'
+import FormField from '@/shared/ui/form-field'
+import PasswordInput from '@/shared/ui/password-input'
 import {
   Button,
   Dialog,

@@ -1,10 +1,10 @@
 'use client'
 
 import type { UseFormReturn } from 'react-hook-form'
-import type { ProfileEditFormData } from '@/features/auth/model/types'
-import FormField from '@/features/auth/ui/form-field'
-import PasswordInput from '@/features/auth/ui/password-input'
+import FormField from '@/shared/ui/form-field'
+import PasswordInput from '@/shared/ui/password-input'
 import { Input } from '@/shared/ui/shadcn'
+import type { ProfileEditFormData } from '../model/schema'
 
 interface PasswordSectionProps {
   form: UseFormReturn<ProfileEditFormData>

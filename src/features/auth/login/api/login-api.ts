@@ -1,6 +1,7 @@
 import { api, apiHelpers } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
-import type { LoginData, LoginFormData } from '../../model/types'
+import type { LoginFormData } from '../model/schema'
+import type { LoginData } from './types'
 
 /**
  * 백엔드 로그인 API를 호출합니다.

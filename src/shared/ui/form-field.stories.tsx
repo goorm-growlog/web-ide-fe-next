@@ -1,13 +1,21 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { FormProvider, useForm } from 'react-hook-form'
-import { type FormData, formSchema } from '../model/validation-schema'
+import { z } from 'zod'
 import FormField from './form-field'
 import PasswordInput from './password-input'
 
+// Define a local schema for demonstration purposes
+const demoSchema = z.object({
+  email: z.string().email('Please enter a valid email.'),
+  name: z.string().min(2, 'Name must be at least 2 characters.'),
+  password: z.string().min(8, 'Password must be at least 8 characters.'),
+})
+type DemoFormData = z.infer<typeof demoSchema>
+
 // 메타 구성 (Storybook용)
 const meta: Meta<typeof FormField> = {
-  title: 'Features/Auth/FormField',
+  title: 'Shared/FormField', // 경로 변경에 맞춰 수정
   component: FormField,
   parameters: {
     layout: 'centered',
@@ -46,8 +54,8 @@ type Story = StoryObj<typeof meta>
 // 기본 예시
 export const Default: Story = {
   render: () => {
-    const methods = useForm<FormData>({
-      resolver: zodResolver(formSchema),
+    const methods = useForm<DemoFormData>({
+      resolver: zodResolver(demoSchema),
       defaultValues: {
         email: '',
       },
@@ -77,8 +85,8 @@ export const Default: Story = {
 // 비밀번호 입력 예시
 export const WithPasswordInput: Story = {
   render: () => {
-    const methods = useForm<FormData>({
-      resolver: zodResolver(formSchema),
+    const methods = useForm<DemoFormData>({
+      resolver: zodResolver(demoSchema),
       defaultValues: {
         password: '',
       },
@@ -107,8 +115,8 @@ export const WithPasswordInput: Story = {
 // 실시간 검증 데모
 export const LiveValidationForm: Story = {
   render: () => {
-    const methods = useForm<FormData>({
-      resolver: zodResolver(formSchema),
+    const methods = useForm<DemoFormData>({
+      resolver: zodResolver(demoSchema),
       mode: 'onChange',
       defaultValues: {
         email: '',
@@ -117,7 +125,7 @@ export const LiveValidationForm: Story = {
       },
     })
 
-    const onSubmit = (data: FormData) => {
+    const onSubmit = (data: DemoFormData) => {
       // 검증 성공 시 데이터 알림
       alert(`Validation success! Data: ${JSON.stringify(data, null, 2)}`)
     }
