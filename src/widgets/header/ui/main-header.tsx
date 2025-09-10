@@ -2,6 +2,7 @@
 
 import { ChevronDown, LogOut, UserRoundPen } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useUser } from '@/entities/users'
 import { useLogout } from '@/features/auth/logout/model/use-logout'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
@@ -42,9 +43,11 @@ export function MainHeader() {
             <ChevronDown className="h-4 w-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <UserRoundPen className="h-4 w-4" />
-              edit profile
+            <DropdownMenuItem asChild>
+              <Link href="/profile" className="flex items-center gap-2">
+                <UserRoundPen className="h-4 w-4" />
+                edit profile
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={logout}>
               <LogOut className="h-4 w-4" />
