@@ -31,7 +31,6 @@ export const useAuthProvider = () => {
   useEffect(() => {
     const handleTokenUpdate = (event: Event) => {
       const custom = event as CustomEvent<{ accessToken?: string }>
-      console.log('🔄 토큰 업데이트 이벤트 수신:', !!custom.detail?.accessToken)
 
       // SWR 캐시 갱신 (새 토큰으로 사용자 정보 재조회)
       if (custom.detail?.accessToken) {
@@ -52,12 +51,12 @@ export const useAuthProvider = () => {
   }, [refreshUser])
 
   // API 응답을 User 타입으로 안전하게 변환
-  const user: User | undefined = userData
+  const user: User | undefined = userData?.data
     ? {
-        id: userData.userId?.toString() || '',
-        email: userData.email || '',
-        name: userData.name || '',
-        profileImage: userData.profileImage,
+        id: userData.data.userId?.toString() || '',
+        email: userData.data.email || '',
+        name: userData.data.name || '',
+        profileImage: userData.data.profileImage,
       }
     : undefined
 
