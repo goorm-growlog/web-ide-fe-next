@@ -1,0 +1,93 @@
+import { api, apiHelpers } from '@/shared/api/ky-client'
+import type { ApiResponse } from '@/shared/types/api'
+
+// Auth 관련 타입들
+export interface LoginData {
+  accessToken: string
+  refreshToken: string
+  user: {
+    id: string
+    email: string
+    name: string
+  }
+}
+
+export interface SignupData {
+  userId: number
+  email: string
+  name: string
+}
+
+export interface LoginFormData {
+  email: string
+  password: string
+}
+
+export interface SignupFormData {
+  email: string
+  password: string
+  name: string
+}
+
+export interface PasswordResetData {
+  name: string
+  email: string
+}
+
+/**
+ * 로그인 API
+ */
+export const loginApi = async (data: LoginFormData): Promise<LoginData> => {
+  const response = await api
+    .post('auth/login', {
+      json: {
+        email: data.email,
+        password: data.password,
+      },
+    })
+    .json<ApiResponse<LoginData>>()
+
+  return apiHelpers.extractData(response)
+}
+
+/**
+ * 회원가입 API
+ */
+export const signupApi = async (data: SignupFormData): Promise<SignupData> => {
+  const response = await api
+    .post('users/signup', {
+      json: {
+        email: data.email,
+        password: data.password,
+        name: data.name,
+      },
+    })
+    .json<ApiResponse<SignupData>>()
+
+  return apiHelpers.extractData(response)
+}
+
+/**
+ * 비밀번호 재설정 요청 API
+ */
+export const resetPasswordApi = async (
+  data: PasswordResetData,
+): Promise<void> => {
+  const response = await api
+    .post('auth/reset-password', {
+      json: {
+        name: data.name,
+        email: data.email,
+      },
+    })
+    .json<ApiResponse<void>>()
+
+  apiHelpers.checkSuccess(response)
+}
+
+/**
+ * 로그아웃 API
+ */
+export const logoutApi = async (): Promise<void> => {
+  await api.post('auth/logout').json<ApiResponse<null>>()
+}

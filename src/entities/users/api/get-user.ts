@@ -30,3 +30,49 @@ export const getUser = async (): Promise<User> => {
     profileImage: userData.profileImage,
   }
 }
+
+/**
+ * 사용자 이름을 업데이트합니다.
+ */
+export const updateUserName = async (name: string): Promise<void> => {
+  await authApi.patch('users/me/name', { json: { name } })
+}
+
+/**
+ * 비밀번호를 변경합니다.
+ */
+export const updatePassword = async (
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> => {
+  await authApi.patch('users/me/password', {
+    json: { currentPassword, newPassword },
+  })
+}
+
+/**
+ * 프로필 이미지를 업로드합니다.
+ */
+export const uploadProfileImage = async (file: File): Promise<string> => {
+  const formData = new FormData()
+  formData.append('profileImage', file)
+
+  const response = await authApi
+    .patch('users/profile-image', { body: formData })
+    .json<ApiResponse<{ profileImageUrl: string }>>()
+
+  if (!response.data?.profileImageUrl) {
+    throw new Error('Failed to upload profile image')
+  }
+
+  return response.data.profileImageUrl
+}
+
+/**
+ * 계정을 삭제합니다.
+ */
+export const deleteAccount = async (password: string): Promise<void> => {
+  await authApi.delete('users/me', {
+    json: { password },
+  })
+}

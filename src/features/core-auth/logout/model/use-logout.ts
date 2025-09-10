@@ -2,14 +2,13 @@
 
 import { signOut } from 'next-auth/react'
 import { useCallback } from 'react'
-import { authApi } from '@/shared/api/ky-client'
-import type { ApiResponse } from '@/shared/types/api'
+import { logoutApi } from '@/entities/auth'
 
 export const useLogout = () => {
   const logout = useCallback(async () => {
     try {
       // 백엔드 로그아웃
-      await authApi.post('auth/logout').json<ApiResponse<null>>()
+      await logoutApi()
     } catch {
       // 백엔드 실패해도 클라이언트 로그아웃은 진행
     }

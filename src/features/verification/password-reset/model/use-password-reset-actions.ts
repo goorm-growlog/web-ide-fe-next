@@ -2,9 +2,9 @@
 
 import { useCallback } from 'react'
 import { toast } from 'sonner'
+import { resetPasswordApi as resetPassword } from '@/entities/auth'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
-import { resetPassword } from '../api/reset-password'
 import type { PasswordResetData } from './schema'
 
 export const usePasswordResetActions = () => {

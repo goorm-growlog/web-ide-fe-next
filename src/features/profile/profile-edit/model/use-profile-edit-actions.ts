@@ -8,7 +8,7 @@ import {
   updatePassword,
   updateUserName,
   uploadProfileImage,
-} from '../api/profile-edit-api'
+} from '@/entities/users'
 import type { ProfileEditFormData } from './schema'
 
 // 개별 업데이트 함수들을 분리하여 복잡도 감소
