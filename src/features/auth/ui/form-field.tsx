@@ -47,7 +47,7 @@ const FormField = <
     <ShadcnFormField
       {...props}
       render={({ field }) => (
-        <FormItem className={cn('gap-1', className)}>
+        <FormItem className={cn('gap-2', className)}>
           <FormLabel>{label}</FormLabel>
           <FormControl>
             {typeof children === 'function'

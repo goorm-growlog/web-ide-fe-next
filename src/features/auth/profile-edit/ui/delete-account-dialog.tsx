@@ -21,7 +21,6 @@ import {
 const passwordSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 })
-type PasswordFormData = z.infer<typeof passwordSchema>
 
 interface DeleteAccountDialogProps {
   open: boolean
@@ -37,15 +36,13 @@ const DeleteAccountDialog = ({
   isSocialLogin,
 }: DeleteAccountDialogProps) => {
   const [isLoading, setIsLoading] = useState(false)
-
-  const form = useForm<PasswordFormData>({
+  const form = useForm({
     resolver: zodResolver(passwordSchema),
     defaultValues: { password: '' },
   })
 
   const handleConfirm = async (password = '') => {
     setIsLoading(true)
-
     try {
       await onConfirm(password)
       onOpenChange(false)
@@ -60,15 +57,13 @@ const DeleteAccountDialog = ({
   }
 
   const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      form.reset()
-    }
+    if (!open) form.reset()
     onOpenChange(open)
   }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="gap-6 sm:max-w-md">
+      <DialogContent className="sm:max-w-md [&>button]:hidden">
         <DialogHeader>
           <DialogTitle>Delete Account</DialogTitle>
           <DialogDescription>
@@ -78,11 +73,35 @@ const DeleteAccountDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        {!isSocialLogin ? (
+        {isSocialLogin ? (
+          <div className="mt-4 space-y-4">
+            <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4">
+              <p className="font-medium text-destructive text-sm">
+                This action is permanent and cannot be reversed.
+              </p>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => handleConfirm()}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Deleting...' : 'Delete Account'}
+              </Button>
+            </DialogFooter>
+          </div>
+        ) : (
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(data => handleConfirm(data.password))}
-              className="space-y-4"
+              className="mt-2 space-y-2"
             >
               <FormField
                 control={form.control}
@@ -96,8 +115,7 @@ const DeleteAccountDialog = ({
                   />
                 )}
               </FormField>
-
-              <DialogFooter>
+              <DialogFooter className="mt-4">
                 <Button
                   type="button"
                   variant="outline"
@@ -116,33 +134,6 @@ const DeleteAccountDialog = ({
               </DialogFooter>
             </form>
           </Form>
-        ) : (
-          <>
-            <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4">
-              <p className="font-medium text-destructive text-sm">
-                ⚠️ This action is permanent and cannot be reversed.
-              </p>
-            </div>
-
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isLoading}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() => handleConfirm()}
-                disabled={isLoading}
-              >
-                {isLoading ? 'Deleting...' : 'Delete Account'}
-              </Button>
-            </DialogFooter>
-          </>
         )}
       </DialogContent>
     </Dialog>

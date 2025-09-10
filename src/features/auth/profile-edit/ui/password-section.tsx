@@ -29,9 +29,7 @@ const PasswordSection = ({ form, isSocialUser }: PasswordSectionProps) => {
 
       <div className="space-y-4">
         <div>
-          <div className="mb-2 text-muted-foreground text-xs">
-            Current Password
-          </div>
+          <div className="text-muted-foreground text-xs">Current Password</div>
           <FormField control={form.control} name="currentPassword" label="">
             {field => (
               <PasswordInput
@@ -43,7 +41,7 @@ const PasswordSection = ({ form, isSocialUser }: PasswordSectionProps) => {
         </div>
 
         <div>
-          <div className="mb-2 text-muted-foreground text-xs">New Password</div>
+          <div className="text-muted-foreground text-xs">New Password</div>
           <div className="space-y-2">
             <FormField control={form.control} name="newPassword" label="">
               {field => (
