@@ -54,18 +54,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider === 'github') {
         try {
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/login`,
+            `${process.env.NEXT_PUBLIC_API_URL}/auth/login/github`,
             {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                provider: 'github',
-                providerId: account.providerAccountId,
-                email: user.email,
+                id: account.providerAccountId,
                 name: user.name,
-                avatar: user.image,
+                email: user.email,
+                avatarUrl: user.image,
               }),
             },
           )

@@ -1,6 +1,6 @@
-import type { User } from '@/entities/users/model/types'
 import { apiHelpers, authApi } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
+import type { User } from '@/shared/types/user'
 
 interface UserApiData {
   userId: number
@@ -27,8 +27,6 @@ export const getUser = async (): Promise<User> => {
     id: userData.userId.toString(),
     email: userData.email,
     name: userData.name,
-    ...(userData.profileImage && {
-      profileImage: userData.profileImage,
-    }),
+    profileImage: userData.profileImage,
   }
 }

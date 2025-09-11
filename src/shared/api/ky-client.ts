@@ -92,8 +92,11 @@ export const authApi = ky.create({
     ],
     afterResponse: [
       async (request, _options, response) => {
-        // 401 에러 시 토큰 갱신 후 재시도
-        if (response.status === 401 && typeof window !== 'undefined') {
+        // 401, 403 에러 시 토큰 갱신 후 재시도
+        if (
+          (response.status === 401 || response.status === 403) &&
+          typeof window !== 'undefined'
+        ) {
           const newToken = await refreshToken()
           if (newToken) {
             // 새 토큰으로 재시도 (fetch 사용 - 훅 우회)

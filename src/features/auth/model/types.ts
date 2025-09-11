@@ -3,6 +3,7 @@ import {
   emailSchema,
   loginPasswordSchema,
   nameSchema,
+  type profileEditSchema,
   signupPasswordSchema,
 } from './validation-schema'
 
@@ -19,6 +20,7 @@ export const signupSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>
 export type SignupFormData = z.infer<typeof signupSchema>
+export type ProfileEditFormData = z.infer<typeof profileEditSchema>
 
 export interface LoginData {
   userId: number
