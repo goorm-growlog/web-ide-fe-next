@@ -2,17 +2,13 @@
 
 import { signOut } from 'next-auth/react'
 import { useCallback } from 'react'
-import { apiHelpers, authApi } from '@/shared/api/ky-client'
-import type { ApiResponse } from '@/shared/types/api'
+import { logoutApi } from '@/entities/auth'
 
 export const useLogout = () => {
   const logout = useCallback(async () => {
     try {
       // 1) 백엔드 로그아웃: Redis의 RefreshToken 제거 및 쿠키 삭제
-      const response = await authApi
-        .post('auth/logout')
-        .json<ApiResponse<null>>()
-      apiHelpers.checkSuccess(response)
+      await logoutApi()
     } catch (_error) {
       // 서버 로그아웃 실패 시에도 클라이언트 세션 정리는 진행
     }

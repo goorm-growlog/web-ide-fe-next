@@ -1,4 +1,4 @@
-import { api, apiHelpers } from '@/shared/api/ky-client'
+import { api, apiHelpers, authApi } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
 
 // Auth 관련 타입들 - API 문서에 맞춰 수정
@@ -129,5 +129,7 @@ export const kakaoLoginApi = async (data: {
  * 로그아웃 API
  */
 export const logoutApi = async (): Promise<void> => {
-  await api.post('auth/logout').json<ApiResponse<null>>()
+  const response = await authApi.post('auth/logout').json<ApiResponse<null>>()
+
+  apiHelpers.checkSuccess(response)
 }
