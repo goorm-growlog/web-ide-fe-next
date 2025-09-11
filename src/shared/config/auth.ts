@@ -1,7 +1,6 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GitHub from 'next-auth/providers/github'
-import Kakao from 'next-auth/providers/kakao'
 import { githubLoginApi } from '@/entities/auth'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -13,11 +12,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
     }),
 
-    // Kakao OAuth - NextAuth Provider는 설정되어 있지만 실제로는 백엔드 직접 방식 사용
-    // 현재는 호환성을 위해 설정만 유지, 실제 로그인은 백엔드 /auth/kakao 사용
-    Kakao({
-      clientId: process.env.KAKAO_CLIENT_ID || '',
-    }),
+    // Kakao OAuth는 백엔드 직접 방식(/auth/kakao)을 사용하므로 NextAuth Provider 불필요
+    // 실제 Kakao 로그인은 백엔드에서 처리하고, NextAuth는 세션 관리만 담당
     CredentialsProvider({
       credentials: {
         email: { type: 'email' },
@@ -72,15 +68,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         } catch {
           return '/signin?error=AccessDenied'
         }
-      }
-
-      // Kakao 로그인 - 실제로는 사용하지 않음 (백엔드 직접 방식 사용)
-      // 이 콜백이 호출되지 않도록 구현되어 있음
-      if (account?.provider === 'kakao') {
-        console.warn(
-          'Kakao 로그인은 백엔드 직접 방식을 사용합니다. 이 콜백이 호출되면 안됩니다.',
-        )
-        return true
       }
 
       // Credentials 로그인 - 이미 TokenManager에서 토큰 처리됨
