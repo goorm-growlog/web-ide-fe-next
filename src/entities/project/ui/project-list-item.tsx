@@ -1,17 +1,19 @@
 'use client'
 
-import { Edit2, Trash2 } from 'lucide-react'
-import type { Project } from '../model/types'
+import type { Project, ProjectAction } from '../model/types'
+import { ProjectCardMenu } from './project-card-menu'
 import { ProjectMemberAvatars } from './project-member-avatars'
 
 interface ProjectListItemProps {
   project: Project
   onProjectClick?: ((project: Project) => void) | undefined
+  onProjectAction?: (projectId: number, action: ProjectAction) => void
 }
 
 export const ProjectListItem = ({
   project,
   onProjectClick,
+  onProjectAction,
 }: ProjectListItemProps) => {
   const handleClick = () => {
     onProjectClick?.(project)
@@ -55,34 +57,10 @@ export const ProjectListItem = ({
         </div>
       </button>
 
-      {/* 호버 시에만 나타나는 액션 버튼들 */}
-      <div className="absolute top-2 right-2 hidden items-center group-hover:flex">
-        {/* 편집 아이콘 */}
-        <button
-          type="button"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md transition-colors hover:bg-gray-50"
-          aria-label="프로젝트 편집"
-          onClick={e => {
-            e.stopPropagation()
-            // TODO: 편집 기능 구현
-          }}
-        >
-          <Edit2 className="h-4 w-4 text-gray-600" />
-        </button>
-
-        {/* 삭제 아이콘 */}
-        <button
-          type="button"
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md transition-colors hover:bg-red-50"
-          aria-label="프로젝트 삭제"
-          onClick={e => {
-            e.stopPropagation()
-            // TODO: 삭제 기능 구현
-          }}
-        >
-          <Trash2 className="h-4 w-4 text-red-500" />
-        </button>
-      </div>
+      <ProjectCardMenu
+        projectId={project.projectId}
+        onProjectAction={onProjectAction}
+      />
     </div>
   )
 }
