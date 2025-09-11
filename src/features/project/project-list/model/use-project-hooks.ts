@@ -12,8 +12,8 @@ export function useOwnProjects() {
     'projects/enriched/own',
     async () => {
       const { hostProjects } = await getEnrichedProjectsByType()
-      // 최근 수정일순으로 정렬 (최신 → 과거)
-      return hostProjects.sort(
+      // 최근 수정일순으로 정렬 (최신 → 과거) - 복사본 정렬로 캐시 변이 방지
+      return [...hostProjects].sort(
         (a, b) =>
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
       )
@@ -37,8 +37,8 @@ export function useJoinedProjects() {
     'projects/enriched/joined',
     async () => {
       const { invitedProjects } = await getEnrichedProjectsByType()
-      // 최근 수정일순으로 정렬 (최신 → 과거)
-      return invitedProjects.sort(
+      // 최근 수정일순으로 정렬 (최신 → 과거) - 복사본 정렬로 캐시 변이 방지
+      return [...invitedProjects].sort(
         (a, b) =>
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
       )
