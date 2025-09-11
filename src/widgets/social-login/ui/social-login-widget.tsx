@@ -3,8 +3,8 @@
 import { GitHubLoginButton, KakaoLoginButton } from '@/features/auth/social'
 
 /**
- * ?�셜 로그???�젯
- * GitHub�?Kakao 로그??버튼???�함???�셜 로그??UI
+ * 소셜 로그인 위젯
+ * GitHub와 Kakao 로그인 버튼을 포함한 소셜 로그인 UI
  */
 const SocialLoginWidget = () => {
   return (
