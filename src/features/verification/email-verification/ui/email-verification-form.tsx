@@ -1,3 +1,5 @@
+'use client'
+
 import { FormProvider } from 'react-hook-form'
 import FormField from '@/shared/ui/form-field'
 import InputWithButton from '@/shared/ui/input-with-button'

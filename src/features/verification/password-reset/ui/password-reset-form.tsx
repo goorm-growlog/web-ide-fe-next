@@ -1,3 +1,5 @@
+'use client'
+
 import { FormProvider } from 'react-hook-form'
 import { usePasswordResetForm } from '@/features/verification/password-reset/model/use-password-reset-form'
 import FormField from '@/shared/ui/form-field'

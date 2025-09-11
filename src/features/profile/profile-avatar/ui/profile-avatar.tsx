@@ -1,3 +1,5 @@
+'use client'
+
 import { Camera } from 'lucide-react'
 import type { ProfileAvatarProps } from '@/features/profile/profile-avatar/model/types'
 import { useProfileAvatar } from '@/features/profile/profile-avatar/model/use-profile-avatar'
