@@ -13,7 +13,7 @@ export const ProjectSearch = ({
   onChange,
   placeholder,
 }: ProjectSearchProps) => (
-  <div className="relative mb-3 pr-2">
+  <div className="relative mb-3">
     <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-gray-400" />
     <Input
       placeholder={placeholder || 'Search projects...'}
