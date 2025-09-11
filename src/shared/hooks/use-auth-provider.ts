@@ -47,12 +47,12 @@ export const useAuthProvider = () => {
 
     // ky-client에서 보낸 이벤트 리스닝
     window.addEventListener(
-      'session-token-update',
+      'session-token-refresh',
       handleTokenUpdate as EventListener,
     )
     return () => {
       window.removeEventListener(
-        'session-token-update',
+        'session-token-refresh',
         handleTokenUpdate as EventListener,
       )
     }

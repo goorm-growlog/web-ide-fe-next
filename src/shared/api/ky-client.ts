@@ -5,6 +5,9 @@ import type { ApiResponse } from '@/shared/types/api'
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 
+// 토큰 갱신 동시성 처리를 위한 Promise 캐시
+let refreshPromise: Promise<string> | null = null
+
 /**
  * 기본 API 클라이언트 (인증 불필요)
  */
@@ -43,10 +46,50 @@ export const authApi = ky.create({
       },
     ],
     afterResponse: [
-      async (_request, _options, response) => {
-        // 401이면 로그아웃 (NextAuth가 토큰 관리하므로 단순화)
+      async (request, _options, response) => {
+        // 401이면 토큰 갱신 시도 (동시성 처리 포함)
         if (response.status === 401 && typeof window !== 'undefined') {
-          await signOut({ callbackUrl: '/signin?error=SessionExpired' })
+          try {
+            let newAccessToken: string
+
+            // 이미 갱신 중인 요청이 있다면 기다리기
+            if (refreshPromise) {
+              newAccessToken = await refreshPromise
+            } else {
+              // 새로운 토큰 갱신 시작
+              refreshPromise = ky
+                .post('/api/auth/refresh')
+                .json<{ accessToken: string }>()
+                .then(({ accessToken }) => {
+                  // NextAuth 세션에 새 토큰 반영
+                  window.dispatchEvent(
+                    new CustomEvent('session-token-refresh', {
+                      detail: { accessToken },
+                    }),
+                  )
+                  return accessToken
+                })
+                .finally(() => {
+                  // 갱신 완료 후 Promise 초기화
+                  refreshPromise = null
+                })
+
+              newAccessToken = await refreshPromise
+            }
+
+            // 새 토큰으로 원래 요청 재시도
+            const originalRequest = request.clone()
+            originalRequest.headers.set(
+              'Authorization',
+              `Bearer ${newAccessToken}`,
+            )
+            return ky(originalRequest)
+          } catch {
+            // 토큰 갱신 실패 시 로그아웃
+            refreshPromise = null // 실패 시에도 Promise 초기화
+            await signOut({ callbackUrl: '/signin?error=SessionExpired' })
+            return response
+          }
         }
 
         if (!response.ok) {
