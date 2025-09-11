@@ -1,8 +1,6 @@
 import { z } from 'zod'
-import {
-  NEW_PASSWORD_REQUIRED_MSG,
-  nameSchema,
-} from '@/features/auth/lib/validation'
+import { NEW_PASSWORD_REQUIRED_MSG } from '@/features/auth/lib/validation'
+import { nameSchema } from '@/shared/lib/validation'
 
 export const profileEditSchema = z
   .object({

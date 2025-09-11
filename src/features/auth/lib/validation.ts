@@ -1,8 +1,7 @@
 import { z } from 'zod'
+import { emailSchema, nameSchema } from '@/shared/lib/validation'
 
-// 메시지 상수
-export const EMAIL_REQUIRED_MSG = 'Please enter a valid email address'
-export const NAME_REQUIRED_MSG = 'Name must be at least 2 characters'
+// Auth 관련 메시지 상수
 export const LOGIN_PASSWORD_REQUIRED_MSG = 'Please enter your password.'
 export const SIGNUP_PASSWORD_REQUIRED_MSG =
   'Password must be at least 8 characters.'
@@ -12,9 +11,7 @@ export const CURRENT_PASSWORD_REQUIRED_MSG =
 export const NEW_PASSWORD_REQUIRED_MSG =
   'New password must be at least 8 characters'
 
-// 필드 단위 스키마
-export const emailSchema = z.string().trim().email(EMAIL_REQUIRED_MSG)
-export const nameSchema = z.string().trim().min(2, NAME_REQUIRED_MSG)
+// Auth 관련 필드 스키마
 export const loginPasswordSchema = z
   .string()
   .min(1, LOGIN_PASSWORD_REQUIRED_MSG)
@@ -46,3 +43,6 @@ export const signupSchema = z.object({
 // 타입 정의
 export type LoginFormData = z.infer<typeof loginSchema>
 export type SignupFormData = z.infer<typeof signupSchema>
+
+// 공통 스키마 재수출 (편의성을 위해)
+export { emailSchema, nameSchema }

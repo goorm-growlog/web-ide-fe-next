@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { emailSchema, nameSchema } from '@/features/auth/lib/validation'
+import { emailSchema, nameSchema } from '@/shared/lib/validation'
 
 export const passwordResetSchema = z.object({
   name: nameSchema,
