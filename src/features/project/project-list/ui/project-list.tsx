@@ -60,10 +60,6 @@ export function ProjectList({ projects, onProjectSelect }: ProjectListProps) {
                       <span>{project.memberProfiles?.length ?? 0} members</span>
                     </div>
                   </div>
-                  <div className="ml-4 flex items-center gap-3">
-                    <ProjectMemberAvatars project={project} />
-                    <span className="text-gray-400 text-sm">Open</span>
-                  </div>
                 </button>
               ))
             )}
