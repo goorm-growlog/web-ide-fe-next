@@ -26,5 +26,6 @@ export type {
 export * from './ui/project-card'
 export * from './ui/project-card-menu'
 export * from './ui/project-grid'
+export * from './ui/project-list-item'
 export * from './ui/project-member-avatars'
 export * from './ui/project-skeleton'
