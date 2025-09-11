@@ -1,27 +1,37 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ProjectListWidget } from '@/widgets/project/ui/project-list-widget'
-import { useProjectList } from '@/features/project/project-list/model/use-project-list'
+import { useOwnProjects, useJoinedProjects, ProjectListModal } from '@/features/project/project-list'
 import { MainHeader } from '@/widgets/header/ui/main-header'
 import { ProjectListSkeleton } from '@/entities/project'
+import type { ProjectAction, Project } from '@/entities/project'
+import { Button } from '@/shared/ui/shadcn/button'
 
 export default function ProjectPage() {
-  const {
-    hostProjects,
-    invitedProjects,
-    isLoading,
-    error,
-    refetch
-  } = useProjectList()
+  const { projects: ownProjects, isLoading: isLoadingOwnProjects, error: ownError, refetch: refetchOwnProjects } = useOwnProjects()
+  const { projects: joinedProjects, isLoading: isLoadingJoinedProjects, error: joinedError, refetch: refetchJoinedProjects } = useJoinedProjects()
   
+  const isLoading = isLoadingOwnProjects || isLoadingJoinedProjects
+  const error = ownError || joinedError
+  
+  const refetch = () => {
+    refetchOwnProjects()
+    refetchJoinedProjects()
+  }
+
   const router = useRouter()
 
   const handleProjectClick = (projectId: number) => {
     router.push(`/project/${projectId}`)
   }
 
-  const handleProjectAction = (_projectId: number, _action: string) => {
+  const handleProjectSelect = (project: Project) => {
+    router.push(`/project/${project.projectId}`)
+  }
+
+  const handleProjectAction = (_projectId: number, _action: ProjectAction) => {
     // Handle project action
   }
 
@@ -29,13 +39,7 @@ export default function ProjectPage() {
     refetch()
   }
 
-  const handleViewAllHost = () => {
-    // Handle view all host projects
-  }
-
-  const handleViewAllInvited = () => {
-    // Handle view all invited projects
-  }
+  // View All 버튼들을 위한 핸들러는 제거 (이제 Modal 컴포넌트가 trigger로 처리)
 
   const renderContent = () => {
     if (isLoading) return <ProjectListSkeleton />
@@ -44,12 +48,10 @@ export default function ProjectPage() {
     return (
       <div className="w-full max-w-[844px]">
         <ProjectListWidget
-          hostProjects={hostProjects}
-          invitedProjects={invitedProjects}
+          hostProjects={ownProjects}
+          invitedProjects={joinedProjects}
           onProjectClick={handleProjectClick}
           onProjectAction={handleProjectAction}
-          onViewAllHost={handleViewAllHost}
-          onViewAllInvited={handleViewAllInvited}
           onProjectCreated={handleProjectCreated}
         />
       </div>

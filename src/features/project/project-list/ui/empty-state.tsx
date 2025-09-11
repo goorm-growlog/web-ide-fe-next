@@ -2,9 +2,9 @@
 
 import { Users } from 'lucide-react'
 
-export function EmptyInvitedState() {
+export function EmptyState() {
   return (
-    <div className="flex h-32 items-center justify-center rounded-lg">
+    <div className="flex h-full items-center justify-center rounded-lg">
       <div className="flex flex-col items-center gap-2 text-center">
         <Users className="h-8 w-8 text-muted-foreground" />
         <p className="text-muted-foreground text-sm">

@@ -1,17 +1,21 @@
 'use client'
 
+import type { Project } from '@/entities/project'
 import { Button } from '@/shared/ui/shadcn/button'
+import { ProjectListModal } from './project-list-modal'
 
 interface ProjectSectionHeaderProps {
   title: string
   totalCount: number
-  onViewAll?: () => void
+  projects: Project[]
+  onProjectSelect: (project: Project) => void
 }
 
 export function ProjectSectionHeader({
   title,
   totalCount,
-  onViewAll,
+  projects,
+  onProjectSelect,
 }: ProjectSectionHeaderProps) {
   return (
     <div className="flex items-end justify-between">
@@ -19,13 +23,18 @@ export function ProjectSectionHeader({
         {title}
       </h2>
       {totalCount > 0 && (
-        <Button
-          variant="ghost"
-          className="h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground"
-          onClick={onViewAll}
-        >
-          view all({totalCount})
-        </Button>
+        <ProjectListModal
+          trigger={
+            <Button
+              variant="ghost"
+              className="h-auto p-0 font-medium text-muted-foreground text-xs hover:text-foreground"
+            >
+              view all({totalCount})
+            </Button>
+          }
+          projects={projects}
+          onProjectSelect={onProjectSelect}
+        />
       )}
     </div>
   )

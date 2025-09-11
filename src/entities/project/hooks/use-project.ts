@@ -2,7 +2,6 @@
 
 import useSWR from 'swr'
 import { transformToProject, transformToProjectMember } from '../api/project'
-import type { Project, ProjectMember } from '../model/types'
 
 /**
  * 프로젝트 목록 조회 훅 - 전역 fetcher 활용

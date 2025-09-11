@@ -1,11 +1,11 @@
 // Project List Module Public API (FSD 원칙)
 
-// Hooks (비즈니스 로직)
-export { useProjectList } from './model/use-project-list'
-
+// Model (비즈니스 로직)
+export { useJoinedProjects, useOwnProjects } from './model/use-project-hooks'
+export { useProjectSearch } from './model/use-project-search'
+export { EmptyState } from './ui/empty-state'
+export { ProjectList } from './ui/project-list'
+export { ProjectListModal } from './ui/project-list-modal'
+export { ProjectSearch } from './ui/project-search'
 // UI Components
-export { EmptyInvitedState } from './ui/empty-invited-state'
-export { HostProjectSection } from './ui/host-project-section'
-export { InvitedProjectSection } from './ui/invited-project-section'
 export { ProjectSection } from './ui/project-section'
-export { ProjectSectionHeader } from './ui/project-section-header'

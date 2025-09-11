@@ -1,0 +1,59 @@
+'use client'
+
+import { useState } from 'react'
+import type { Project } from '@/entities/project'
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from '@/shared/ui/shadcn/dialog'
+import { useProjectSearch } from '../model/use-project-search'
+import { EmptyState } from './empty-state'
+import { ProjectList } from './project-list'
+import { ProjectSearch } from './project-search'
+
+interface ProjectListModalProps {
+  trigger: React.ReactNode
+  projects: Project[]
+  onProjectSelect?: (project: Project) => void
+}
+
+export const ProjectListModal = ({
+  trigger,
+  projects,
+  onProjectSelect,
+}: ProjectListModalProps) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchKeyword, setSearchKeyword] = useState('')
+  const filteredProjects = useProjectSearch(projects, searchKeyword)
+
+  const handleProjectSelect = (project: Project) => {
+    onProjectSelect?.(project)
+    setIsOpen(false)
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen} modal={false}>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className="!bg-white h-[500px] w-full max-w-[95vw] p-0 sm:max-w-[845px] [&>button]:hidden">
+        <DialogTitle className="sr-only">Project List</DialogTitle>
+        <div className="flex h-[500px] flex-col p-5">
+          <ProjectSearch
+            value={searchKeyword}
+            onChange={setSearchKeyword}
+            placeholder="Search projects..."
+          />
+          {filteredProjects.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <ProjectList
+              projects={filteredProjects}
+              onProjectSelect={handleProjectSelect}
+            />
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
