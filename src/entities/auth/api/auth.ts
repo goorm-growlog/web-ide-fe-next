@@ -1,7 +1,12 @@
+import type {
+  LoginFormData,
+  SignupFormData,
+} from '@/features/auth/lib/validation'
+import type { PasswordResetData } from '@/features/verification/password-reset/model/schema'
 import { api, apiHelpers, authApi } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
 
-// Auth 관련 타입들 - API 문서에 맞춰 수정
+// Auth 관련 API 응답 타입들 - API 문서에 맞춰 수정
 export interface LoginData {
   userId: number
   name: string
@@ -12,22 +17,6 @@ export interface SignupData {
   userId: number
   email: string
   name: string
-}
-
-export interface LoginFormData {
-  email: string
-  password: string
-}
-
-export interface SignupFormData {
-  email: string
-  password: string
-  name: string
-}
-
-export interface PasswordResetData {
-  name: string
-  email: string
 }
 
 /**
