@@ -9,14 +9,12 @@ import { mutate } from 'swr'
 import { loginApi } from '@/entities/auth'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
-import { tokenManager } from '../lib/token-manager'
 import type { LoginFormData } from '../lib/validation'
 
 export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
   const { isLoading, withLoading } = useLoadingState()
   const router = useRouter()
 
-  // 에러 처리 헬퍼
   const showError = useCallback(
     (message: string) => {
       form?.setError('root', { type: 'server', message })
@@ -25,48 +23,34 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
     [form],
   )
 
-  // 백엔드 로그인 처리
   const handleCredentialsLogin = useCallback(
     async (data: LoginFormData) => {
       try {
-        // 1. 백엔드 로그인 API 호출
         const loginData = await loginApi(data)
 
-        // 2. 토큰 저장 (백엔드 중심)
-        tokenManager.setTokens({
-          accessToken: loginData.accessToken,
-          refreshToken: '', // API 응답에 refreshToken 없음
-        })
-
-        // 3. NextAuth 세션 생성 (소셜 로그인 상태 관리용)
-        const result = await signIn('credentials', {
+        const userWithTokens = {
+          id: loginData.userId,
+          name: loginData.name,
           email: data.email,
-          password: data.password,
-          userData: JSON.stringify({
-            userId: loginData.userId,
-            name: loginData.name,
-            email: data.email,
-          }),
+          accessToken: loginData.accessToken,
+        }
+
+        const result = await signIn('credentials', {
+          user: JSON.stringify(userWithTokens),
           redirect: false,
         })
 
         if (result?.ok) {
           toast.success('Login successful!')
           form?.clearErrors('root')
-
-          // 사용자 정보 캐시 갱신
           mutate('/users/me')
-
           router.push('/project')
         } else {
-          throw new Error('Failed to create session')
+          throw new Error(result?.error || 'Failed to create session')
         }
       } catch (error) {
         const errorMessage = getErrorMessage(error) || 'Login failed'
         showError(errorMessage)
-
-        // 토큰 정리
-        tokenManager.clearTokens()
       }
     },
     [router, form, showError],

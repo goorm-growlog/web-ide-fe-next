@@ -6,12 +6,7 @@ import { signIn } from 'next-auth/react'
 import { toast } from 'sonner'
 import { mutate } from 'swr'
 import { kakaoLoginApi } from '@/entities/auth'
-import { tokenManager } from '@/features/auth/lib/token-manager'
 
-/**
- * 카카오 로그인 성공 처리 컴포넌트
- * useSearchParams를 사용하므로 Suspense로 감싸져야 함
- */
 function KakaoSuccessHandler() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -21,28 +16,25 @@ function KakaoSuccessHandler() {
       const token = searchParams.get('token')
       const userId = searchParams.get('userId')
       const name = searchParams.get('name')
-      
+      const email = searchParams.get('email')
+
       if (token && userId && name) {
         try {
-          // 1. 백엔드 Kakao API 호출하여 사용자 생성/로그인 처리
           const loginData = await kakaoLoginApi({
             userId: parseInt(userId, 10),
             name: decodeURIComponent(name),
-            accessToken: token
+            accessToken: token,
           })
 
-          // 2. TokenManager에 백엔드 토큰 저장 (백엔드 중심 관리)
-          tokenManager.setTokens({
+          const userWithTokens = {
+            id: parseInt(userId, 10),
+            name: decodeURIComponent(name),
+            email: email,
             accessToken: loginData.accessToken,
-            refreshToken: '', // Kakao 소셜 로그인은 refresh token 없음
-          })
+          }
 
-          // 3. NextAuth 세션 생성 (세션 상태만 관리)
           const result = await signIn('credentials', {
-            userData: JSON.stringify({ 
-              userId: parseInt(userId, 10),
-              name: decodeURIComponent(name),
-            }),
+            user: JSON.stringify(userWithTokens),
             redirect: false,
           })
 
@@ -51,10 +43,7 @@ function KakaoSuccessHandler() {
             router.push('/signin')
           } else {
             toast.success('Login successful!')
-            
-            // SWR 캐시 갱신 - 사용자 정보 즉시 반영
             await mutate('/users/me')
-            
             router.push('/project')
           }
         } catch {
@@ -80,17 +69,15 @@ function KakaoSuccessHandler() {
   )
 }
 
-/**
- * 카카오 로그인 성공 페이지
- * 백엔드에서 토큰과 함께 리다이렉트되는 페이지
- */
 export default function KakaoSuccessPage() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-lg">Login in progress...</p>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <p className="text-lg">Login in progress...</p>
+        </div>
+      }
+    >
       <KakaoSuccessHandler />
     </Suspense>
   )

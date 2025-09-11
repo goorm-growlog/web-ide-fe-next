@@ -1,9 +1,6 @@
 // 통합된 Auth 기능
 // 백엔드 중심 토큰 관리 + 두 가지 방식의 소셜 로그인
 
-// 토큰 관리
-export { tokenManager, useTokenManager } from './lib/token-manager'
-
 // 검증
 export * from './lib/validation'
 export { default as LoginForm } from './login/login-form'
