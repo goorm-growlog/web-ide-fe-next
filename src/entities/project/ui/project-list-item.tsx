@@ -23,11 +23,11 @@ export const ProjectListItem = ({
       onClick={handleClick}
     >
       <div className="min-w-0 flex-1">
-        <h3 className="truncate font-medium text-gray-900">
+        <h3 className="max-w-[30%] truncate font-medium text-gray-900">
           {project.projectName}
         </h3>
         {project.description && (
-          <p className="mt-1 truncate text-gray-500 text-sm">
+          <p className="mt-1 max-w-[40%] truncate text-gray-500 text-sm">
             {project.description}
           </p>
         )}
@@ -35,7 +35,6 @@ export const ProjectListItem = ({
           <span>
             Updated {new Date(project.updatedAt).toLocaleDateString()}
           </span>
-          <span>{project.memberProfiles?.length ?? 0} members</span>
         </div>
       </div>
       <div className="ml-4 flex items-center gap-3">
