@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 export async function POST() {
   const cookieStore = await cookies()
   // 실제 백엔드에서 사용하는 리프레시 토큰의 쿠키 이름을 확인해야 합니다.
-  const refreshToken = cookieStore.get('refreshToken')?.value
+  const refreshToken = cookieStore.get('refresh')?.value
 
   if (!refreshToken) {
     return NextResponse.json(
