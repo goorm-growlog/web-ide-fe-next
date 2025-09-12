@@ -30,10 +30,6 @@ export default function ProjectPage() {
     refetch()
   }
 
-  const handleProjectUpdated = () => {
-    refetch()
-  }
-
   const renderContent = () => {
     if (isLoading) return <ProjectListSkeleton />
     if (error) return <div className="text-destructive">Error: {error}</div>
@@ -45,7 +41,6 @@ export default function ProjectPage() {
           invitedProjects={joinedProjects}
           onProjectClick={handleProjectClick}
           onProjectCreated={handleProjectCreated}
-          onProjectUpdated={handleProjectUpdated}
         />
       </div>
     )
@@ -54,7 +49,7 @@ export default function ProjectPage() {
   return (
     <>
       <MainHeader />
-      <main className="fixed inset-0 flex items-center justify-center bg-white">
+      <main className="fixed inset-0 flex items-center justify-center bg-background">
         {renderContent()}
       </main>
     </>

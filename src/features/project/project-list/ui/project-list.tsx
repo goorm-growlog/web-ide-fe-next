@@ -35,15 +35,15 @@ export function ProjectList({
           <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 h-4 bg-gradient-to-t from-white via-white/70 via-white/95 to-transparent" />
 
           <div
-            className="h-full overflow-y-auto pr-1 [&::-webkit-scrollbar-thumb:hover]:bg-gray-500 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-2"
+            className="h-full overflow-y-auto pr-1 [&::-webkit-scrollbar-thumb:hover]:bg-muted-foreground/50 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-2"
             style={{
               scrollbarWidth: 'thin',
-              scrollbarColor: '#eaeaeaff transparent',
+              scrollbarColor: 'hsl(var(--muted-foreground) / 0.3) transparent',
             }}
           >
             <div className="space-y-3 py-3 pr-1">
               {projects.length === 0 ? (
-                <div className="py-8 text-center text-gray-500">
+                <div className="py-8 text-center text-muted-foreground">
                   {'No projects available'}
                 </div>
               ) : (

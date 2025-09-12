@@ -39,7 +39,7 @@ export const ProjectListModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="!bg-white h-[500px] w-full max-w-[95vw] p-0 sm:max-w-[845px] [&>button]:hidden">
+      <DialogContent className="!bg-background h-[500px] w-full max-w-[95vw] p-0 sm:max-w-[845px] [&>button]:hidden">
         <DialogTitle className="sr-only">Project List</DialogTitle>
         <div className="flex h-[500px] flex-col p-5">
           <ProjectSearch

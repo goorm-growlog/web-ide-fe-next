@@ -23,7 +23,7 @@ export function MainHeader() {
   }
 
   return (
-    <header className="fixed top-0 z-50 flex h-[70px] w-full items-center justify-between bg-white px-10">
+    <header className="fixed top-0 z-50 flex h-[70px] w-full items-center justify-between bg-background px-10">
       <div className="flex items-center">
         <Image src="/logo.svg" alt="GrowLog" width={103} height={26} />
       </div>
