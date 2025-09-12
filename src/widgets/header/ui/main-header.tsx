@@ -3,8 +3,8 @@
 import { ChevronDown, LogOut, UserRoundPen } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useUser } from '@/entities/users'
-import { useLogout } from '@/features/auth/logout/model/use-logout'
+import { useAuth } from '@/app/providers/auth-provider'
+import { useLogout } from '@/features/auth'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
 import {
   DropdownMenu,
@@ -15,7 +15,7 @@ import {
 
 export function MainHeader() {
   const { logout } = useLogout()
-  const { user, isLoading } = useUser()
+  const { user, isLoading } = useAuth()
 
   const getInitial = (name?: string) => {
     if (!name) return 'U'
@@ -23,7 +23,7 @@ export function MainHeader() {
   }
 
   return (
-    <header className="fixed top-0 z-50 flex h-[70px] w-full items-center justify-between bg-white px-10">
+    <header className="fixed top-0 z-50 flex h-[70px] w-full items-center justify-between bg-background px-10">
       <div className="flex items-center">
         <Image src="/logo.svg" alt="GrowLog" width={103} height={26} />
       </div>

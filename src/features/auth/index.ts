@@ -1,36 +1,17 @@
-// Auth feature barrel exports - commonly used items only
+// 통합된 Auth 기능
+// 백엔드 중심 토큰 관리 + 두 가지 방식의 소셜 로그인
 
-// Login
-export { useLoginActions } from './login/model/use-login-actions'
-export { useLoginForm } from './login/model/use-login-form'
-export { default as LoginForm } from './login/ui/login-form'
-// Types (Auth feature specific types only)
-// Profile Edit
-export type {
-  LoginData,
-  LoginFormData,
-  ProfileEditFormData,
-  SignupFormData,
-} from './model/types'
-// Password Reset
-export type { PasswordResetData } from './model/validation-schema'
-export { usePasswordResetActions } from './password-reset/model/use-password-reset-actions'
-export { default as PasswordResetDialog } from './password-reset/ui/password-reset-dialog'
-// Profile Avatar
-export type { ProfileAvatarProps } from './profile-avatar/model/types'
-export { useProfileAvatar } from './profile-avatar/model/use-profile-avatar'
-export { default as ProfileAvatar } from './profile-avatar/ui/profile-avatar'
-export * from './profile-edit'
-// Session
-export { useSessionSync } from './session/model/use-session-sync'
-export { SessionSyncProvider } from './session/ui/session-sync-provider'
+// 검증
+export * from './lib/validation'
+export { default as LoginForm } from './login/login-form'
+// 로그인
+export { useLoginActions } from './login/use-login-actions'
+export { useLoginForm } from './login/use-login-form'
 
-// Social Login Features (분리됨)
-export * from './social-github'
-export * from './social-kakao'
-
-// Common UI Components
-export { default as FormField } from './ui/form-field'
-export { default as InputWithButton } from './ui/input-with-button'
-export { default as PasswordInput } from './ui/password-input'
-export { default as SocialButton } from './ui/social-button'
+// 로그아웃
+export { useLogout } from './logout/use-logout'
+export { default as SocialLoginButtons } from './social/social-login-buttons' // UI 컴포넌트
+export { useGitHubLogin } from './social/use-github-login' // GitHub (NextAuth 방식)
+export { useKakaoLogin } from './social/use-kakao-login' // Kakao (백엔드 직접 방식)
+// 소셜 로그인 - 두 가지 방식
+export { useSocialLogin } from './social/use-social-login' // 통합 훅

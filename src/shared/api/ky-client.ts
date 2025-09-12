@@ -1,63 +1,55 @@
 import ky from 'ky'
 import { getSession, signOut } from 'next-auth/react'
-import { auth } from '@/shared/config/auth'
 import { handleApiError } from '@/shared/lib/api-error'
 import type { ApiResponse } from '@/shared/types/api'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 
-// 토큰 갱신 상태 관리 (간단한 락)
-let isRefreshing = false
-let refreshPromise: Promise<string | null> | null = null
+// 토큰 갱신 동시성 처리를 위한 Promise 캐시
+let refreshPromise: Promise<string> | null = null
 
-// 토큰 갱신 함수 (동시 요청 방지)
-async function refreshToken(): Promise<string | null> {
-  // 이미 갱신 중이면 기존 Promise 대기
-  if (isRefreshing && refreshPromise) {
-    return await refreshPromise
+// 간단한 세션 캐시 (짧은 TTL) + Promise 기반 중복 방지
+interface SessionData {
+  accessToken?: string
+}
+
+let sessionCache: { session: SessionData | null; timestamp: number } | null =
+  null
+let sessionPromise: Promise<SessionData | null> | null = null // Promise 캐시 추가
+const SESSION_CACHE_TTL = 5000 // 5초 (짧게 설정)
+
+async function getCachedSession(): Promise<SessionData | null> {
+  const now = Date.now()
+
+  // 1단계: 캐시된 세션 체크 (가장 빠른 경로)
+  if (sessionCache && now - sessionCache.timestamp < SESSION_CACHE_TTL) {
+    return sessionCache.session
   }
 
-  // 새로운 갱신 시작
-  isRefreshing = true
-  refreshPromise = performRefresh()
+  // 2단계: 진행 중인 요청이 있으면 해당 Promise 반환 (Race Condition 방지)
+  if (sessionPromise) {
+    return await sessionPromise
+  }
+
+  // 3단계: 새로운 세션 요청 시작
+  sessionPromise = getSession() as Promise<SessionData | null>
 
   try {
-    return await refreshPromise
+    const session = await sessionPromise
+    // 성공 시 캐시 업데이트
+    sessionCache = { session, timestamp: now }
+    return session
   } finally {
-    isRefreshing = false
-    refreshPromise = null
+    // 완료 후 Promise 캐시 정리 (성공/실패 관계없이)
+    sessionPromise = null
   }
 }
 
-async function performRefresh(): Promise<string | null> {
-  try {
-    const response = await ky
-      .post(`${API_BASE_URL}/auth/refresh`, {
-        credentials: 'include',
-      })
-      .json<ApiResponse<{ accessToken: string }>>()
-
-    if (response.success && response.data?.accessToken) {
-      // NextAuth 세션 업데이트
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(
-          new CustomEvent('auth:access-token-updated', {
-            detail: { accessToken: response.data.accessToken },
-          }),
-        )
-      }
-      return response.data.accessToken
-    }
-    return null
-  } catch (error) {
-    console.error('Token refresh failed:', error)
-    return null
-  }
-}
-
-// 기본 API 클라이언트 (인증 불필요)
+/**
+ * 기본 API 클라이언트 (인증 불필요)
+ */
 export const api = ky.create({
-  prefixUrl: API_BASE_URL,
+  prefixUrl: BASE_URL,
   credentials: 'include',
   timeout: 10000,
   retry: { limit: 1 },
@@ -73,18 +65,18 @@ export const api = ky.create({
   },
 })
 
-// 인증이 필요한 API 클라이언트
+/**
+ * 인증 API 클라이언트
+ */
 export const authApi = ky.create({
-  prefixUrl: API_BASE_URL,
+  prefixUrl: BASE_URL,
   credentials: 'include',
   timeout: 10000,
   retry: { limit: 1 },
   hooks: {
     beforeRequest: [
       async request => {
-        // NextAuth 세션에서 토큰 가져오기
-        const session =
-          typeof window === 'undefined' ? await auth() : await getSession()
+        const session = await getCachedSession()
         if (session?.accessToken) {
           request.headers.set('Authorization', `Bearer ${session.accessToken}`)
         }
@@ -92,25 +84,48 @@ export const authApi = ky.create({
     ],
     afterResponse: [
       async (request, _options, response) => {
-        // 401, 403 에러 시 토큰 갱신 후 재시도
-        if (
-          (response.status === 401 || response.status === 403) &&
-          typeof window !== 'undefined'
-        ) {
-          const newToken = await refreshToken()
-          if (newToken) {
-            // 새 토큰으로 재시도 (fetch 사용 - 훅 우회)
-            const newHeaders = new Headers(request.headers)
-            newHeaders.set('Authorization', `Bearer ${newToken}`)
-            return fetch(request.url, {
-              method: request.method,
-              headers: newHeaders,
-              body: request.body,
-              credentials: 'include',
-            })
-          } else {
-            // 갱신 실패 시 로그아웃
-            await signOut({ callbackUrl: '/signin' })
+        // 401이면 토큰 갱신 시도 (동시성 처리 포함)
+        if (response.status === 401 && typeof window !== 'undefined') {
+          try {
+            let newAccessToken: string
+
+            // 이미 갱신 중인 요청이 있다면 기다리기
+            if (refreshPromise) {
+              newAccessToken = await refreshPromise
+            } else {
+              // 새로운 토큰 갱신 시작
+              refreshPromise = ky
+                .post('/api/auth/refresh')
+                .json<{ accessToken: string }>()
+                .then(({ accessToken }) => {
+                  // NextAuth 세션에 새 토큰 반영
+                  window.dispatchEvent(
+                    new CustomEvent('session-token-refresh', {
+                      detail: { accessToken },
+                    }),
+                  )
+                  return accessToken
+                })
+                .finally(() => {
+                  // 갱신 완료 후 Promise 초기화
+                  refreshPromise = null
+                })
+
+              newAccessToken = await refreshPromise
+            }
+
+            // 새 토큰으로 원래 요청 재시도
+            const originalRequest = request.clone()
+            originalRequest.headers.set(
+              'Authorization',
+              `Bearer ${newAccessToken}`,
+            )
+            return ky(originalRequest)
+          } catch {
+            // 토큰 갱신 실패 시 로그아웃
+            refreshPromise = null // 실패 시에도 Promise 초기화
+            await signOut({ callbackUrl: '/signin?error=SessionExpired' })
+            return response
           }
         }
 
@@ -123,7 +138,9 @@ export const authApi = ky.create({
   },
 })
 
-// API 응답 처리 헬퍼
+/**
+ * API 응답 헬퍼
+ */
 export const apiHelpers = {
   extractData: <T>(response: ApiResponse<T>): T => {
     if (!response.success || !response.data) {
@@ -131,7 +148,6 @@ export const apiHelpers = {
     }
     return response.data
   },
-
   checkSuccess: (response: {
     success: boolean
     error?: string | null

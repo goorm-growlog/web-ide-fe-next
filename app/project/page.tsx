@@ -2,40 +2,32 @@
 
 import { useRouter } from 'next/navigation'
 import { ProjectListWidget } from '@/widgets/project/ui/project-list-widget'
-import { useProjectList } from '@/features/project/project-list/model/use-project-list'
+import { useUnifiedProjects } from '@/features/project/project-list/model/use-unified-projects'
 import { MainHeader } from '@/widgets/header/ui/main-header'
-import { ProjectListSkeleton } from '@/shared/ui/project-skeleton'
+import { ProjectListSkeleton } from '@/entities/project'
+import type { Project } from '@/entities/project'
 
 export default function ProjectPage() {
-  const {
-    hostProjects,
-    invitedProjects,
-    isLoading,
-    error,
-    refetch
-  } = useProjectList()
-  
+  const { 
+    ownProjects, 
+    joinedProjects, 
+    isLoading, 
+    error, 
+    refetch 
+  } = useUnifiedProjects()
+
   const router = useRouter()
 
   const handleProjectClick = (projectId: number) => {
     router.push(`/project/${projectId}`)
   }
 
-  const handleProjectAction = (projectId: number, action: string) => {
-    console.log('Project action:', { projectId, action })
+  const handleProjectSelect = (project: Project) => {
+    router.push(`/project/${project.projectId}`)
   }
 
   const handleProjectCreated = (projectId: string) => {
-    console.log('Project created:', projectId)
     refetch()
-  }
-
-  const handleViewAllHost = () => {
-    console.log('View all host projects')
-  }
-
-  const handleViewAllInvited = () => {
-    console.log('View all invited projects')
   }
 
   const renderContent = () => {
@@ -45,12 +37,9 @@ export default function ProjectPage() {
     return (
       <div className="w-full max-w-[844px]">
         <ProjectListWidget
-          hostProjects={hostProjects}
-          invitedProjects={invitedProjects}
+          hostProjects={ownProjects}
+          invitedProjects={joinedProjects}
           onProjectClick={handleProjectClick}
-          onProjectAction={handleProjectAction}
-          onViewAllHost={handleViewAllHost}
-          onViewAllInvited={handleViewAllInvited}
           onProjectCreated={handleProjectCreated}
         />
       </div>
@@ -60,7 +49,7 @@ export default function ProjectPage() {
   return (
     <>
       <MainHeader />
-      <main className="fixed inset-0 flex items-center justify-center bg-white">
+      <main className="fixed inset-0 flex items-center justify-center bg-background">
         {renderContent()}
       </main>
     </>
