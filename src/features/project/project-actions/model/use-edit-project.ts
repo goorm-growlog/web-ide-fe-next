@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { toast } from 'sonner'
 import type { Project } from '@/entities/project'
 
 /**
@@ -16,15 +17,17 @@ export function useEditProject() {
     setIsOpen(true)
   }, [])
 
-  const closeDialog = useCallback(() => {
-    setIsOpen(false)
-    setProject(null)
-  }, [])
+  const handleSuccess = useCallback(async () => {
+    if (!project) return
 
-  const handleSuccess = useCallback(() => {
-    closeDialog()
-    // TODO: 성공 알림 및 목록 새로고침
-  }, [closeDialog])
+    // 성공 알림
+    toast.success(
+      `Project "${project.projectName}" has been updated successfully.`,
+    )
+
+    // 간단한 페이지 새로고침
+    window.location.reload()
+  }, [project])
 
   return {
     project,

@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { toast } from 'sonner'
 import type { Project } from '@/entities/project'
 import { deleteProject } from '@/entities/project'
 
@@ -18,26 +19,29 @@ export function useDeleteProject() {
     setIsOpen(true)
   }, [])
 
-  const closeDialog = useCallback(() => {
-    setIsOpen(false)
-    setProject(null)
-  }, [])
-
   const confirmDelete = useCallback(async () => {
     if (!project) return
 
     setIsLoading(true)
     try {
       await deleteProject(project.projectId)
-      closeDialog()
-      // TODO: 성공 알림 및 목록 새로고침
+
+      // 성공 알림
+      toast.success(
+        `Project "${project.projectName}" has been deleted successfully.`,
+      )
+
+      // 간단한 페이지 새로고침
+      window.location.reload()
     } catch (error) {
-      console.error('Failed to delete project:', error)
-      // TODO: 에러 알림
+      // 에러 알림
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to delete project'
+      toast.error(`Delete failed: ${errorMessage}`)
     } finally {
       setIsLoading(false)
     }
-  }, [project, closeDialog])
+  }, [project])
 
   return {
     project,
