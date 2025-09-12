@@ -1,6 +1,10 @@
 import type { ReactNode } from 'react'
 import type { Project } from '@/entities/project'
-import { canClickProject, getProjectTooltip } from '@/entities/project'
+import {
+  canClickProject,
+  getProjectTooltip,
+  isProjectDeleting,
+} from '@/entities/project'
 import { Card, CardContent } from '@/shared/ui/shadcn/card'
 import {
   Tooltip,
@@ -32,6 +36,7 @@ export const ProjectCard = ({
 }: ProjectCardProps) => {
   const canClick = canClickProject(project)
   const tooltipMessage = getProjectTooltip(project)
+  const isDeleting = isProjectDeleting(project)
 
   const handleCardClick = () => {
     if (canClick) {
@@ -43,7 +48,7 @@ export const ProjectCard = ({
     <Card
       className={`group relative w-full border-border/60 bg-transparent transition-all duration-200 hover:border-border/60 hover:shadow-md ${
         !canClick ? 'cursor-not-allowed' : 'cursor-pointer'
-      }`}
+      } ${isDeleting ? 'opacity-50' : 'opacity-100'}`}
       style={{ height }}
       onClick={handleCardClick}
     >
