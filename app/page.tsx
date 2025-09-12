@@ -2,10 +2,12 @@
 
 import Link from 'next/link'
 import { Code } from 'lucide-react'
+import { MainHeader } from '@/widgets/header/ui/main-header'
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
+      <MainHeader />
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-20 mt-20">
