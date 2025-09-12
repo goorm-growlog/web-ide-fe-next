@@ -4,6 +4,7 @@ import type { Project } from '@/entities/project'
 import { ProjectCard } from '@/entities/project'
 import {
   ProjectActionMenu,
+  ProjectDialogs,
   useProjectActions,
 } from '@/features/project/project-actions'
 import { EmptyState } from './empty-state'
@@ -27,8 +28,8 @@ export function ProjectSection({
   onProjectClick,
   variant = 'host',
 }: ProjectSectionProps) {
-  const { handleEditProject, handleInactivateProject, handleDeleteProject } =
-    useProjectActions()
+  const { actions, dialogs } = useProjectActions()
+
   // 생성 슬롯이 있으면 표시할 프로젝트 수를 조정
   const showCreateSlot = createSlot && projects.length < maxDisplay
   const adjustedMaxDisplay = showCreateSlot ? maxDisplay - 1 : maxDisplay
@@ -44,45 +45,54 @@ export function ProjectSection({
   const cardHeight = variant === 'host' ? '150px' : '115px'
 
   return (
-    <div className="flex flex-col gap-2" style={{ height: sectionHeight }}>
-      <ProjectSectionHeader
-        title={title}
-        totalCount={projects.length}
-        projects={projects}
-        {...(onProjectClick && {
-          onProjectSelect: (project: Project) =>
-            onProjectClick(project.projectId),
-        })}
+    <>
+      <div className="flex flex-col gap-2" style={{ height: sectionHeight }}>
+        <ProjectSectionHeader
+          title={title}
+          totalCount={projects.length}
+          projects={projects}
+          {...(onProjectClick && {
+            onProjectSelect: (project: Project) =>
+              onProjectClick(project.projectId),
+          })}
+        />
+
+        {/* 빈 프로젝트일 때 EmptyState 표시 (invited variant에서만) */}
+        {projects.length === 0 && variant === 'invited' ? (
+          <div className="h-full rounded-lg border border-border/50">
+            <EmptyState />
+          </div>
+        ) : (
+          <div className={`grid gap-2 ${gridCols}`}>
+            {showCreateSlot && createSlot}
+
+            {displayedProjects.map(project => (
+              <ProjectCard
+                key={project.projectId}
+                project={project}
+                height={cardHeight}
+                variant={variant}
+                {...(onProjectClick && { onProjectClick })}
+                actionSlot={
+                  <ProjectActionMenu
+                    project={project}
+                    onEdit={actions.edit}
+                    onInactivate={actions.inactivate}
+                    onDelete={actions.delete}
+                  />
+                }
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 모든 다이얼로그를 통합 관리 */}
+      <ProjectDialogs
+        editDialog={dialogs.edit}
+        deleteDialog={dialogs.delete}
+        inactivateDialog={dialogs.inactivate}
       />
-
-      {/* 빈 프로젝트일 때 EmptyState 표시 (invited variant에서만) */}
-      {projects.length === 0 && variant === 'invited' ? (
-        <div className="h-full rounded-lg border border-border/50">
-          <EmptyState />
-        </div>
-      ) : (
-        <div className={`grid gap-2 ${gridCols}`}>
-          {showCreateSlot && createSlot}
-
-          {displayedProjects.map(project => (
-            <ProjectCard
-              key={project.projectId}
-              project={project}
-              height={cardHeight}
-              variant={variant}
-              {...(onProjectClick && { onProjectClick })}
-              actionSlot={
-                <ProjectActionMenu
-                  project={project}
-                  onEdit={handleEditProject}
-                  onInactivate={handleInactivateProject}
-                  onDelete={handleDeleteProject}
-                />
-              }
-            />
-          ))}
-        </div>
-      )}
-    </div>
+    </>
   )
 }

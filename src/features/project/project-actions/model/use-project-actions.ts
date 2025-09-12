@@ -1,34 +1,32 @@
 'use client'
 
-import { useCallback } from 'react'
-import type { Project } from '@/entities/project'
+import { useDeleteProject } from './use-delete-project'
+import { useEditProject } from './use-edit-project'
+import { useInactivateProject } from './use-inactivate-project'
 
 /**
- * 프로젝트 액션을 처리하는 훅 (Features 레이어)
- * 실제 비즈니스 로직과 API 호출을 담당
+ * 프로젝트 액션을 처리하는 메인 훅 (Features 레이어)
+ * 컴포지션 패턴: 각각의 단일 책임 훅들을 조합
+ * FSD 원칙: 단방향 의존성, 단일 책임, 명확한 인터페이스
  */
 export function useProjectActions() {
-  const handleEditProject = useCallback((project: Project) => {
-    console.log('Edit project:', project.projectName)
-    // TODO: EditProjectDialog 구현
-    // TODO: API 호출 및 상태 업데이트
-  }, [])
-
-  const handleInactivateProject = useCallback((project: Project) => {
-    console.log('Inactivate project:', project.projectName)
-    // TODO: Inactivate 확인 다이얼로그 구현
-    // TODO: API 호출 및 상태 업데이트
-  }, [])
-
-  const handleDeleteProject = useCallback((project: Project) => {
-    console.log('Delete project:', project.projectName)
-    // TODO: Delete 확인 다이얼로그 구현
-    // TODO: API 호출 및 상태 업데이트
-  }, [])
+  const editDialog = useEditProject()
+  const deleteDialog = useDeleteProject()
+  const inactivateDialog = useInactivateProject()
 
   return {
-    handleEditProject,
-    handleInactivateProject,
-    handleDeleteProject,
+    // 액션 핸들러들 - 메뉴에서 사용
+    actions: {
+      edit: editDialog.openDialog,
+      delete: deleteDialog.openDialog,
+      inactivate: inactivateDialog.openDialog,
+    },
+
+    // 다이얼로그 상태들 - ProjectDialogs 컴포넌트에서 사용
+    dialogs: {
+      edit: editDialog,
+      delete: deleteDialog,
+      inactivate: inactivateDialog,
+    },
   }
 }
