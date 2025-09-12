@@ -2,19 +2,26 @@
 
 import type { Project } from '@/entities/project'
 import { ProjectListItem } from '@/entities/project'
+import type { useProjectActions } from '@/features/project/project-actions'
 import {
   ProjectActionMenu,
   ProjectDialogs,
-  useProjectActions,
 } from '@/features/project/project-actions'
 
 export interface ProjectListProps {
   projects: Project[]
   onProjectSelect?: ((project: Project) => void) | undefined
+  // 프로젝트 액션을 props로 받아서 중복 호출 방지
+  projectActions: ReturnType<typeof useProjectActions>
 }
 
-export function ProjectList({ projects, onProjectSelect }: ProjectListProps) {
-  const { actions, dialogs } = useProjectActions()
+export function ProjectList({
+  projects,
+  onProjectSelect,
+  projectActions,
+}: ProjectListProps) {
+  // useProjectActions 호출 제거 - props로 받은 것 사용
+  const { actions, dialogs } = projectActions
 
   return (
     <>

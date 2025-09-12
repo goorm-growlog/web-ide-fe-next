@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { Project } from '@/entities/project'
+import { useProjectActions } from '@/features/project/project-actions'
 import {
   Dialog,
   DialogContent,
@@ -26,6 +27,9 @@ export const ProjectListModal = ({
   const [isOpen, setIsOpen] = useState(false)
   const [searchKeyword, setSearchKeyword] = useState('')
   const filteredProjects = useProjectSearch(projects, searchKeyword)
+
+  // 모달에서 프로젝트 액션 호출 (독립적인 모달 컨텍스트)
+  const projectActions = useProjectActions()
 
   const handleProjectSelect = (project: Project) => {
     onProjectSelect?.(project)
@@ -54,6 +58,7 @@ export const ProjectListModal = ({
             <ProjectList
               projects={filteredProjects}
               onProjectSelect={handleProjectSelect}
+              projectActions={projectActions}
             />
           )}
         </div>

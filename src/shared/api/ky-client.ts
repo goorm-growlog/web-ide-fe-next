@@ -8,20 +8,41 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 // 토큰 갱신 동시성 처리를 위한 Promise 캐시
 let refreshPromise: Promise<string> | null = null
 
-// 간단한 세션 캐시 (짧은 TTL)
-let sessionCache: { session: unknown; timestamp: number } | null = null
+// 간단한 세션 캐시 (짧은 TTL) + Promise 기반 중복 방지
+interface SessionData {
+  accessToken?: string
+}
+
+let sessionCache: { session: SessionData | null; timestamp: number } | null =
+  null
+let sessionPromise: Promise<SessionData | null> | null = null // Promise 캐시 추가
 const SESSION_CACHE_TTL = 5000 // 5초 (짧게 설정)
 
-async function getCachedSession(): Promise<any> {
+async function getCachedSession(): Promise<SessionData | null> {
   const now = Date.now()
 
+  // 1단계: 캐시된 세션 체크 (가장 빠른 경로)
   if (sessionCache && now - sessionCache.timestamp < SESSION_CACHE_TTL) {
     return sessionCache.session
   }
 
-  const session = await getSession()
-  sessionCache = { session, timestamp: now }
-  return session
+  // 2단계: 진행 중인 요청이 있으면 해당 Promise 반환 (Race Condition 방지)
+  if (sessionPromise) {
+    return await sessionPromise
+  }
+
+  // 3단계: 새로운 세션 요청 시작
+  sessionPromise = getSession() as Promise<SessionData | null>
+
+  try {
+    const session = await sessionPromise
+    // 성공 시 캐시 업데이트
+    sessionCache = { session, timestamp: now }
+    return session
+  } finally {
+    // 완료 후 Promise 캐시 정리 (성공/실패 관계없이)
+    sessionPromise = null
+  }
 }
 
 /**

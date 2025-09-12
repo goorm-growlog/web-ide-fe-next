@@ -7,6 +7,7 @@ import {
   CreateProjectDialog,
   ProjectSection,
 } from '@/features/project'
+import { useProjectActions } from '@/features/project/project-actions'
 
 interface ProjectListWidgetProps {
   hostProjects: Project[]
@@ -26,6 +27,9 @@ export function ProjectListWidget({
 }: ProjectListWidgetProps) {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 
+  // 프로젝트 액션을 최상위에서 한 번만 호출 (세션 호출 최소화)
+  const projectActions = useProjectActions()
+
   // CreateProject 슬롯 컴포넌트 - Widget에서 Feature 조합
   const createProjectSlot = (
     <CreateProjectCard
@@ -43,6 +47,7 @@ export function ProjectListWidget({
         maxDisplay={3}
         variant="host"
         createSlot={createProjectSlot}
+        projectActions={projectActions}
         {...(onProjectClick && { onProjectClick })}
       />
 
@@ -52,6 +57,7 @@ export function ProjectListWidget({
         projects={invitedProjects}
         maxDisplay={4}
         variant="invited"
+        projectActions={projectActions}
         {...(onProjectClick && { onProjectClick })}
       />
 
