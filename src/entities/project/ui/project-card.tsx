@@ -1,7 +1,13 @@
 import type { ReactNode } from 'react'
 import type { Project } from '@/entities/project'
-import { isProjectDeleting } from '@/entities/project'
+import { canClickProject, getProjectTooltip } from '@/entities/project'
 import { Card, CardContent } from '@/shared/ui/shadcn/card'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/shared/ui/shadcn/tooltip'
 import { ProjectMemberAvatars } from './project-member-avatars'
 
 interface ProjectCardProps {
@@ -24,18 +30,19 @@ export const ProjectCard = ({
   onProjectClick,
   actionSlot,
 }: ProjectCardProps) => {
-  const isDeleting = isProjectDeleting(project)
+  const canClick = canClickProject(project)
+  const tooltipMessage = getProjectTooltip(project)
 
   const handleCardClick = () => {
-    if (!isDeleting) {
+    if (canClick) {
       onProjectClick?.(project.projectId)
     }
   }
 
-  return (
+  const cardContent = (
     <Card
       className={`group relative w-full border-border/60 bg-transparent transition-all duration-200 hover:border-border/60 hover:shadow-md ${
-        isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+        !canClick ? 'cursor-not-allowed' : 'cursor-pointer'
       }`}
       style={{ height }}
       onClick={handleCardClick}
@@ -65,4 +72,20 @@ export const ProjectCard = ({
       </CardContent>
     </Card>
   )
+
+  // 툴팁이 있으면 감싸서 반환
+  if (tooltipMessage) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>{cardContent}</TooltipTrigger>
+          <TooltipContent>
+            <p>{tooltipMessage}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
+
+  return cardContent
 }

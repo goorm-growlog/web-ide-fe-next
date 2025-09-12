@@ -12,13 +12,16 @@ export {
 } from './api/project'
 // Hooks (데이터 페칭)
 export * from './hooks/use-project'
-// 권한 및 상태 체크 함수들
+// 권한 및 상태 체크 함수들 (단순화)
 export {
+  canClickProject,
   canInactivateProject,
   canPerformAction,
+  getProjectTooltip,
   isOwnerOnlyAction,
   isProjectActive,
   isProjectDeleting,
+  isProjectInactive,
   isProjectOwner,
   shouldShowProjectMenu,
 } from './model/permissions'
