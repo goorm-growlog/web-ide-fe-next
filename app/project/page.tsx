@@ -1,25 +1,20 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ProjectListWidget } from '@/widgets/project/ui/project-list-widget'
-import { useOwnProjects, useJoinedProjects, ProjectListModal } from '@/features/project/project-list'
+import { useUnifiedProjects } from '@/features/project/project-list/model/use-unified-projects'
 import { MainHeader } from '@/widgets/header/ui/main-header'
 import { ProjectListSkeleton } from '@/entities/project'
 import type { ProjectAction, Project } from '@/entities/project'
-import { Button } from '@/shared/ui/shadcn/button'
 
 export default function ProjectPage() {
-  const { projects: ownProjects, isLoading: isLoadingOwnProjects, error: ownError, refetch: refetchOwnProjects } = useOwnProjects()
-  const { projects: joinedProjects, isLoading: isLoadingJoinedProjects, error: joinedError, refetch: refetchJoinedProjects } = useJoinedProjects()
-  
-  const isLoading = isLoadingOwnProjects || isLoadingJoinedProjects
-  const error = ownError || joinedError
-  
-  const refetch = () => {
-    refetchOwnProjects()
-    refetchJoinedProjects()
-  }
+  const { 
+    ownProjects, 
+    joinedProjects, 
+    isLoading, 
+    error, 
+    refetch 
+  } = useUnifiedProjects()
 
   const router = useRouter()
 
@@ -38,8 +33,6 @@ export default function ProjectPage() {
   const handleProjectCreated = (_projectId: string) => {
     refetch()
   }
-
-  // View All 버튼들을 위한 핸들러는 제거 (이제 Modal 컴포넌트가 trigger로 처리)
 
   const renderContent = () => {
     if (isLoading) return <ProjectListSkeleton />

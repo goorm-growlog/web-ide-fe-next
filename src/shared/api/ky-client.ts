@@ -8,6 +8,22 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 // 토큰 갱신 동시성 처리를 위한 Promise 캐시
 let refreshPromise: Promise<string> | null = null
 
+// 간단한 세션 캐시 (짧은 TTL)
+let sessionCache: { session: unknown; timestamp: number } | null = null
+const SESSION_CACHE_TTL = 5000 // 5초 (짧게 설정)
+
+async function getCachedSession(): Promise<any> {
+  const now = Date.now()
+
+  if (sessionCache && now - sessionCache.timestamp < SESSION_CACHE_TTL) {
+    return sessionCache.session
+  }
+
+  const session = await getSession()
+  sessionCache = { session, timestamp: now }
+  return session
+}
+
 /**
  * 기본 API 클라이언트 (인증 불필요)
  */
@@ -39,7 +55,7 @@ export const authApi = ky.create({
   hooks: {
     beforeRequest: [
       async request => {
-        const session = await getSession()
+        const session = await getCachedSession()
         if (session?.accessToken) {
           request.headers.set('Authorization', `Bearer ${session.accessToken}`)
         }
