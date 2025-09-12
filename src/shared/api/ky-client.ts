@@ -3,7 +3,8 @@ import { getSession, signOut } from 'next-auth/react'
 import { handleApiError } from '@/shared/lib/api-error'
 import type { ApiResponse } from '@/shared/types/api'
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
+// 모든 환경에서 프록시 사용
+const BASE_URL = '' // 항상 상대 경로 사용
 
 // 토큰 갱신 동시성 처리를 위한 Promise 캐시
 let refreshPromise: Promise<string> | null = null
@@ -96,11 +97,14 @@ export const authApi = ky.create({
             if (refreshPromise) {
               newAccessToken = await refreshPromise
             } else {
-              // 새로운 토큰 갱신 시작
+              // 새로운 토큰 갱신 시작 - 항상 프록시를 통해 백엔드로 직접 호출
               refreshPromise = ky
-                .post('/api/auth/refresh')
-                .json<{ accessToken: string }>()
-                .then(({ accessToken }) => {
+                .post('/auth/refresh', {
+                  credentials: 'include', // 쿠키 포함
+                })
+                .json<{ data: { accessToken: string } }>()
+                .then(({ data }) => {
+                  const accessToken = data.accessToken
                   // NextAuth 세션에 새 토큰 반영
                   window.dispatchEvent(
                     new CustomEvent('session-token-refresh', {
