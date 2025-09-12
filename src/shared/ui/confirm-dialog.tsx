@@ -93,12 +93,12 @@ export const ConfirmDialog = ({
       }
 
       return (
-        <div
+        <span
           key={`${title}-line-${lineIndex}-${line.slice(0, 10)}`}
-          className="leading-relaxed"
+          className="block leading-relaxed"
         >
           {lineContent}
-        </div>
+        </span>
       )
     })
   }
