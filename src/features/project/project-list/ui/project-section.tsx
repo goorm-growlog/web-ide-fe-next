@@ -49,7 +49,9 @@ export const ProjectSection = ({
 
       {/* 빈 프로젝트일 때 EmptyState 표시 (invited variant에서만) */}
       {projects.length === 0 && variant === 'invited' ? (
-        <EmptyState />
+        <div className="h-full rounded-lg border border-border/50">
+          <EmptyState />
+        </div>
       ) : (
         <div className={`grid gap-2 ${gridCols}`}>
           {showCreateSlot && createSlot}
