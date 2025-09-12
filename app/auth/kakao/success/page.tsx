@@ -43,7 +43,7 @@ function KakaoSuccessHandler() {
             router.push('/signin')
           } else {
             toast.success('Login successful!')
-            await mutate('/users/me')
+            await mutate('users/me')
             router.push('/project')
           }
         } catch {
