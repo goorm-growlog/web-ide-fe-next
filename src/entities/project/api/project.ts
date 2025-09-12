@@ -7,8 +7,8 @@ import type { CreateProjectData, Project, ProjectMember } from '../model/types'
 // API 요청/응답 스키마 타입들
 export interface CreateProjectRequest {
   projectName: string
-  description?: string
-  imageId?: number
+  description: string
+  imageId: number
 }
 
 export interface UpdateProjectRequest {
@@ -99,8 +99,8 @@ export async function getProject(projectId: number): Promise<Project> {
 export async function createProject(data: CreateProjectData): Promise<Project> {
   const requestData: CreateProjectRequest = {
     projectName: data.projectName,
-    ...(data.description && { description: data.description }),
-    ...(data.imageId && { imageId: data.imageId }),
+    description: data.description || '',
+    imageId: 1, // Java 17 이미지 ID로 변경
   }
 
   const response = await authApi

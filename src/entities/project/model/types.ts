@@ -34,5 +34,5 @@ export interface Project {
 export interface CreateProjectData {
   projectName: string
   description?: string
-  imageId?: number
+  // imageId는 항상 0으로 고정되므로 클라이언트에서 전달하지 않음
 }
