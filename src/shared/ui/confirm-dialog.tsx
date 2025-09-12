@@ -1,5 +1,6 @@
 'use client'
 
+import { AlertTriangle, Info, Trash2 } from 'lucide-react'
 import { Button } from '@/shared/ui/shadcn/button'
 import {
   Dialog,
@@ -43,57 +44,86 @@ export const ConfirmDialog = ({
     onOpenChange(false)
   }
 
-  // variant별 버튼 스타일 설정
-  const getConfirmButtonProps = () => {
+  // variant별 아이콘과 버튼 스타일 설정
+  const getVariantConfig = () => {
     switch (variant) {
       case 'destructive':
-        return { variant: 'destructive' as const }
+        return {
+          icon: <Trash2 className="h-5 w-5 text-destructive" />,
+          buttonProps: { variant: 'destructive' as const },
+          titleColor: 'text-destructive',
+        }
       case 'warning':
         return {
-          variant: 'default' as const,
-          className: 'bg-amber-600 text-white hover:bg-amber-700',
+          icon: <AlertTriangle className="h-5 w-5 text-amber-600" />,
+          buttonProps: {
+            variant: 'default' as const,
+            className: 'bg-amber-600 text-white hover:bg-amber-700',
+          },
+          titleColor: 'text-amber-600',
         }
       default:
-        return { variant: 'default' as const }
+        return {
+          icon: <Info className="h-5 w-5 text-primary" />,
+          buttonProps: { variant: 'default' as const },
+          titleColor: 'text-foreground',
+        }
     }
   }
 
-  // 설명 텍스트에 targetName이 있으면 굵게 표시
+  const variantConfig = getVariantConfig()
+
+  // 설명 텍스트 렌더링 (줄바꿈 및 targetName 처리)
   const renderDescription = () => {
-    if (!targetName) {
-      return description
-    }
+    const lines = description.split('\n')
 
-    const parts = description.split(targetName)
-    if (parts.length === 1) {
-      return description
-    }
+    return lines.map((line, lineIndex) => {
+      let lineContent: React.ReactNode = line
 
-    return (
-      <>
-        {parts[0]}
-        <span className="font-semibold">{targetName}</span>
-        {parts.slice(1).join(targetName)}
-      </>
-    )
+      // targetName이 있고 현재 줄에 포함되어 있으면 굵게 표시
+      if (targetName && line.includes(targetName)) {
+        const parts = line.split(targetName)
+        lineContent = (
+          <>
+            {parts[0]}
+            <span className="font-semibold text-foreground">{targetName}</span>
+            {parts.slice(1).join(targetName)}
+          </>
+        )
+      }
+
+      return (
+        <div
+          key={`${title}-line-${lineIndex}-${line.slice(0, 10)}`}
+          className="leading-relaxed"
+        >
+          {lineContent}
+        </div>
+      )
+    })
   }
-
-  const confirmButtonProps = getConfirmButtonProps()
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md [&>button]:hidden">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{renderDescription()}</DialogDescription>
+        <DialogHeader className="gap-4">
+          <div className="flex items-center gap-3">
+            {variantConfig.icon}
+            <DialogTitle className="font-semibold text-lg">
+              <span className={variantConfig.titleColor}>{title}</span>
+            </DialogTitle>
+          </div>
+          <DialogDescription className="text-left">
+            {renderDescription()}
+          </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter className="gap-2">
+        <DialogFooter className="mt-4 gap-3">
           <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
             {cancelText}
           </Button>
           <Button
-            {...confirmButtonProps}
+            {...variantConfig.buttonProps}
             onClick={handleConfirm}
             disabled={isLoading}
           >

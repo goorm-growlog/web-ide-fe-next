@@ -39,7 +39,7 @@ export function ProjectDialogs({
         onOpenChange={deleteDialog.closeDialog}
         onConfirm={deleteDialog.confirmDelete}
         title="Delete Project"
-        description={`Are you sure you want to delete ${deleteDialog.project?.projectName ?? 'this project'}?\nThis action cannot be undone and will permanently remove all project data.`}
+        description={`Are you sure you want to delete ${deleteDialog.project?.projectName ?? 'this project'}?\nThis action cannot be undone and permanently remove all project data.`}
         confirmText={deleteDialog.isLoading ? 'Deleting...' : 'Delete Project'}
         {...(deleteDialog.project?.projectName && {
           targetName: deleteDialog.project.projectName,
