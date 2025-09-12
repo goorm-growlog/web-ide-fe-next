@@ -46,7 +46,7 @@ export const ProjectCard = ({
 
   const cardContent = (
     <Card
-      className={`group relative w-full border-border/60 bg-transparent shadow-none transition-all duration-200 hover:border-border/60 hover:shadow-sm ${
+      className={`group relative w-full border-border/80 bg-transparent shadow-none transition-all duration-200 hover:border-border/60 hover:shadow-sm ${
         !canClick ? 'cursor-not-allowed' : 'cursor-pointer'
       } ${isDeleting ? 'opacity-50' : 'opacity-100'}`}
       style={{ height }}

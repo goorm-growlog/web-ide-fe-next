@@ -14,7 +14,7 @@ export function CreateProjectCard({
 }: CreateProjectCardProps) {
   return (
     <Card
-      className="group flex w-full cursor-pointer items-center justify-center border-border/60 bg-background shadow-none transition-colors hover:bg-muted/50 hover:shadow-sm"
+      className="group flex w-full cursor-pointer items-center justify-center border-border/80 bg-background shadow-none transition-colors hover:bg-muted/50 hover:shadow-sm"
       style={{ height }}
       onClick={onClick}
     >
