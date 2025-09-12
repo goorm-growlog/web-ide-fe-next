@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { isProjectDeleting } from '../model/permissions'
 import type { Project } from '../model/types'
 import { ProjectMemberAvatars } from './project-member-avatars'
@@ -7,6 +8,8 @@ import { ProjectMemberAvatars } from './project-member-avatars'
 interface ProjectListItemProps {
   project: Project
   onProjectClick?: ((project: Project) => void) | undefined
+  // 슬롯 패턴 사용 - 액션은 외부에서 주입
+  actionSlot?: ReactNode
 }
 
 /**
@@ -16,6 +19,7 @@ interface ProjectListItemProps {
 export const ProjectListItem = ({
   project,
   onProjectClick,
+  actionSlot,
 }: ProjectListItemProps) => {
   const isDeleting = isProjectDeleting(project)
 
@@ -68,6 +72,8 @@ export const ProjectListItem = ({
           <ProjectMemberAvatars project={project} />
         </div>
       </button>
+
+      {actionSlot}
     </div>
   )
 }

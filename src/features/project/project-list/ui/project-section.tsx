@@ -2,6 +2,10 @@
 
 import type { Project } from '@/entities/project'
 import { ProjectCard } from '@/entities/project'
+import {
+  ProjectActionMenu,
+  useProjectActions,
+} from '@/features/project/project-actions'
 import { EmptyState } from './empty-state'
 import { ProjectSectionHeader } from './project-section-header'
 
@@ -11,9 +15,7 @@ interface ProjectSectionProps {
   maxDisplay: number
   createSlot?: React.ReactNode
   onProjectClick?: ((projectId: number) => void) | undefined
-  onProjectAction?:
-    | ((projectId: number, action: string, project: Project) => void)
-    | undefined
+  // onProjectAction prop 제거됨 - 컴포지션 패턴으로 대체
   variant?: 'host' | 'invited'
 }
 
@@ -23,9 +25,10 @@ export function ProjectSection({
   maxDisplay,
   createSlot,
   onProjectClick,
-  onProjectAction,
   variant = 'host',
 }: ProjectSectionProps) {
+  const { handleEditProject, handleInactivateProject, handleDeleteProject } =
+    useProjectActions()
   // 생성 슬롯이 있으면 표시할 프로젝트 수를 조정
   const showCreateSlot = createSlot && projects.length < maxDisplay
   const adjustedMaxDisplay = showCreateSlot ? maxDisplay - 1 : maxDisplay
@@ -68,7 +71,14 @@ export function ProjectSection({
               height={cardHeight}
               variant={variant}
               {...(onProjectClick && { onProjectClick })}
-              {...(onProjectAction && { onProjectAction })}
+              actionSlot={
+                <ProjectActionMenu
+                  project={project}
+                  onEdit={handleEditProject}
+                  onInactivate={handleInactivateProject}
+                  onDelete={handleDeleteProject}
+                />
+              }
             />
           ))}
         </div>

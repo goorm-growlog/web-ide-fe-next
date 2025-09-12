@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { Project } from '@/entities/project'
 import { isProjectDeleting } from '@/entities/project'
 import { Card, CardContent } from '@/shared/ui/shadcn/card'
@@ -8,6 +9,8 @@ interface ProjectCardProps {
   height?: string
   variant?: 'host' | 'invited'
   onProjectClick?: ((projectId: number) => void) | undefined
+  // 슬롯 패턴 사용 - 액션은 외부에서 주입
+  actionSlot?: ReactNode
 }
 
 /**
@@ -19,6 +22,7 @@ export const ProjectCard = ({
   height = '150px',
   variant = 'host',
   onProjectClick,
+  actionSlot,
 }: ProjectCardProps) => {
   const isDeleting = isProjectDeleting(project)
 
@@ -56,6 +60,8 @@ export const ProjectCard = ({
         </div>
 
         <ProjectMemberAvatars project={project} variant={variant} />
+
+        {actionSlot}
       </CardContent>
     </Card>
   )

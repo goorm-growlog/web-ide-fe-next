@@ -1,3 +1,5 @@
+'use client'
+
 import { MoreVertical } from 'lucide-react'
 import type { Project } from '@/entities/project'
 import { canInactivateProject, shouldShowProjectMenu } from '@/entities/project'
@@ -10,26 +12,26 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/shadcn/dropdown-menu'
 
-interface ProjectCardMenuProps {
-  projectId: number
+interface ProjectActionMenuProps {
   project: Project
-  onProjectAction?:
-    | ((projectId: number, action: string, project: Project) => void)
-    | undefined
+  onEdit?: (project: Project) => void
+  onInactivate?: (project: Project) => void
+  onDelete?: (project: Project) => void
 }
 
 /**
- * 프로젝트 카드 액션 메뉴 컴포넌트 (순수 UI)
- * 비즈니스 로직은 permissions 모델에서 처리됨
+ * 프로젝트 액션 메뉴 컴포넌트 (Features 레이어)
+ * 비즈니스 로직과 UI 액션을 담당
  */
-export function ProjectCardMenu({
-  projectId,
+export function ProjectActionMenu({
   project,
-  onProjectAction,
-}: ProjectCardMenuProps) {
-  const handleMenuAction = (action: string) => (e: React.MouseEvent) => {
+  onEdit,
+  onInactivate,
+  onDelete,
+}: ProjectActionMenuProps) {
+  const handleMenuAction = (action: () => void) => (e: React.MouseEvent) => {
     e.stopPropagation()
-    onProjectAction?.(projectId, action, project)
+    action()
   }
 
   // 비즈니스 로직은 엔티티의 permissions 모델에서 처리
@@ -58,13 +60,15 @@ export function ProjectCardMenu({
         alignOffset={2}
         className="min-w-fit border px-2 py-1 shadow-sm"
       >
-        <DropdownMenuItem onClick={handleMenuAction('edit')}>
-          Edit Project
-        </DropdownMenuItem>
+        {onEdit && (
+          <DropdownMenuItem onClick={handleMenuAction(() => onEdit(project))}>
+            Edit Project
+          </DropdownMenuItem>
+        )}
 
-        {canInactivate && (
+        {canInactivate && onInactivate && (
           <DropdownMenuItem
-            onClick={handleMenuAction('inactivate')}
+            onClick={handleMenuAction(() => onInactivate(project))}
             className="text-amber-600"
           >
             Inactivate
@@ -72,12 +76,14 @@ export function ProjectCardMenu({
         )}
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={handleMenuAction('delete')}
-          className="text-destructive"
-        >
-          Delete Project
-        </DropdownMenuItem>
+        {onDelete && (
+          <DropdownMenuItem
+            onClick={handleMenuAction(() => onDelete(project))}
+            className="text-destructive"
+          >
+            Delete Project
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

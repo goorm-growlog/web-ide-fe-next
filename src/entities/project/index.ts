@@ -44,7 +44,6 @@ export type {
 
 // UI 컴포넌트들 (순수)
 export { ProjectCard } from './ui/project-card'
-export { ProjectCardMenu } from './ui/project-card-menu'
 export * from './ui/project-grid'
 export { ProjectListItem } from './ui/project-list-item'
 export { ProjectMemberAvatars } from './ui/project-member-avatars'

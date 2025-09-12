@@ -2,6 +2,10 @@
 
 import type { Project } from '@/entities/project'
 import { ProjectListItem } from '@/entities/project'
+import {
+  ProjectActionMenu,
+  useProjectActions,
+} from '@/features/project/project-actions'
 
 export interface ProjectListProps {
   projects: Project[]
@@ -9,6 +13,8 @@ export interface ProjectListProps {
 }
 
 export function ProjectList({ projects, onProjectSelect }: ProjectListProps) {
+  const { handleEditProject, handleInactivateProject, handleDeleteProject } =
+    useProjectActions()
   return (
     <div className="flex max-h-[420px] flex-col">
       {/* 프로젝트 목록 - 스크롤 영역 */}
@@ -37,6 +43,14 @@ export function ProjectList({ projects, onProjectSelect }: ProjectListProps) {
                   key={project.projectId}
                   project={project}
                   onProjectClick={onProjectSelect}
+                  actionSlot={
+                    <ProjectActionMenu
+                      project={project}
+                      onEdit={handleEditProject}
+                      onInactivate={handleInactivateProject}
+                      onDelete={handleDeleteProject}
+                    />
+                  }
                 />
               ))
             )}
