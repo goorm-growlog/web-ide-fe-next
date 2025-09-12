@@ -46,21 +46,21 @@ export const ProjectCard = ({
 
   const cardContent = (
     <Card
-      className={`group relative w-full border-border/80 bg-transparent shadow-none transition-all duration-200 hover:border-border/60 hover:shadow-sm ${
+      className={`group relative w-full border-border/80 bg-transparent pt-12 shadow-none transition-all duration-200 hover:border-border/60 hover:shadow-sm ${
         !canClick ? 'cursor-not-allowed' : 'cursor-pointer'
       } ${isDeleting ? 'opacity-50' : 'opacity-100'}`}
       style={{ height }}
       onClick={handleCardClick}
     >
-      <CardContent className="flex h-full flex-col justify-between p-3">
+      <CardContent className="flex h-full flex-col justify-center p-3">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center justify-start gap-2.5">
+          <div className="flex items-center justify-start gap-2">
             <h3 className="max-w-[104px] truncate font-semibold text-foreground/80 text-sm leading-5">
               {project.projectName}
             </h3>
             <div className="flex h-3 w-3 flex-shrink-0 items-center justify-center">
               <div
-                className={`h-3 w-3 rounded-full ${
+                className={`h-2 w-2 rounded-full ${
                   project.status === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'
                 }`}
               />
