@@ -11,6 +11,9 @@ interface ProjectSectionProps {
   maxDisplay: number
   createSlot?: React.ReactNode
   onProjectClick?: ((projectId: number) => void) | undefined
+  onProjectAction?:
+    | ((projectId: number, action: string, project: Project) => void)
+    | undefined
   variant?: 'host' | 'invited'
 }
 
@@ -20,6 +23,7 @@ export function ProjectSection({
   maxDisplay,
   createSlot,
   onProjectClick,
+  onProjectAction,
   variant = 'host',
 }: ProjectSectionProps) {
   // 생성 슬롯이 있으면 표시할 프로젝트 수를 조정
@@ -64,6 +68,7 @@ export function ProjectSection({
               height={cardHeight}
               variant={variant}
               {...(onProjectClick && { onProjectClick })}
+              {...(onProjectAction && { onProjectAction })}
             />
           ))}
         </div>

@@ -30,6 +30,10 @@ export default function ProjectPage() {
     refetch()
   }
 
+  const handleProjectUpdated = () => {
+    refetch()
+  }
+
   const renderContent = () => {
     if (isLoading) return <ProjectListSkeleton />
     if (error) return <div className="text-destructive">Error: {error}</div>
@@ -41,6 +45,7 @@ export default function ProjectPage() {
           invitedProjects={joinedProjects}
           onProjectClick={handleProjectClick}
           onProjectCreated={handleProjectCreated}
+          onProjectUpdated={handleProjectUpdated}
         />
       </div>
     )
