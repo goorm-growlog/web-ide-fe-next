@@ -5,7 +5,7 @@ import { ProjectListWidget } from '@/widgets/project/ui/project-list-widget'
 import { useUnifiedProjects } from '@/features/project/project-list/model/use-unified-projects'
 import { MainHeader } from '@/widgets/header/ui/main-header'
 import { ProjectListSkeleton } from '@/entities/project'
-import type { ProjectAction, Project } from '@/entities/project'
+import type { Project } from '@/entities/project'
 
 export default function ProjectPage() {
   const { 
@@ -26,11 +26,7 @@ export default function ProjectPage() {
     router.push(`/project/${project.projectId}`)
   }
 
-  const handleProjectAction = (_projectId: number, _action: ProjectAction) => {
-    // Handle project action
-  }
-
-  const handleProjectCreated = (_projectId: string) => {
+  const handleProjectCreated = (projectId: string) => {
     refetch()
   }
 
@@ -44,7 +40,6 @@ export default function ProjectPage() {
           hostProjects={ownProjects}
           invitedProjects={joinedProjects}
           onProjectClick={handleProjectClick}
-          onProjectAction={handleProjectAction}
           onProjectCreated={handleProjectCreated}
         />
       </div>

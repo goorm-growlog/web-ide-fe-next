@@ -43,6 +43,7 @@ export const ProjectListModal = ({
             onChange={setSearchKeyword}
             placeholder="Search projects..."
           />
+
           {filteredProjects.length === 0 ? (
             <div className="flex h-32 items-center justify-center rounded-lg">
               <div className="text-center text-muted-foreground text-sm">

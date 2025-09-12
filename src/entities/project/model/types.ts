@@ -1,11 +1,21 @@
 // 프로젝트 엔티티 타입 정의 (도메인 모델)
 
+export type ProjectRole = 'OWNER' | 'READ' | 'WRITE'
+export type ProjectStatus = 'ACTIVE' | 'INACTIVE' | 'DELETING' | 'DELETED'
+export type ProjectAction =
+  | 'edit'
+  | 'delete'
+  | 'share'
+  | 'settings'
+  | 'inactivate'
+export type OwnerOnlyAction = 'edit' | 'delete' | 'inactivate'
+
 export interface ProjectMember {
   userId: number
   name: string
   email: string
   profileImageUrl?: string
-  role: 'OWNER' | 'READ' | 'WRITE'
+  role: ProjectRole
 }
 
 export interface Project {
@@ -14,9 +24,9 @@ export interface Project {
   description: string
   ownerName: string
   memberNames: string[]
-  memberProfiles: ProjectMember[] // 확장된 멤버 정보
-  myRole: string
-  status: string
+  memberProfiles: ProjectMember[]
+  myRole: ProjectRole
+  status: ProjectStatus | string // API에서 다른 상태가 올 수 있어 string 유지
   createdAt: string
   updatedAt: string
 }
@@ -26,7 +36,3 @@ export interface CreateProjectData {
   description?: string
   imageId?: number
 }
-
-export type ProjectStatus = 'host' | 'invited'
-
-export type ProjectAction = 'edit' | 'delete' | 'share' | 'settings'

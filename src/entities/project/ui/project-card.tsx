@@ -1,28 +1,38 @@
-import type { Project, ProjectAction } from '@/entities/project'
+import type { Project } from '@/entities/project'
+import { isProjectDeleting } from '@/entities/project'
 import { Card, CardContent } from '@/shared/ui/shadcn/card'
-import { ProjectCardMenu } from './project-card-menu'
 import { ProjectMemberAvatars } from './project-member-avatars'
 
 interface ProjectCardProps {
   project: Project
   height?: string
   variant?: 'host' | 'invited'
-  onProjectClick?: (projectId: number) => void
-  onProjectAction?: (projectId: number, action: ProjectAction) => void
+  onProjectClick?: ((projectId: number) => void) | undefined
 }
 
+/**
+ * 프로젝트 카드 컴포넌트 (순수 UI)
+ * 비즈니스 로직은 entities의 permissions 모델에서 처리됨
+ */
 export const ProjectCard = ({
   project,
   height = '150px',
   variant = 'host',
   onProjectClick,
-  onProjectAction,
 }: ProjectCardProps) => {
-  const handleCardClick = () => onProjectClick?.(project.projectId)
+  const isDeleting = isProjectDeleting(project)
+
+  const handleCardClick = () => {
+    if (!isDeleting) {
+      onProjectClick?.(project.projectId)
+    }
+  }
 
   return (
     <Card
-      className="group relative w-full cursor-pointer border-border/60 bg-transparent transition-all duration-200 hover:border-border/60 hover:shadow-md"
+      className={`group relative w-full border-border/60 bg-transparent transition-all duration-200 hover:border-border/60 hover:shadow-md ${
+        isDeleting ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+      }`}
       style={{ height }}
       onClick={handleCardClick}
     >
@@ -46,11 +56,6 @@ export const ProjectCard = ({
         </div>
 
         <ProjectMemberAvatars project={project} variant={variant} />
-
-        <ProjectCardMenu
-          projectId={project.projectId}
-          onProjectAction={onProjectAction}
-        />
       </CardContent>
     </Card>
   )

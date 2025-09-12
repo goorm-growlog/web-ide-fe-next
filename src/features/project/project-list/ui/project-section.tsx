@@ -1,6 +1,6 @@
 'use client'
 
-import type { Project, ProjectAction } from '@/entities/project'
+import type { Project } from '@/entities/project'
 import { ProjectCard } from '@/entities/project'
 import { EmptyState } from './empty-state'
 import { ProjectSectionHeader } from './project-section-header'
@@ -10,20 +10,18 @@ interface ProjectSectionProps {
   projects: Project[]
   maxDisplay: number
   createSlot?: React.ReactNode
-  onProjectClick?: (projectId: number) => void
-  onProjectAction?: (projectId: number, action: ProjectAction) => void
+  onProjectClick?: ((projectId: number) => void) | undefined
   variant?: 'host' | 'invited'
 }
 
-export const ProjectSection = ({
+export function ProjectSection({
   title,
   projects,
   maxDisplay,
   createSlot,
   onProjectClick,
-  onProjectAction,
   variant = 'host',
-}: ProjectSectionProps) => {
+}: ProjectSectionProps) {
   // 생성 슬롯이 있으면 표시할 프로젝트 수를 조정
   const showCreateSlot = createSlot && projects.length < maxDisplay
   const adjustedMaxDisplay = showCreateSlot ? maxDisplay - 1 : maxDisplay
@@ -44,7 +42,10 @@ export const ProjectSection = ({
         title={title}
         totalCount={projects.length}
         projects={projects}
-        onProjectSelect={project => onProjectClick?.(project.projectId)}
+        {...(onProjectClick && {
+          onProjectSelect: (project: Project) =>
+            onProjectClick(project.projectId),
+        })}
       />
 
       {/* 빈 프로젝트일 때 EmptyState 표시 (invited variant에서만) */}
@@ -63,7 +64,6 @@ export const ProjectSection = ({
               height={cardHeight}
               variant={variant}
               {...(onProjectClick && { onProjectClick })}
-              {...(onProjectAction && { onProjectAction })}
             />
           ))}
         </div>

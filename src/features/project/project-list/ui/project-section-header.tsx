@@ -8,7 +8,7 @@ interface ProjectSectionHeaderProps {
   title: string
   totalCount: number
   projects: Project[]
-  onProjectSelect: (project: Project) => void
+  onProjectSelect?: ((project: Project) => void) | undefined
 }
 
 export function ProjectSectionHeader({
@@ -33,7 +33,7 @@ export function ProjectSectionHeader({
             </Button>
           }
           projects={projects}
-          onProjectSelect={onProjectSelect}
+          {...(onProjectSelect && { onProjectSelect })}
         />
       )}
     </div>

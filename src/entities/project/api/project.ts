@@ -4,14 +4,19 @@ import { apiHelpers, authApi } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
 import type { CreateProjectData, Project, ProjectMember } from '../model/types'
 
-// API 스키마 타입들
+// API 요청/응답 스키마 타입들
 export interface CreateProjectRequest {
   projectName: string
   description?: string
   imageId?: number
 }
 
-export interface MemberDto {
+export interface UpdateProjectRequest {
+  projectName?: string
+  description?: string
+}
+
+export interface ProjectMemberDto {
   userId: number
   name: string
   email: string
@@ -19,7 +24,7 @@ export interface MemberDto {
   role: 'OWNER' | 'READ' | 'WRITE'
 }
 
-export interface ProjectResponse {
+export interface ProjectResponseDto {
   projectId: number
   projectName: string
   description: string
@@ -31,26 +36,28 @@ export interface ProjectResponse {
   updatedAt: string
 }
 
-// API 응답 타입들
-export type ProjectListApiResponse = ApiResponse<ProjectResponse[]>
-export type CreateProjectApiResponse = ApiResponse<ProjectResponse>
-export type ProjectDetailApiResponse = ApiResponse<ProjectResponse>
-export type ProjectMembersApiResponse = ApiResponse<MemberDto[]>
+// 공통 API 응답 래퍼 타입들
+type ProjectListResponse = ApiResponse<ProjectResponseDto[]>
+type ProjectDetailResponse = ApiResponse<ProjectResponseDto>
+type ProjectMembersResponse = ApiResponse<ProjectMemberDto[]>
+type ProjectActionResponse = ApiResponse<ProjectResponseDto>
+type ProjectDeleteResponse = ApiResponse<string>
 
 /**
- * ProjectResponse를 Project 타입으로 변환합니다.
+ * ProjectResponseDto를 Project 타입으로 변환합니다.
  */
-export function transformToProject(projectResponse: ProjectResponse): Project {
+export function transformToProject(dto: ProjectResponseDto): Project {
   return {
-    ...projectResponse,
+    ...dto,
     memberProfiles: [], // 기본값으로 빈 배열 설정
+    myRole: dto.myRole as Project['myRole'],
   }
 }
 
 /**
- * MemberDto를 ProjectMember 타입으로 변환합니다.
+ * ProjectMemberDto를 ProjectMember 타입으로 변환합니다.
  */
-export function transformToProjectMember(dto: MemberDto): ProjectMember {
+export function transformToProjectMember(dto: ProjectMemberDto): ProjectMember {
   return {
     userId: dto.userId,
     name: dto.name,
@@ -68,7 +75,7 @@ export async function getProjects(type?: 'own' | 'joined'): Promise<Project[]> {
 
   const response = await authApi
     .get('projects', { searchParams })
-    .json<ProjectListApiResponse>()
+    .json<ProjectListResponse>()
 
   const projectResponses = apiHelpers.extractData(response)
   return projectResponses.map(transformToProject)
@@ -80,7 +87,7 @@ export async function getProjects(type?: 'own' | 'joined'): Promise<Project[]> {
 export async function getProject(projectId: number): Promise<Project> {
   const response = await authApi
     .get(`projects/${projectId}`)
-    .json<ProjectDetailApiResponse>()
+    .json<ProjectDetailResponse>()
 
   const projectResponse = apiHelpers.extractData(response)
   return transformToProject(projectResponse)
@@ -98,7 +105,7 @@ export async function createProject(data: CreateProjectData): Promise<Project> {
 
   const response = await authApi
     .post('projects', { json: requestData })
-    .json<CreateProjectApiResponse>()
+    .json<ProjectActionResponse>()
 
   const projectResponse = apiHelpers.extractData(response)
   return transformToProject(projectResponse)
@@ -112,8 +119,50 @@ export async function getProjectMembers(
 ): Promise<ProjectMember[]> {
   const response = await authApi
     .get(`projects/${projectId}/members`)
-    .json<ProjectMembersApiResponse>()
+    .json<ProjectMembersResponse>()
 
   const memberDtos = apiHelpers.extractData(response)
   return memberDtos.map(transformToProjectMember)
+}
+
+/**
+ * 프로젝트 정보를 수정합니다. (순수 CRUD)
+ */
+export async function updateProject(
+  projectId: number,
+  data: Partial<CreateProjectData>,
+): Promise<Project> {
+  const requestData: UpdateProjectRequest = {
+    ...(data.projectName && { projectName: data.projectName }),
+    ...(data.description !== undefined && { description: data.description }),
+  }
+
+  const response = await authApi
+    .patch(`projects/${projectId}`, { json: requestData })
+    .json<ProjectActionResponse>()
+
+  const projectResponse = apiHelpers.extractData(response)
+  return transformToProject(projectResponse)
+}
+
+/**
+ * 프로젝트를 삭제합니다. (순수 CRUD)
+ */
+export async function deleteProject(projectId: number): Promise<string> {
+  const response = await authApi
+    .delete(`projects/${projectId}`)
+    .json<ProjectDeleteResponse>()
+
+  return apiHelpers.extractData(response)
+}
+
+/**
+ * 프로젝트를 비활성화합니다.
+ */
+export async function inactivateProject(projectId: number): Promise<string> {
+  const response = await authApi
+    .patch(`projects/${projectId}/inactivate`)
+    .json<ProjectDeleteResponse>()
+
+  return apiHelpers.extractData(response)
 }

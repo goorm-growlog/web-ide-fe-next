@@ -1,26 +1,27 @@
 'use client'
 
 import { useState } from 'react'
-import type { Project, ProjectAction } from '@/entities/project'
+import type { Project } from '@/entities/project'
 import {
   CreateProjectCard,
   CreateProjectDialog,
   ProjectSection,
 } from '@/features/project'
 
-export interface ProjectListWidgetProps {
+interface ProjectListWidgetProps {
   hostProjects: Project[]
   invitedProjects: Project[]
-  onProjectClick?: (projectId: number) => void
-  onProjectAction?: (projectId: number, action: ProjectAction) => void
-  onProjectCreated?: (projectId: string) => void
+  onProjectClick?: ((projectId: number) => void) | undefined
+  onProjectCreated?: ((projectId: string) => void) | undefined
 }
 
+/**
+ * 프로젝트 목록 위젯 - Feature들을 조합하여 완전한 기능 제공
+ */
 export function ProjectListWidget({
   hostProjects,
   invitedProjects,
   onProjectClick,
-  onProjectAction,
   onProjectCreated,
 }: ProjectListWidgetProps) {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
@@ -35,7 +36,7 @@ export function ProjectListWidget({
 
   return (
     <div className="flex flex-col gap-14">
-      {/* Host Section - 통합된 ProjectSection 사용 */}
+      {/* Host Section */}
       <ProjectSection
         title="Host"
         projects={hostProjects}
@@ -43,20 +44,18 @@ export function ProjectListWidget({
         variant="host"
         createSlot={createProjectSlot}
         {...(onProjectClick && { onProjectClick })}
-        {...(onProjectAction && { onProjectAction })}
       />
 
-      {/* Invited Section - 통합된 ProjectSection 사용 */}
+      {/* Invited Section */}
       <ProjectSection
         title="Invited"
         projects={invitedProjects}
         maxDisplay={4}
         variant="invited"
         {...(onProjectClick && { onProjectClick })}
-        {...(onProjectAction && { onProjectAction })}
       />
 
-      {/* CreateProject Dialog - Widget에서 관리 */}
+      {/* Create Project Dialog */}
       <CreateProjectDialog
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}

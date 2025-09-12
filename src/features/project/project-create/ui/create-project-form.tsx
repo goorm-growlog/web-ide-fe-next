@@ -15,12 +15,16 @@ interface CreateProjectFormProps {
   onSubmit: (data: CreateProjectFormData) => void
   onCancel: () => void
   isLoading?: boolean
+  defaultValues?: Partial<CreateProjectFormData>
+  submitButtonText?: string
 }
 
 export function CreateProjectForm({
   onSubmit,
   onCancel,
   isLoading,
+  defaultValues,
+  submitButtonText,
 }: CreateProjectFormProps) {
   const {
     register,
@@ -29,8 +33,8 @@ export function CreateProjectForm({
   } = useForm<CreateProjectFormData>({
     resolver: zodResolver(createProjectSchema),
     defaultValues: {
-      projectName: '',
-      description: '',
+      projectName: defaultValues?.projectName || '',
+      description: defaultValues?.description || '',
     },
   })
 
@@ -83,7 +87,7 @@ export function CreateProjectForm({
           Cancel
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Creating...' : 'Create Project'}
+          {submitButtonText || (isLoading ? 'Creating...' : 'Create Project')}
         </Button>
       </div>
     </form>

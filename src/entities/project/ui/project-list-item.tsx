@@ -1,39 +1,51 @@
 'use client'
 
-import type { Project, ProjectAction } from '../model/types'
-import { ProjectCardMenu } from './project-card-menu'
+import { isProjectDeleting } from '../model/permissions'
+import type { Project } from '../model/types'
 import { ProjectMemberAvatars } from './project-member-avatars'
 
 interface ProjectListItemProps {
   project: Project
   onProjectClick?: ((project: Project) => void) | undefined
-  onProjectAction?: (projectId: number, action: ProjectAction) => void
 }
 
+/**
+ * 프로젝트 목록 아이템 컴포넌트 (순수 UI)
+ * 비즈니스 로직은 entities의 permissions 모델에서 처리됨
+ */
 export const ProjectListItem = ({
   project,
   onProjectClick,
-  onProjectAction,
 }: ProjectListItemProps) => {
+  const isDeleting = isProjectDeleting(project)
+
   const handleClick = () => {
-    onProjectClick?.(project)
+    if (!isDeleting) {
+      onProjectClick?.(project)
+    }
   }
 
   return (
     <div className="group relative">
       <button
         type="button"
-        className="flex w-full cursor-pointer items-center justify-between rounded-lg border p-4 text-left transition-colors hover:bg-gray-50"
+        className={`flex w-full items-center justify-between rounded-lg border p-4 text-left transition-colors ${
+          isDeleting
+            ? 'cursor-not-allowed opacity-50'
+            : 'cursor-pointer hover:bg-gray-50'
+        }`}
         onClick={handleClick}
+        disabled={isDeleting}
       >
         <div className="min-w-0 flex-[4]">
           <div className="mb-4">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <div className="flex h-2 w-1 flex-shrink-0 items-center justify-center">
                 <div
                   className={`h-3 w-3 rounded-full ${
                     project.status === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'
                   }`}
+                  title={project.status === 'ACTIVE' ? 'Active' : 'Inactive'}
                 />
               </div>
               <h3 className="max-w-[30%] truncate font-medium text-gray-900">
@@ -56,11 +68,6 @@ export const ProjectListItem = ({
           <ProjectMemberAvatars project={project} />
         </div>
       </button>
-
-      <ProjectCardMenu
-        projectId={project.projectId}
-        onProjectAction={onProjectAction}
-      />
     </div>
   )
 }
