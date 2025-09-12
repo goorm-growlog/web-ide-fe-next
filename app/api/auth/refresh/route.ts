@@ -20,10 +20,9 @@ export async function POST() {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          // 원래 요청의 쿠키를 백엔드에 전달 (httpOnly 쿠키 포함)
-          'Cookie': cookieStore.toString()
+          // refresh 쿠키만 전달
+          'Cookie': `refresh=${refreshToken}`
         },
-        // body에 refreshToken을 보내는 대신 쿠키로 전달하는 것이 더 안전
         credentials: 'include'
       },
     )

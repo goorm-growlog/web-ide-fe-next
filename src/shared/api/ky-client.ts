@@ -84,8 +84,11 @@ export const authApi = ky.create({
     ],
     afterResponse: [
       async (request, _options, response) => {
-        // 401이면 토큰 갱신 시도 (동시성 처리 포함)
-        if (response.status === 401 && typeof window !== 'undefined') {
+        // 401 또는 403이면 토큰 갱신 시도 (한 줄 수정)
+        if (
+          (response.status === 401 || response.status === 403) &&
+          typeof window !== 'undefined'
+        ) {
           try {
             let newAccessToken: string
 
@@ -123,7 +126,7 @@ export const authApi = ky.create({
             return ky(originalRequest)
           } catch {
             // 토큰 갱신 실패 시 로그아웃
-            refreshPromise = null // 실패 시에도 Promise 초기화
+            refreshPromise = null
             await signOut({ callbackUrl: '/signin?error=SessionExpired' })
             return response
           }
