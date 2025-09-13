@@ -1,8 +1,10 @@
 import './globals.css'
 
+import { Providers } from '@/shared/providers/providers'
+import AppToaster from '@/shared/ui/app-toaster'
+import ClientOnlyWrapper from '@/shared/ui/client-only-wrapper'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
-import AppToaster from '@/shared/ui/app-toaster'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,8 +32,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-    <AppToaster />
-    {children}
+        <Providers>
+          <ClientOnlyWrapper />
+          <AppToaster />
+          {children}
+        </Providers>
       </body>
     </html>
   )

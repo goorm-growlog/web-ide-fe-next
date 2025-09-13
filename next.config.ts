@@ -6,14 +6,20 @@ const API_TARGET =
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
+      // 백엔드 API 프록시
       {
         source: '/auth/:path*',
         destination: `${API_TARGET}/auth/:path*`,
       },
       {
-        source: '/api/:path*',
-        destination: `${API_TARGET}/:path*`,
+        source: '/projects/:path*',
+        destination: `${API_TARGET}/projects/:path*`,
       },
+      {
+        source: '/users/:path*',
+        destination: `${API_TARGET}/users/:path*`,
+      },
+      // NextAuth의 /api/auth/* 는 로컬에서 처리 (프록시 안함)
     ]
   },
 }
