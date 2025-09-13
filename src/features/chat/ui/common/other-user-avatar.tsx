@@ -1,5 +1,5 @@
 import { getInitials } from '@/shared/lib/string-utils'
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
 
 interface OtherUserAvatarProps {
   userImg: string

@@ -1,12 +1,12 @@
 'use client'
 
 import { memo, useMemo } from 'react'
-import type { Message } from '@/features/chat/types/message-types'
-import { EmptyMessageList } from './empty-message-list'
-import { MessageItem } from './message-item'
+import type { ChatMessage } from '@/features/chat/types/client'
+import { EmptyMessageList } from '@/features/chat/ui/message-list/empty-message-list'
+import { MessageItem } from '@/features/chat/ui/message-list/message-item'
 
 interface MessageListProps {
-  messages: Message[]
+  messages: ChatMessage[]
   currentUserId: number
 }
 
@@ -23,7 +23,8 @@ const MessageList = memo(({ messages, currentUserId }: MessageListProps) => {
   const messageKeys = useMemo(
     () =>
       messages.map(
-        (message, index) => `${message.userId}-${message.sentAt}-${index}`,
+        (message, index) =>
+          `${message.userId}-${message.timestamp.getTime()}-${index}`,
       ),
     [messages],
   )

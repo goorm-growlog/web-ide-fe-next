@@ -1,5 +1,5 @@
 import { FILE_LINK_PATTERN } from '@/features/chat/constants/file-link-patterns'
-import type { CodeLink, MessagePart } from '@/features/chat/types/message-types'
+import type { CodeLink, MessagePart } from '@/features/chat/types/client'
 
 /**
  * 파일명과 라인번호를 표준 형식으로 포맷팅

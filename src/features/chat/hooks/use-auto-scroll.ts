@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import type { Message } from '@/features/chat/types/message-types'
+import type { ChatMessage } from '@/features/chat/types/client'
 import { requestScrollToBottom } from '@/shared/lib/scroll-utils'
 
 // Radix UI ScrollArea 컴포넌트와 함께 사용하도록 설계
@@ -17,7 +17,7 @@ const SCROLL_AREA_VIEWPORT_SELECTOR = '[data-slot="scroll-area-viewport"]'
  * @example
  * ```tsx
  * function ChatComponent() {
- *   const [messages, setMessages] = useState<Message[]>([])
+ *   const [messages, setMessages] = useState<ChatMessage[]>([])
  *   const { scrollAreaRef } = useChatScroll(messages)
  *
  *   return (
@@ -28,7 +28,7 @@ const SCROLL_AREA_VIEWPORT_SELECTOR = '[data-slot="scroll-area-viewport"]'
  * }
  * ```
  */
-export const useChatScroll = (messages: Message[]) => {
+export const useChatScroll = (messages: ChatMessage[]) => {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const lastMessageCount = useRef(0)
 

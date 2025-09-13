@@ -1,13 +1,13 @@
 import { memo, useMemo } from 'react'
 import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/chat-config'
 import { parseChatMessage } from '@/features/chat/lib/file-link-parser'
-import type { TalkMessage } from '@/features/chat/types/message-types'
+import type { ChatMessage } from '@/features/chat/types/client'
 import { OtherUserAvatar } from '@/features/chat/ui/common/other-user-avatar'
+import { TalkMessageContent } from '@/features/chat/ui/message-types/talk-message-content'
 import { cn } from '@/shared/lib/utils'
-import { TalkMessageContent } from './talk-message-content'
 
 interface TalkMessageItemProps {
-  message: TalkMessage
+  message: ChatMessage
   isOwnMessage?: boolean
   isFirstInGroup: boolean
   showAvatar?: boolean
@@ -27,7 +27,7 @@ const TalkMessageItem = memo(
     showUsername,
   }: TalkMessageItemProps) => {
     const { username, userImg } = DEFAULT_USER_CONFIG.MOCK_USER_PROFILE
-    const { content, sentAt } = message
+    const { content, timestamp } = message
     const parts = useMemo(() => parseChatMessage(content), [content])
 
     const shouldShowAvatar = showAvatar ?? (!isOwnMessage && isFirstInGroup)
@@ -57,13 +57,13 @@ const TalkMessageItem = memo(
                     'font-medium text-muted-foreground text-sm',
                   )}
                 >
-                  {message.username || 'Unknown User'}
+                  {message.userName || 'Unknown User'}
                 </span>
               )}
               <TalkMessageContent
                 parts={parts}
                 content={content}
-                sentAt={sentAt}
+                sentAt={timestamp}
                 isOwnMessage={isOwnMessage}
               />
             </div>
@@ -73,7 +73,7 @@ const TalkMessageItem = memo(
             <TalkMessageContent
               parts={parts}
               content={content}
-              sentAt={sentAt}
+              sentAt={timestamp}
               isOwnMessage={isOwnMessage}
             />
           </div>

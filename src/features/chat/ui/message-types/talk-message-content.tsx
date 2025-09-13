@@ -1,5 +1,5 @@
 import { getPartText } from '@/features/chat/lib/file-link-parser'
-import type { MessagePart } from '@/features/chat/types/message-types'
+import type { MessagePart } from '@/features/chat/types/client'
 import { CodeLink } from '@/features/chat/ui/common/code-link'
 import { MessageTime } from '@/features/chat/ui/common/message-time'
 import { cn } from '@/shared/lib/utils'
@@ -7,7 +7,7 @@ import { cn } from '@/shared/lib/utils'
 interface TalkMessageContentProps {
   parts: MessagePart[]
   content: string
-  sentAt: string
+  sentAt: Date
   isOwnMessage?: boolean
   className?: string
 }

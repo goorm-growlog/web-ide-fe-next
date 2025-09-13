@@ -41,11 +41,11 @@ export type ChatMessageTypeEnum =
   (typeof CHAT_MESSAGE_TYPES)[keyof typeof CHAT_MESSAGE_TYPES]
 
 /**
- * 채팅 메시지 (서버에서 받는 형태)
+ * 서버에서 받는 채팅 메시지 형태
  * @param type 메시지 타입
  * @param payload 메시지 데이터
  */
-export interface ChatMessage {
+export interface ChatServerMessage {
   type: ChatMessageTypeEnum
   payload: ChatMessageDto
 }

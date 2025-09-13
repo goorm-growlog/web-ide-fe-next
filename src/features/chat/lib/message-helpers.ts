@@ -1,8 +1,4 @@
-import {
-  MESSAGE_TYPES,
-  type Message,
-  type SystemMessage,
-} from '@/features/chat/types/message-types'
+import type { ChatMessage } from '@/features/chat/types/client'
 
 /**
  * 날짜 헤더 표시 여부를 결정하는 함수
@@ -12,7 +8,7 @@ import {
  * @returns 날짜 헤더를 표시해야 하는지 여부
  */
 export const shouldShowDateHeader = (
-  messages: Message[],
+  messages: ChatMessage[],
   currentIndex: number,
 ): boolean => {
   if (currentIndex === 0) return true
@@ -22,22 +18,22 @@ export const shouldShowDateHeader = (
 
   if (!currentMessage || !previousMessage) return true
 
-  const currentDate = new Date(currentMessage.sentAt).toDateString()
-  const previousDate = new Date(previousMessage.sentAt).toDateString()
+  const currentDate = currentMessage.timestamp.toDateString()
+  const previousDate = previousMessage.timestamp.toDateString()
 
   return currentDate !== previousDate
 }
 
 export const getSystemMessageText = ({
-  messageType,
-  username,
+  type,
+  userName,
   content,
-}: SystemMessage): string => {
-  if (messageType === MESSAGE_TYPES.ENTER) {
-    return `${username} joined this chatroom.`
+}: ChatMessage): string => {
+  if (type === 'ENTER') {
+    return `${userName} joined this chatroom.`
   }
-  if (messageType === MESSAGE_TYPES.LEAVE) {
-    return `${username} left this chatroom.`
+  if (type === 'LEAVE') {
+    return `${userName} left this chatroom.`
   }
   return content || 'System message'
 }

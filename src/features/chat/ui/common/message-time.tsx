@@ -3,7 +3,7 @@ import { formatDate, formatTime } from '@/shared/lib/date-utils'
 import { cn } from '@/shared/lib/utils'
 
 interface MessageTimeProps {
-  sentAt: string
+  sentAt: Date
   className?: string
 }
 
@@ -16,10 +16,10 @@ const MessageTime = memo(({ sentAt, className }: MessageTimeProps) => {
         'transition-opacity hover:opacity-80',
         className,
       )}
-      dateTime={sentAt}
-      title={`Sent at ${formatDate(sentAt)}`}
+      dateTime={sentAt.toISOString()}
+      title={`Sent at ${formatDate(sentAt.toISOString())}`}
     >
-      {formatTime(sentAt)}
+      {formatTime(sentAt.toISOString())}
     </time>
   )
 })
