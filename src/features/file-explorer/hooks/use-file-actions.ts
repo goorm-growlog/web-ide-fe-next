@@ -40,7 +40,12 @@ export const useFileActions = (
   rootId: string,
   dialogRef?: RefObject<FileCreateDialogRef | null>,
 ): FileActionHandlers => {
-  const { copyPath, deleteItem, createFile, createFolder } = useFileOperations()
+  const {
+    executeCopyPath,
+    executeDeleteFile,
+    executeCreateFile,
+    executeCreateFolder,
+  } = useFileOperations()
 
   /**
    * 컨텍스트 메뉴에서 선택된 액션을 처리
@@ -58,7 +63,7 @@ export const useFileActions = (
             dialogRef?.current?.openAsFolder(rootId)
             break
           case 'copyPath':
-            void copyPath(rootId)
+            void executeCopyPath(rootId)
             break
           // 루트 아이템에서는 delete, rename 불가
           case 'delete':
@@ -88,24 +93,24 @@ export const useFileActions = (
           break
         }
         case 'copyPath':
-          void copyPath(item.getId())
+          void executeCopyPath(item.getId())
           break
         case 'delete':
-          deleteItem(item.getId())
+          executeDeleteFile(item.getId())
           break
         case 'rename':
           item.startRenaming()
           break
       }
     },
-    [copyPath, deleteItem, dialogRef, rootId],
+    [executeCopyPath, executeDeleteFile, dialogRef, rootId],
   )
 
   return {
     contextMenuAction,
     dialogActions: {
-      createFile,
-      createFolder,
+      createFile: executeCreateFile,
+      createFolder: executeCreateFolder,
     },
   }
 }

@@ -23,7 +23,7 @@ export const createTreeHandlers = ({
    * @param item - 변경할 아이템 인스턴스
    * @param value - 새로운 이름
    */
-  handleTreeRename: (item: ItemInstance<FileNode>, value: string) => {
+  handleRename: (item: ItemInstance<FileNode>, value: string) => {
     try {
       const itemData = item.getItemData()
       onRename(itemData, value)
@@ -39,7 +39,7 @@ export const createTreeHandlers = ({
    * @param items - 드래그된 아이템들 (첫 번째 아이템만 사용)
    * @param target - 드롭 대상 아이템
    */
-  handleTreeDrop: (
+  handleDrop: (
     items: ItemInstance<FileNode>[],
     target: { item: ItemInstance<FileNode> },
   ) => {
