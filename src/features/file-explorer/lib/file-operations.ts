@@ -1,8 +1,7 @@
 import type { ItemInstance } from '@headless-tree/core'
 import { FILE_EXPLORER_ERROR_MESSAGES } from '@/features/file-explorer/constants/error-constants'
-import { FILE_EXPLORER_LOG_MESSAGES } from '@/features/file-explorer/constants/log-constants'
-import { useFileTreeStore } from '@/features/file-explorer/stores/file-tree-store'
 import type { FileNode } from '@/features/file-explorer/types/client'
+import { logger } from '@/shared/lib/logger'
 
 /**
  * 파일 작업 인터페이스
@@ -25,7 +24,19 @@ export interface FileOperations {
  * React 규칙을 준수하며 상태 관리 함수들을 제공
  */
 export const useFileOperations = (): FileOperations => {
-  const { addNode, removeNode, updateNode, setError } = useFileTreeStore()
+  // TODO: Store 제거 후 로컬 state로 변경 필요
+  const addNode = (_path: string, _node: FileNode) => {
+    // TODO: Implement addNode logic
+  }
+  const removeNode = (_path: string) => {
+    // TODO: Implement removeNode logic
+  }
+  const updateNode = (_path: string, _updates: Partial<FileNode>) => {
+    // TODO: Implement updateNode logic
+  }
+  const setError = (_error: string | null) => {
+    // TODO: Implement error handling
+  }
 
   return {
     /**
@@ -44,9 +55,6 @@ export const useFileOperations = (): FileOperations => {
       }
 
       addNode(filePath, newNode)
-      console.debug(
-        `${FILE_EXPLORER_LOG_MESSAGES.LOG_FILE_CREATED} ${filePath}`,
-      )
     },
 
     /**
@@ -66,9 +74,6 @@ export const useFileOperations = (): FileOperations => {
       }
 
       addNode(folderPath, newFolder)
-      console.debug(
-        `${FILE_EXPLORER_LOG_MESSAGES.LOG_FOLDER_CREATED} ${folderPath}`,
-      )
     },
 
     /**
@@ -78,9 +83,6 @@ export const useFileOperations = (): FileOperations => {
     deleteItem: (itemPath: string) => {
       // TODO: 서버 API 연동 필요
       removeNode(itemPath)
-      console.debug(
-        `${FILE_EXPLORER_LOG_MESSAGES.LOG_ITEM_DELETED} ${itemPath}`,
-      )
     },
 
     /**
@@ -90,11 +92,8 @@ export const useFileOperations = (): FileOperations => {
     copyPath: async (itemPath: string) => {
       try {
         await navigator.clipboard.writeText(itemPath)
-        console.debug(
-          `${FILE_EXPLORER_LOG_MESSAGES.LOG_PATH_COPIED} ${itemPath}`,
-        )
       } catch (error) {
-        console.error(
+        logger.error(
           `${FILE_EXPLORER_ERROR_MESSAGES.LOG_COPY_PATH_FAILED}`,
           error,
         )
@@ -117,11 +116,8 @@ export const useFileOperations = (): FileOperations => {
 
       try {
         updateNode(itemData.path, { name: trimmedName })
-        console.debug(
-          `${FILE_EXPLORER_LOG_MESSAGES.LOG_ITEM_RENAMED} ${itemData.path} -> ${trimmedName}`,
-        )
       } catch (error) {
-        console.error(
+        logger.error(
           `${FILE_EXPLORER_ERROR_MESSAGES.LOG_RENAME_OPERATION_FAILED}`,
           error,
         )
@@ -134,16 +130,10 @@ export const useFileOperations = (): FileOperations => {
      * 현재는 구현되지 않음 - 서버 통신 연동 필요
      */
     handleDrop: (
-      items: ItemInstance<FileNode>[],
-      target: { item: ItemInstance<FileNode> },
+      _items: ItemInstance<FileNode>[],
+      _target: { item: ItemInstance<FileNode> },
     ) => {
       // TODO: 드롭 핸들러 구현 필요 - 서버 통신 연동
-      console.debug(
-        `${FILE_EXPLORER_LOG_MESSAGES.LOG_DROP_ITEMS}`,
-        items,
-        `${FILE_EXPLORER_LOG_MESSAGES.LOG_TO_TARGET}`,
-        target,
-      )
     },
   }
 }
