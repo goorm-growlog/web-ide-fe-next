@@ -2,7 +2,7 @@ import './globals.css'
 
 import { Providers } from '@/shared/providers/providers'
 import AppToaster from '@/shared/ui/app-toaster'
-import ClientOnlyWrapper from '@/shared/ui/ClientOnlyWrapper'
+import ClientOnlyWrapper from '@/shared/ui/client-only-wrapper'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
 
