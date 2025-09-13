@@ -7,13 +7,13 @@ import {
   FolderOpenIcon,
 } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
-import { isItemDropZone } from '@/features/file-explorer/lib/drop-zone-helpers'
+import { isDropTarget } from '@/features/file-explorer/lib/drag-drop-utils'
 import type { FileItemProps } from '@/features/file-explorer/types/file-explorer'
 import { INDENT_SIZE_PX } from '@/shared/constants/ui'
 import { cn } from '@/shared/lib/utils'
 
 const FileItem = ({ item, iconSize }: FileItemProps) => {
-  const level = item.getItemMeta().level
+  const itemLevel = item.getItemMeta().level
   const isFolder = item.isFolder()
   const isExpanded = item.isExpanded()
   const isSelected = item.isSelected()
@@ -26,8 +26,8 @@ const FileItem = ({ item, iconSize }: FileItemProps) => {
   }, [isFolder, isExpanded, item])
 
   const paddingLeft = useMemo(
-    () => level * INDENT_SIZE_PX + iconSize,
-    [level, iconSize],
+    () => itemLevel * INDENT_SIZE_PX + iconSize,
+    [itemLevel, iconSize],
   )
 
   const iconElement = useMemo(() => {
@@ -74,7 +74,7 @@ const FileItem = ({ item, iconSize }: FileItemProps) => {
       onContextMenu={handleContextMenu}
       className={cn(
         itemClassName,
-        isItemDropZone(item) && 'bg-blue-50',
+        isDropTarget(item) && 'bg-blue-50',
         // Default styles
         'flex w-full cursor-pointer items-center gap-1 py-1',
         'transition-colors duration-150 ease-in-out',

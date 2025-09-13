@@ -8,12 +8,15 @@ import { logger } from '@/shared/lib/logger'
  * 파일과 폴더의 생성, 삭제, 이름 변경, 드래그 앤 드롭 기능을 제공
  */
 export interface FileOperations {
-  readonly createFile: (targetPath: string, fileName: string) => void
-  readonly createFolder: (targetPath: string, folderName: string) => void
-  readonly deleteItem: (itemPath: string) => void
-  readonly copyPath: (itemPath: string) => Promise<void>
-  readonly handleRename: (item: ItemInstance<FileNode>, newName: string) => void
-  readonly handleDrop: (
+  readonly executeCreateFile: (targetPath: string, fileName: string) => void
+  readonly executeCreateFolder: (targetPath: string, folderName: string) => void
+  readonly executeDeleteFile: (itemPath: string) => void
+  readonly executeCopyPath: (itemPath: string) => Promise<void>
+  readonly executeFileRename: (
+    item: ItemInstance<FileNode>,
+    newName: string,
+  ) => void
+  readonly executeFileMove: (
     items: ItemInstance<FileNode>[],
     target: { item: ItemInstance<FileNode> },
   ) => void
@@ -44,7 +47,7 @@ export const useFileOperations = (): FileOperations => {
      * @param targetPath - 파일을 생성할 대상 경로
      * @param fileName - 생성할 파일명
      */
-    createFile: (targetPath: string, fileName: string) => {
+    executeCreateFile: (targetPath: string, fileName: string) => {
       // TODO: 서버 API 연동 필요
       const filePath = `${targetPath === '/' ? '' : targetPath}/${fileName}`
       const newNode = {
@@ -62,7 +65,7 @@ export const useFileOperations = (): FileOperations => {
      * @param targetPath - 폴더를 생성할 대상 경로
      * @param folderName - 생성할 폴더명
      */
-    createFolder: (targetPath: string, folderName: string) => {
+    executeCreateFolder: (targetPath: string, folderName: string) => {
       // TODO: 서버 API 연동 필요
       const folderPath = `${targetPath === '/' ? '' : targetPath}/${folderName}`
       const newFolder = {
@@ -80,7 +83,7 @@ export const useFileOperations = (): FileOperations => {
      * 파일 또는 폴더 삭제
      * @param itemPath - 삭제할 항목의 경로
      */
-    deleteItem: (itemPath: string) => {
+    executeDeleteFile: (itemPath: string) => {
       // TODO: 서버 API 연동 필요
       removeNode(itemPath)
     },
@@ -89,7 +92,7 @@ export const useFileOperations = (): FileOperations => {
      * 경로를 클립보드에 복사
      * @param itemPath - 복사할 경로
      */
-    copyPath: async (itemPath: string) => {
+    executeCopyPath: async (itemPath: string) => {
       try {
         await navigator.clipboard.writeText(itemPath)
       } catch (error) {
@@ -105,7 +108,7 @@ export const useFileOperations = (): FileOperations => {
      * @param item - 변경할 항목
      * @param newName - 새로운 이름
      */
-    handleRename: (item: ItemInstance<FileNode>, newName: string) => {
+    executeFileRename: (item: ItemInstance<FileNode>, newName: string) => {
       const trimmedName = newName.trim()
       if (!trimmedName) return
 
@@ -129,7 +132,7 @@ export const useFileOperations = (): FileOperations => {
      * 드래그 앤 드롭 처리
      * 현재는 구현되지 않음 - 서버 통신 연동 필요
      */
-    handleDrop: (
+    executeFileMove: (
       _items: ItemInstance<FileNode>[],
       _target: { item: ItemInstance<FileNode> },
     ) => {

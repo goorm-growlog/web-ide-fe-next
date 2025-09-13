@@ -1,5 +1,5 @@
 import { FILE_EXPLORER_ERROR_MESSAGES } from '@/features/file-explorer/constants/error-constants'
-import type { TreeMessageHandlers } from '@/features/file-explorer/lib/tree-message-handlers'
+import type { TreeMessageHandlers } from '@/features/file-explorer/lib/tree-sync-handlers'
 import {
   FILE_TREE_MESSAGE_TYPES,
   type FileTreeServerMessage,
@@ -21,16 +21,16 @@ export const createMessageDispatcher = ({
 
       switch (data.type) {
         case FILE_TREE_MESSAGE_TYPES.TREE_INIT:
-          handlers.handleTreeInit(data.payload)
+          handlers.syncTreeInit(data.payload)
           break
         case FILE_TREE_MESSAGE_TYPES.TREE_ADD:
-          handlers.handleTreeAdd(data.payload)
+          handlers.syncTreeAdd(data.payload)
           break
         case FILE_TREE_MESSAGE_TYPES.TREE_REMOVE:
-          handlers.handleTreeRemove(data.payload)
+          handlers.syncTreeRemove(data.payload)
           break
         case FILE_TREE_MESSAGE_TYPES.TREE_MOVE:
-          handlers.handleTreeMove(data.payload)
+          handlers.syncTreeMove(data.payload)
           break
         default: {
           const unknownError = `Unknown message type: ${String(data)}`

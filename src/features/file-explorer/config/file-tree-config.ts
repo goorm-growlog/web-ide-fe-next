@@ -39,7 +39,7 @@ const createDataLoader = (
 export const useFileTreeConfig = (
   flatFileNodes: Record<string, FileNode> | null,
 ) => {
-  const { handleRename, handleDrop } = useFileOperations()
+  const { executeFileRename, executeFileMove } = useFileOperations()
   const dataLoader = createDataLoader(flatFileNodes)
 
   return useMemo(
@@ -63,9 +63,9 @@ export const useFileTreeConfig = (
         _items: ItemInstance<FileNode>[],
         target: { item: ItemInstance<FileNode> },
       ) => target.item.isFolder(),
-      onDrop: handleDrop,
-      onRename: handleRename,
+      onDrop: executeFileMove,
+      onRename: executeFileRename,
     }),
-    [dataLoader, handleRename, handleDrop],
+    [dataLoader, executeFileRename, executeFileMove],
   )
 }

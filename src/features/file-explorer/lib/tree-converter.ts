@@ -15,9 +15,7 @@ const normalizePath = (path: string, isRoot = false): string => {
  * TreeNodeDto[]를 headless-tree에서 사용할 flat 구조로 변환
  * 이전 방식의 장점을 적용한 개선된 버전
  */
-export const convertTreeNodeDtoToFileData = (
-  nodes: FileTreeNodeDto[],
-): FileTree => {
+export const convertTreeDto = (nodes: FileTreeNodeDto[]): FileTree => {
   if (!nodes || nodes.length === 0) return {}
 
   const tree: FileTree = {}

@@ -2,18 +2,16 @@ import type { ItemInstance } from '@headless-tree/core'
 import type { FileNode } from '@/features/file-explorer/types/client'
 
 /**
- * 주어진 아이템이 드롭 영역인지 판단
+ * 주어진 파일이 드롭 영역인지 판단
  *
  * 드롭 영역 조건:
  * 1. 현재 드래그 타겟인 경우
  * 2. 선택되지 않았으면서 드래그 타겟의 하위 항목인 경우
  *
- * @param itemInstance - 확인할 트리 아이템 인스턴스
+ * @param itemInstance - 확인할 트리 파일 인스턴스
  * @returns 드롭 영역 여부
  */
-export const isItemDropZone = (
-  itemInstance: ItemInstance<FileNode>,
-): boolean => {
+export const isDropTarget = (itemInstance: ItemInstance<FileNode>): boolean => {
   const isDragTarget = itemInstance.isDragTarget()
   const isSelected = itemInstance.isSelected()
 

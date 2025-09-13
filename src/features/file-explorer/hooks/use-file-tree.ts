@@ -14,7 +14,7 @@ import { FILE_EXPLORER_WEBSOCKET_CONFIG } from '@/features/file-explorer/config/
 import { FILE_TREE_CONSTANTS } from '@/features/file-explorer/constants/file-tree-constants'
 import { useFileOperations } from '@/features/file-explorer/lib/file-operations'
 import { createMessageDispatcher } from '@/features/file-explorer/lib/message-dispatcher'
-import { createTreeMessageHandlers } from '@/features/file-explorer/lib/tree-message-handlers'
+import { createTreeMessageHandlers } from '@/features/file-explorer/lib/tree-sync-handlers'
 import type {
   FileNode,
   FileTreeReturn,
@@ -38,12 +38,12 @@ const useFileTree = (projectId: string): FileTreeReturn => {
   /**
    * 파일 트리 상태 초기화
    */
-  const clear = useCallback(() => {
+  const handleClear = useCallback(() => {
     setFlatFileNodes(null)
     setIsLoading(true)
   }, [])
 
-  const { handleRename, handleDrop } = useFileOperations()
+  const { executeFileRename, executeFileMove } = useFileOperations()
 
   const dataLoader = useMemo(
     () => ({
@@ -88,10 +88,10 @@ const useFileTree = (projectId: string): FileTreeReturn => {
         _items: ItemInstance<FileNode>[],
         target: { item: ItemInstance<FileNode> },
       ) => target.item.isFolder(),
-      onDrop: handleDrop,
-      onRename: handleRename,
+      onDrop: executeFileMove,
+      onRename: executeFileRename,
     }),
-    [dataLoader, handleRename, handleDrop],
+    [dataLoader, executeFileRename, executeFileMove],
   )
 
   const tree: TreeInstance<FileNode> = useTree<FileNode>(treeConfig)
@@ -103,7 +103,7 @@ const useFileTree = (projectId: string): FileTreeReturn => {
     if (!isConnected) return
 
     // 프로젝트 변경 시 이전 데이터 정리
-    clear()
+    handleClear()
 
     const handlers = createTreeMessageHandlers({
       setFlatFileNodes,
@@ -130,12 +130,12 @@ const useFileTree = (projectId: string): FileTreeReturn => {
     return () => {
       if (subId) unsubscribe(subId)
     }
-  }, [isConnected, projectId, subscribe, unsubscribe, publish, clear])
+  }, [isConnected, projectId, subscribe, unsubscribe, publish, handleClear])
 
   return {
     tree,
     isLoading,
-    clear,
+    clear: handleClear,
   }
 }
 

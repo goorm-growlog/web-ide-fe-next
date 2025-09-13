@@ -23,7 +23,7 @@ export const createTreeHandlers = ({
    * @param item - 변경할 아이템 인스턴스
    * @param value - 새로운 이름
    */
-  handleRename: (item: ItemInstance<FileNode>, value: string) => {
+  handleTreeRename: (item: ItemInstance<FileNode>, value: string) => {
     try {
       const itemData = item.getItemData()
       onRename(itemData, value)
@@ -39,7 +39,7 @@ export const createTreeHandlers = ({
    * @param items - 드래그된 아이템들 (첫 번째 아이템만 사용)
    * @param target - 드롭 대상 아이템
    */
-  handleDrop: (
+  handleTreeDrop: (
     items: ItemInstance<FileNode>[],
     target: { item: ItemInstance<FileNode> },
   ) => {
@@ -54,9 +54,12 @@ export const createTreeHandlers = ({
       // 드랍 아이템이 폴더가 아니거나 같은 위치이면 무시
       if (dragData.path === dropData.path || !dropData.isFolder) return
 
-      // 이동 경로 생성 및 실행
+      // 이동 경로 생성 (파일명 충돌 방지)
       const fromPath = dragData.path
       const toPath = `${dropData.path}/${dragData.name}`
+
+      // TODO: 실제 구현에서는 파일 시스템에서 중복 확인 필요
+      // 현재는 기본 경로로 이동 (서버에서 충돌 처리)
       onMove(fromPath, toPath)
     } catch (error) {
       onError(error instanceof Error ? error : new Error(String(error)))
