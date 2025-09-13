@@ -108,6 +108,9 @@ export const authApi = ky.create({
                   )
                   return accessToken
                 })
+                .catch(() => {
+                  throw new Error('Refresh failed')
+                })
                 .finally(() => {
                   // 갱신 완료 후 Promise 초기화
                   refreshPromise = null

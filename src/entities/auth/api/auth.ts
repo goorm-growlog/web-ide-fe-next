@@ -6,7 +6,7 @@ import type { PasswordResetData } from '@/features/verification/password-reset/m
 import { api, apiHelpers, authApi } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
 
-// Auth 관련 API 응답 타입들 - API 문서에 맞춰 수정
+// Auth 관련 API 응답 타입들
 export interface LoginData {
   userId: number
   name: string
@@ -79,8 +79,12 @@ export const githubLoginApi = async (data: {
   email: string | null
   avatarUrl: string | null
 }): Promise<{ accessToken: string }> => {
+  // 서버는 절대 URL, 클라이언트는 상대 경로
   const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000'
+    typeof window === 'undefined'
+      ? process.env.NEXTAUTH_URL || 'http://localhost:3000'
+      : ''
+
   const response = await fetch(`${baseUrl}/auth/login/github`, {
     method: 'POST',
     headers: {
