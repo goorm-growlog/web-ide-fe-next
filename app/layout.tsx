@@ -1,8 +1,8 @@
 import './globals.css'
 
 import { Providers } from '@/shared/providers/providers'
-// SessionSyncProvider 제거 - useAuthProvider에서 통합 관리
 import AppToaster from '@/shared/ui/app-toaster'
+import ClientOnlyWrapper from '@/shared/ui/ClientOnlyWrapper'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { Metadata } from 'next'
 
@@ -32,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
+          <ClientOnlyWrapper />
           <AppToaster />
           {children}
         </Providers>

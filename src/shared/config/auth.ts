@@ -33,6 +33,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signIn({ user, account }) {
       if (account?.provider === 'github' && user && user.id) {
         try {
+          // 서버사이드에서는 토큰만 받기 (쿠키는 클라이언트에서 설정)
           const backendTokens = await githubLoginApi({
             id: user.id,
             name: user.name || null,
@@ -59,6 +60,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.accessToken = customUser.accessToken
         token.provider = account.provider
         token.user = customUser
+
+        // GitHub 로그인인 경우 클라이언트사이드에서 쿠키 설정을 위한 플래그 추가
+        if (account.provider === 'github') {
+          token.needsCookieSetup = true
+          token.githubUser = user // GitHub 유저 정보 저장
+        }
       }
       return token
     },
@@ -68,6 +75,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         ...session,
         accessToken: token.accessToken as string,
         provider: token.provider as string,
+        needsCookieSetup: token.needsCookieSetup as boolean,
+        githubUser: token.githubUser,
         user: {
           ...session.user,
           accessToken: token.accessToken as string,
@@ -85,6 +94,13 @@ declare module 'next-auth' {
   interface Session {
     accessToken?: string
     provider?: string
+    needsCookieSetup?: boolean
+    githubUser?: {
+      id?: string
+      name?: string | null
+      email?: string | null
+      image?: string | null
+    }
     user: {
       id?: string
       name?: string | null

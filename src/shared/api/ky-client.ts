@@ -3,8 +3,6 @@ import { getSession, signOut } from 'next-auth/react'
 import { handleApiError } from '@/shared/lib/api-error'
 import type { ApiResponse } from '@/shared/types/api'
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
-
 // 토큰 갱신 동시성 처리를 위한 Promise 캐시
 let refreshPromise: Promise<string> | null = null
 
@@ -49,7 +47,6 @@ async function getCachedSession(): Promise<SessionData | null> {
  * 기본 API 클라이언트 (인증 불필요)
  */
 export const api = ky.create({
-  prefixUrl: BASE_URL,
   credentials: 'include',
   timeout: 10000,
   retry: { limit: 1 },
@@ -69,7 +66,6 @@ export const api = ky.create({
  * 인증 API 클라이언트
  */
 export const authApi = ky.create({
-  prefixUrl: BASE_URL,
   credentials: 'include',
   timeout: 10000,
   retry: { limit: 1 },
@@ -84,8 +80,11 @@ export const authApi = ky.create({
     ],
     afterResponse: [
       async (request, _options, response) => {
-        // 401이면 토큰 갱신 시도 (동시성 처리 포함)
-        if (response.status === 401 && typeof window !== 'undefined') {
+        // 401 또는 403이면 토큰 갱신 시도 (한 줄 수정)
+        if (
+          (response.status === 401 || response.status === 403) &&
+          typeof window !== 'undefined'
+        ) {
           try {
             let newAccessToken: string
 
@@ -93,11 +92,14 @@ export const authApi = ky.create({
             if (refreshPromise) {
               newAccessToken = await refreshPromise
             } else {
-              // 새로운 토큰 갱신 시작
+              // 새로운 토큰 갱신 시작 - 항상 프록시를 통해 백엔드로 직접 호출
               refreshPromise = ky
-                .post('/api/auth/refresh')
-                .json<{ accessToken: string }>()
-                .then(({ accessToken }) => {
+                .post('/auth/refresh', {
+                  credentials: 'include', // 쿠키 포함
+                })
+                .json<{ data: { accessToken: string } }>()
+                .then(({ data }) => {
+                  const accessToken = data.accessToken
                   // NextAuth 세션에 새 토큰 반영
                   window.dispatchEvent(
                     new CustomEvent('session-token-refresh', {
@@ -105,6 +107,9 @@ export const authApi = ky.create({
                     }),
                   )
                   return accessToken
+                })
+                .catch(() => {
+                  throw new Error('Refresh failed')
                 })
                 .finally(() => {
                   // 갱신 완료 후 Promise 초기화
@@ -123,7 +128,7 @@ export const authApi = ky.create({
             return ky(originalRequest)
           } catch {
             // 토큰 갱신 실패 시 로그아웃
-            refreshPromise = null // 실패 시에도 Promise 초기화
+            refreshPromise = null
             await signOut({ callbackUrl: '/signin?error=SessionExpired' })
             return response
           }

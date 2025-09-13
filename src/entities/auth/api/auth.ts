@@ -6,7 +6,7 @@ import type { PasswordResetData } from '@/features/verification/password-reset/m
 import { api, apiHelpers, authApi } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
 
-// Auth 관련 API 응답 타입들 - API 문서에 맞춰 수정
+// Auth 관련 API 응답 타입들
 export interface LoginData {
   userId: number
   name: string
@@ -24,7 +24,7 @@ export interface SignupData {
  */
 export const loginApi = async (data: LoginFormData): Promise<LoginData> => {
   const response = await api
-    .post('auth/login', {
+    .post('/auth/login', {
       json: {
         email: data.email,
         password: data.password,
@@ -59,7 +59,7 @@ export const resetPasswordApi = async (
   data: PasswordResetData,
 ): Promise<void> => {
   const response = await api
-    .post('auth/reset-password', {
+    .post('/auth/reset-password', {
       json: {
         name: data.name,
         email: data.email,
@@ -79,18 +79,32 @@ export const githubLoginApi = async (data: {
   email: string | null
   avatarUrl: string | null
 }): Promise<{ accessToken: string }> => {
-  const response = await api
-    .post('auth/login/github', {
-      json: {
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        avatarUrl: data.avatarUrl,
-      },
-    })
-    .json<ApiResponse<{ accessToken: string }>>()
+  // 서버는 절대 URL, 클라이언트는 상대 경로
+  const baseUrl =
+    typeof window === 'undefined'
+      ? process.env.NEXTAUTH_URL || 'http://localhost:3000'
+      : ''
 
-  return apiHelpers.extractData(response)
+  const response = await fetch(`${baseUrl}/auth/login/github`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      avatarUrl: data.avatarUrl,
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`GitHub login failed: ${response.status}`)
+  }
+
+  const result = (await response.json()) as ApiResponse<{ accessToken: string }>
+  return apiHelpers.extractData(result)
 }
 
 /**
@@ -102,7 +116,7 @@ export const kakaoLoginApi = async (data: {
   accessToken: string
 }): Promise<{ accessToken: string }> => {
   const response = await api
-    .post('auth/login/kakao', {
+    .post('/auth/login/kakao', {
       json: {
         userId: data.userId,
         name: data.name,
@@ -118,7 +132,7 @@ export const kakaoLoginApi = async (data: {
  * 로그아웃 API
  */
 export const logoutApi = async (): Promise<void> => {
-  const response = await authApi.post('auth/logout').json<ApiResponse<null>>()
+  const response = await authApi.post('/auth/logout').json<ApiResponse<null>>()
 
   apiHelpers.checkSuccess(response)
 }
