@@ -46,3 +46,18 @@ storybook-static
 
 # ide
 .idea
+
+# agent
+AGENTS.md
+QWEN.md
+CLAUDE.md
+
+.github
+!.github/pull_request_template.md
+!.github/ISSUE_TEMPLATE
+
+.cursor
+.claude
+
+# mcp
+.serena

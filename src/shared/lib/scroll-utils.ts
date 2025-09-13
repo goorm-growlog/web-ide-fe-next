@@ -13,7 +13,7 @@ const scrollToBottom = (element: HTMLElement): boolean => {
     element.scrollTop = element.scrollHeight
     return true
   } catch (err) {
-    const { message, stack } = err as Error
+    const { message = 'Unknown error', stack } = err as Error
 
     console.error('Failed to scroll to bottom:', {
       message,
@@ -57,12 +57,6 @@ const scrollToBottom = (element: HTMLElement): boolean => {
  * ```
  */
 export const requestScrollToBottom = (element: HTMLElement): (() => void) => {
-  if (!element || !(element instanceof HTMLElement)) {
-    return () => {
-      // No-op: 실행할 내용이 없음
-    }
-  }
-
   const animationId = requestAnimationFrame(() => {
     try {
       scrollToBottom(element)

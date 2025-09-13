@@ -25,3 +25,14 @@ export interface SystemMessage extends Message {
 export interface TalkMessage extends Message {
   messageType: TalkMessageType
 }
+
+export interface MessagePart {
+  text: string
+  codeLink?: CodeLink
+}
+
+export interface CodeLink {
+  fileName: string
+  lineNumber: number
+  url: string
+}
