@@ -1,8 +1,11 @@
 'use client'
 
 import { MoreVertical } from 'lucide-react'
-import type { Project } from '@/entities/project'
-import { canInactivateProject, shouldShowProjectMenu } from '@/entities/project'
+import {
+  canInactivateProject,
+  shouldShowProjectMenu,
+} from '@/entities/project/model/permissions'
+import type { Project } from '@/entities/project/model/types'
 import { Button } from '@/shared/ui/shadcn/button'
 import {
   DropdownMenu,

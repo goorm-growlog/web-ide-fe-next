@@ -7,17 +7,18 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
-import { FILE_EXPLORER_TEXTS } from '@/features/file-explorer/constants/texts'
-import type { ItemType } from '@/features/file-explorer/model/types'
+import { FILE_EXPLORER_UI_TEXTS } from '@/features/file-explorer/constants/ui-constants'
+import type { FileTreeNodeType } from '@/features/file-explorer/types/api'
+import { Button } from '@/shared/ui/shadcn/button'
 import {
-  Button,
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  Input,
-} from '@/shared/ui/shadcn'
+} from '@/shared/ui/shadcn/dialog'
+import { Input } from '@/shared/ui/shadcn/input'
 
 export interface FileCreateDialogRef {
   readonly openAsFile: (targetPath: string) => void
@@ -34,7 +35,7 @@ export const FileCreateDialog = forwardRef<
   FileCreateDialogProps
 >(({ createFile, createFolder }, ref) => {
   const [open, setOpen] = useState(false)
-  const [type, setType] = useState<ItemType | null>(null)
+  const [type, setType] = useState<FileTreeNodeType | null>(null)
   const [targetPath, setTargetPath] = useState('')
   const [inputValue, setInputValue] = useState('')
 
@@ -42,13 +43,13 @@ export const FileCreateDialog = forwardRef<
     openAsFile: path => {
       setType('file')
       setTargetPath(path)
-      setInputValue(FILE_EXPLORER_TEXTS.NEW_FILE_DEFAULT)
+      setInputValue(FILE_EXPLORER_UI_TEXTS.NEW_FILE_DEFAULT)
       setOpen(true)
     },
     openAsFolder: path => {
       setType('folder')
       setTargetPath(path)
-      setInputValue(FILE_EXPLORER_TEXTS.NEW_FOLDER_DEFAULT)
+      setInputValue(FILE_EXPLORER_UI_TEXTS.NEW_FOLDER_DEFAULT)
       setOpen(true)
     },
   }))
@@ -86,9 +87,7 @@ export const FileCreateDialog = forwardRef<
 
   const handleOpenChange = useCallback(
     (isOpen: boolean) => {
-      if (!isOpen) {
-        handleClose()
-      }
+      if (!isOpen) handleClose()
     },
     [handleClose],
   )
@@ -99,17 +98,22 @@ export const FileCreateDialog = forwardRef<
         <DialogHeader>
           <DialogTitle>
             {type === 'file'
-              ? FILE_EXPLORER_TEXTS.NEW_FILE
-              : FILE_EXPLORER_TEXTS.NEW_FOLDER}
+              ? FILE_EXPLORER_UI_TEXTS.NEW_FILE
+              : FILE_EXPLORER_UI_TEXTS.NEW_FOLDER}
           </DialogTitle>
+          <DialogDescription>
+            {type === 'file'
+              ? 'Enter the name for the new file'
+              : 'Enter the name for the new folder'}
+          </DialogDescription>
         </DialogHeader>
         <Input
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}
           placeholder={
             type === 'file'
-              ? FILE_EXPLORER_TEXTS.FILE_PLACEHOLDER
-              : FILE_EXPLORER_TEXTS.FOLDER_PLACEHOLDER
+              ? FILE_EXPLORER_UI_TEXTS.FILE_NAME_PLACEHOLDER
+              : FILE_EXPLORER_UI_TEXTS.FOLDER_NAME_PLACEHOLDER
           }
           onKeyDown={handleKeyDown}
           autoFocus

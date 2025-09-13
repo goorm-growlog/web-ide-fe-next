@@ -1,3 +1,5 @@
+import { logger } from '@/shared/lib/logger'
+
 /**
  * HTML 요소를 최하단으로 스크롤
  *
@@ -13,9 +15,9 @@ const scrollToBottom = (element: HTMLElement): boolean => {
     element.scrollTop = element.scrollHeight
     return true
   } catch (err) {
-    const { message, stack } = err as Error
+    const { message = 'Unknown error', stack } = err as Error
 
-    console.error('Failed to scroll to bottom:', {
+    logger.error('Failed to scroll to bottom:', {
       message,
       stack,
       elementId: element.id,
@@ -57,17 +59,11 @@ const scrollToBottom = (element: HTMLElement): boolean => {
  * ```
  */
 export const requestScrollToBottom = (element: HTMLElement): (() => void) => {
-  if (!element || !(element instanceof HTMLElement)) {
-    return () => {
-      // No-op: 실행할 내용이 없음
-    }
-  }
-
   const animationId = requestAnimationFrame(() => {
     try {
       scrollToBottom(element)
     } catch (error) {
-      console.error('Failed to request scroll to bottom:', error)
+      logger.error('Failed to request scroll to bottom:', error)
     }
   })
 

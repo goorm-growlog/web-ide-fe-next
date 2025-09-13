@@ -2,7 +2,7 @@
 
 import { signOut } from 'next-auth/react'
 import { useCallback } from 'react'
-import { logoutApi } from '@/entities/auth'
+import { logoutApi } from '@/entities/auth/api/auth'
 
 export const useLogout = () => {
   const logout = useCallback(async () => {

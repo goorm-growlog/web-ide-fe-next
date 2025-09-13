@@ -2,7 +2,8 @@ import type { User as NextAuthUser } from 'next-auth'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GitHub from 'next-auth/providers/github'
-import { githubLoginApi } from '@/entities/auth'
+import { githubLoginApi } from '@/entities/auth/api/auth'
+import { logger } from '@/shared/lib/logger'
 
 interface CustomUser extends NextAuthUser {
   accessToken?: string
@@ -46,7 +47,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           return true
         } catch (error) {
-          console.error('SignIn - GitHub API call failed', error)
+          logger.error('SignIn - GitHub API call failed', error)
           return '/signin?error=AccessDenied'
         }
       }

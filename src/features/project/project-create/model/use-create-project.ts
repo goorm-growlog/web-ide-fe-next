@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import type { CreateProjectData } from '@/entities/project'
-import { createProject as createProjectApi } from '@/entities/project'
+import { createProject as createProjectApi } from '@/entities/project/api/project'
+import type { CreateProjectData } from '@/entities/project/model/types'
 
 export function useCreateProject() {
   const [isLoading, setIsLoading] = useState(false)

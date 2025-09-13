@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
+import { logger } from '@/shared/lib/logger'
 import { TextInput } from '@/shared/ui/text-input'
 
 const meta: Meta<typeof TextInput> = {
@@ -8,8 +9,8 @@ const meta: Meta<typeof TextInput> = {
     layout: 'centered',
   },
   args: {
-    onSend: (_message: string) => {
-      console.debug('Message sent')
+    onSend: (message: string) => {
+      logger.debug('TextInput onSend:', message)
     },
   },
   tags: ['autodocs'],

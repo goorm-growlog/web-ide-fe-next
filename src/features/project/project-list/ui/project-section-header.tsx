@@ -1,8 +1,8 @@
 'use client'
 
-import type { Project } from '@/entities/project'
+import type { Project } from '@/entities/project/model/types'
+import { ProjectListModal } from '@/features/project/project-list/ui/project-list-modal'
 import { Button } from '@/shared/ui/shadcn/button'
-import { ProjectListModal } from './project-list-modal'
 
 interface ProjectSectionHeaderProps {
   title: string

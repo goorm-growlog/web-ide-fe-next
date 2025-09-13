@@ -8,8 +8,8 @@ import {
   updatePassword,
   updateUserName,
   uploadProfileImage,
-} from '@/entities/users'
-import type { ProfileEditFormData } from './schema'
+} from '@/entities/users/api/get-user'
+import type { ProfileEditFormData } from '@/features/profile/profile-edit/model/schema'
 
 // 개별 업데이트 함수들을 분리하여 복잡도 감소
 const createUpdatePromises = (

@@ -1,7 +1,10 @@
 // 프로젝트 엔티티 비즈니스 로직 훅
 
 import useSWR from 'swr'
-import { transformToProject, transformToProjectMember } from '../api/project'
+import {
+  transformToProject,
+  transformToProjectMember,
+} from '@/entities/project/api/project'
 
 /**
  * 프로젝트 목록 조회 훅 - 전역 fetcher 활용

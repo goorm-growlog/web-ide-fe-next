@@ -7,7 +7,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/shared/ui/shadcn'
+} from '@/shared/ui/shadcn/accordion'
 import { TAB_DEFINITIONS } from '@/widgets/sidebar/constants/config'
 import { useOpenPanels } from '@/widgets/sidebar/model/hooks'
 import type { PanelKey, TabKey } from '@/widgets/sidebar/model/types'
@@ -45,7 +45,7 @@ const CONTENT_CLASSES = cn(
 const TogglePanels = ({ activeTabKey }: TogglePanelsProps) => {
   const { openPanels, togglePanel } = useOpenPanels()
 
-  const panelData = useMemo(() => {
+  const { panels, contentHeight } = useMemo(() => {
     const panels =
       TAB_DEFINITIONS.find(tab => tab.key === activeTabKey)?.panels || []
     const totalHeaders = panels.length * PANEL_CONFIG.HEADER_HEIGHT
@@ -53,13 +53,9 @@ const TogglePanels = ({ activeTabKey }: TogglePanelsProps) => {
       openPanels.length > 0
         ? `calc(calc(100vh - ${totalHeaders}px) / ${openPanels.length})`
         : '0px'
-
     return {
       panels,
-      totalHeaders,
       contentHeight,
-      panelCount: panels.length,
-      openCount: openPanels.length,
     }
   }, [activeTabKey, openPanels.length])
 
@@ -76,15 +72,12 @@ const TogglePanels = ({ activeTabKey }: TogglePanelsProps) => {
         type="multiple"
         value={openPanels}
         className="flex h-full flex-col"
-        onValueChange={value => {
-          console.log('value', value)
-        }}
       >
-        {panelData.panels.map(panelDef => {
+        {panels.map(panelDef => {
           const isOpen = openPanels.includes(panelDef.key)
           const Component = panelDef.content
           const itemHeight = isOpen
-            ? `calc(${PANEL_CONFIG.HEADER_HEIGHT}px + ${panelData.contentHeight})`
+            ? `calc(${PANEL_CONFIG.HEADER_HEIGHT}px + ${contentHeight})`
             : `${PANEL_CONFIG.HEADER_HEIGHT}px`
 
           return (
@@ -107,7 +100,7 @@ const TogglePanels = ({ activeTabKey }: TogglePanelsProps) => {
               <AccordionContent
                 className={CONTENT_CLASSES}
                 style={{
-                  height: isOpen ? panelData.contentHeight : '0px',
+                  height: isOpen ? contentHeight : '0px',
                   overflowY: isOpen ? 'auto' : 'hidden',
                   opacity: isOpen ? 1 : 0,
                 }}

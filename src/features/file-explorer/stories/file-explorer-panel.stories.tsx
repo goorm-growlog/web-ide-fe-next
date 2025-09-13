@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import FileExplorerPanel from '../ui/file-explorer-panel'
+import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel'
 
 const meta: Meta<typeof FileExplorerPanel> = {
   title: 'Features/FileExplorerPanel',
@@ -7,9 +7,7 @@ const meta: Meta<typeof FileExplorerPanel> = {
   parameters: {
     layout: 'centered',
   },
-  args: {
-    rootId: '/',
-  },
+  args: {},
   tags: ['autodocs'],
 }
 
@@ -19,22 +17,16 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {}
 
 export const CustomIndent: Story = {
-  args: {
-    rootId: '/',
-  },
+  args: {},
 }
 
 export const CustomRoot: Story = {
-  args: {
-    rootId: '/src',
-  },
+  args: {},
 }
 
-// 스크롤 테스트를 위한 새로운 stories
+// New stories for scroll testing
 export const WithLongFileNames: Story = {
-  args: {
-    rootId: '/',
-  },
+  args: {},
   parameters: {
     docs: {
       description: {
@@ -46,9 +38,7 @@ export const WithLongFileNames: Story = {
 }
 
 export const InNarrowContainer: Story = {
-  args: {
-    rootId: '/',
-  },
+  args: {},
   decorators: [
     Story => (
       <div className="h-96 w-64 overflow-hidden rounded-lg border border-gray-300">
@@ -66,9 +56,7 @@ export const InNarrowContainer: Story = {
 }
 
 export const InVeryNarrowContainer: Story = {
-  args: {
-    rootId: '/',
-  },
+  args: {},
   decorators: [
     Story => (
       <div className="h-96 w-48 overflow-hidden rounded-lg border border-gray-300">
@@ -87,9 +75,7 @@ export const InVeryNarrowContainer: Story = {
 }
 
 export const InWideContainer: Story = {
-  args: {
-    rootId: '/',
-  },
+  args: {},
   decorators: [
     Story => (
       <div className="h-96 w-96 overflow-hidden rounded-lg border border-gray-300">
@@ -108,9 +94,7 @@ export const InWideContainer: Story = {
 }
 
 export const WithManyFiles: Story = {
-  args: {
-    rootId: '/',
-  },
+  args: {},
   decorators: [
     Story => (
       <div className="h-64 w-80 overflow-hidden rounded-lg border border-gray-300">
@@ -128,9 +112,7 @@ export const WithManyFiles: Story = {
 }
 
 export const SidebarSimulation: Story = {
-  args: {
-    rootId: '/',
-  },
+  args: {},
   decorators: [
     Story => (
       <div className="flex h-screen w-screen bg-gray-100">
@@ -166,9 +148,7 @@ export const SidebarSimulation: Story = {
 }
 
 export const ResizableContainer: Story = {
-  args: {
-    rootId: '/',
-  },
+  args: {},
   decorators: [
     Story => (
       <div className="h-96 w-full overflow-hidden rounded-lg border border-gray-300">

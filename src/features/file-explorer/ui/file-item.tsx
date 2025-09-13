@@ -1,33 +1,33 @@
 'use client'
 
-import type { ItemInstance } from '@headless-tree/core'
 import {
   ChevronRightIcon,
   FileIcon,
   FolderIcon,
   FolderOpenIcon,
 } from 'lucide-react'
-import { useMemo } from 'react'
-import { isItemDropZone } from '@/features/file-explorer/lib/drop-zone-utils'
-import type { FileNode } from '@/features/file-explorer/model/types'
+import { useCallback, useMemo } from 'react'
+import { isDropTarget } from '@/features/file-explorer/lib/drag-drop-utils'
+import type { FileItemProps } from '@/features/file-explorer/types/file-explorer'
 import { INDENT_SIZE_PX } from '@/shared/constants/ui'
 import { cn } from '@/shared/lib/utils'
 
-interface FileItemProps {
-  item: ItemInstance<FileNode>
-  iconSize: number
-}
-
 const FileItem = ({ item, iconSize }: FileItemProps) => {
-  const level = item.getItemMeta().level
+  const itemLevel = item.getItemMeta().level
   const isFolder = item.isFolder()
   const isExpanded = item.isExpanded()
   const isSelected = item.isSelected()
   const isFocused = item.isFocused()
 
+  const handleContextMenu = useCallback(() => {
+    if (isFolder && !isExpanded) {
+      item.expand()
+    }
+  }, [isFolder, isExpanded, item])
+
   const paddingLeft = useMemo(
-    () => level * INDENT_SIZE_PX + iconSize,
-    [level, iconSize],
+    () => itemLevel * INDENT_SIZE_PX + iconSize,
+    [itemLevel, iconSize],
   )
 
   const iconElement = useMemo(() => {
@@ -52,28 +52,35 @@ const FileItem = ({ item, iconSize }: FileItemProps) => {
     }
     return (
       <>
-        <div style={{ width: `${iconSize}px` }} />
+        <div className="flex-shrink-0" style={{ width: `${iconSize}px` }} />
         <FileIcon size={iconSize} />
       </>
     )
   }, [isFolder, isExpanded, iconSize])
 
-  const itemProps = item.getProps()
-  const { className: itemClassName, ...restProps } = itemProps
+  const {
+    className: itemClassName,
+    // headless-tree의 onContextMenu는 preventDefault()를 호출해서 브라우저 기본 컨텍스트 메뉴를 차단함
+    // shadcn/ui ContextMenu를 사용하기 위해서는 이 핸들러를 제거하고 이벤트 전파를 허용해야 함
+    onContextMenu: _,
+    ...restProps
+  } = item.getProps()
 
   return (
     <button
       type="button"
       {...restProps}
+      data-file-item
+      onContextMenu={handleContextMenu}
       className={cn(
         itemClassName,
-        isItemDropZone(item) && 'bg-blue-50',
-        // 기본 스타일
+        isDropTarget(item) && 'bg-blue-50',
+        // Default styles
         'flex w-full cursor-pointer items-center gap-1 py-1',
         'transition-colors duration-150 ease-in-out',
-        // 키보드 접근성
+        // Keyboard accessibility
         'focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-inset',
-        // 상태별 스타일 (우선순위: selected > focused > hover)
+        // State-specific styles (priority: selected > focused > hover)
         isSelected && 'bg-sidebar-accent text-sidebar-accent-foreground',
         !isSelected &&
           isFocused &&

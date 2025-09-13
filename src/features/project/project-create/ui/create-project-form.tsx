@@ -2,14 +2,14 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import {
+  type CreateProjectFormData,
+  createProjectSchema,
+} from '@/features/project/project-create/model/validation'
 import { Button } from '@/shared/ui/shadcn/button'
 import { Input } from '@/shared/ui/shadcn/input'
 import { Label } from '@/shared/ui/shadcn/label'
 import { Textarea } from '@/shared/ui/shadcn/textarea'
-import {
-  type CreateProjectFormData,
-  createProjectSchema,
-} from '../model/validation'
 
 interface CreateProjectFormProps {
   onSubmit: (data: CreateProjectFormData) => void

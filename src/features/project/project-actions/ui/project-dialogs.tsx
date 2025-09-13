@@ -1,10 +1,10 @@
 'use client'
 
+import type { useDeleteProject } from '@/features/project/project-actions/model/use-delete-project'
+import type { useEditProject } from '@/features/project/project-actions/model/use-edit-project'
+import type { useInactivateProject } from '@/features/project/project-actions/model/use-inactivate-project'
 import { EditProjectDialog } from '@/features/project/project-edit/ui/edit-project-dialog'
 import { ConfirmDialog } from '@/shared/ui/confirm-dialog'
-import type { useDeleteProject } from '../model/use-delete-project'
-import type { useEditProject } from '../model/use-edit-project'
-import type { useInactivateProject } from '../model/use-inactivate-project'
 
 interface ProjectDialogsProps {
   editDialog: ReturnType<typeof useEditProject>

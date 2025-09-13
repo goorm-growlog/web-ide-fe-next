@@ -1,6 +1,8 @@
 'use client'
 
 import { useCreateProject } from '@/features/project/project-create/model/use-create-project'
+import type { CreateProjectFormData } from '@/features/project/project-create/model/validation'
+import { CreateProjectForm } from '@/features/project/project-create/ui/create-project-form'
 import {
   Dialog,
   DialogContent,
@@ -8,8 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/ui/shadcn/dialog'
-import type { CreateProjectFormData } from '../model/validation'
-import { CreateProjectForm } from './create-project-form'
 
 interface CreateProjectDialogProps {
   open: boolean

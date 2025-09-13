@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
-import type { Project } from '@/entities/project'
 import {
   canClickProject,
   getProjectTooltip,
   isProjectDeleting,
-} from '@/entities/project'
+} from '@/entities/project/model/permissions'
+import type { Project } from '@/entities/project/model/types'
+import { ProjectMemberAvatars } from '@/entities/project/ui/project-member-avatars'
 import { Card, CardContent } from '@/shared/ui/shadcn/card'
 import {
   Tooltip,
@@ -12,7 +13,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/shared/ui/shadcn/tooltip'
-import { ProjectMemberAvatars } from './project-member-avatars'
 
 interface ProjectCardProps {
   project: Project

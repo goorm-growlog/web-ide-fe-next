@@ -1,14 +1,12 @@
 'use client'
 
-import type { Project } from '@/entities/project'
-import { ProjectCard } from '@/entities/project'
-import type { useProjectActions } from '@/features/project/project-actions'
-import {
-  ProjectActionMenu,
-  ProjectDialogs,
-} from '@/features/project/project-actions'
-import { EmptyState } from './empty-state'
-import { ProjectSectionHeader } from './project-section-header'
+import type { Project } from '@/entities/project/model/types'
+import { ProjectCard } from '@/entities/project/ui/project-card'
+import type { useProjectActions } from '@/features/project/project-actions/model/use-project-actions'
+import { ProjectActionMenu } from '@/features/project/project-actions/ui/project-action-menu'
+import { ProjectDialogs } from '@/features/project/project-actions/ui/project-dialogs'
+import { EmptyState } from '@/features/project/project-list/ui/empty-state'
+import { ProjectSectionHeader } from '@/features/project/project-list/ui/project-section-header'
 
 interface ProjectSectionProps {
   title: string

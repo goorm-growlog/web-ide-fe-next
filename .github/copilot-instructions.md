@@ -687,4 +687,5 @@ function ItemEditModal({ open, items, recommendedItems, onConfirm, onClose }) {
 // The intermediate ItemEditBody component is eliminated, reducing coupling.
 ```
 
-Answer in Korean
+Always respond in Korean.
+Always use sequential thinking MCP.

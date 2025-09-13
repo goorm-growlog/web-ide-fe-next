@@ -1,6 +1,10 @@
 // 프로젝트 권한 관련 비즈니스 로직 (단순화)
 
-import type { OwnerOnlyAction, Project, ProjectAction } from './types'
+import type {
+  OwnerOnlyAction,
+  Project,
+  ProjectAction,
+} from '@/entities/project/model/types'
 
 /**
  * 사용자가 OWNER 권한을 가지고 있는지 확인

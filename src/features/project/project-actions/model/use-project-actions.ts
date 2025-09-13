@@ -1,8 +1,8 @@
 'use client'
 
-import { useDeleteProject } from './use-delete-project'
-import { useEditProject } from './use-edit-project'
-import { useInactivateProject } from './use-inactivate-project'
+import { useDeleteProject } from '@/features/project/project-actions/model/use-delete-project'
+import { useEditProject } from '@/features/project/project-actions/model/use-edit-project'
+import { useInactivateProject } from '@/features/project/project-actions/model/use-inactivate-project'
 
 /**
  * 프로젝트 액션을 처리하는 메인 훅 (Features 레이어)

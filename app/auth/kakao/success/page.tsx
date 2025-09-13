@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { toast } from 'sonner'
 import { mutate } from 'swr'
-import { kakaoLoginApi } from '@/entities/auth'
+import { kakaoLoginApi } from '@/entities/auth/api/auth'
 
 function KakaoSuccessHandler() {
   const router = useRouter()
