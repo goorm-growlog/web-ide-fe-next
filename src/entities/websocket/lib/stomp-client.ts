@@ -4,6 +4,7 @@ import type {
   StompClientConfig,
   WebSocketError,
 } from '@/entities/websocket/types/websocket-types'
+import { logger } from '@/shared/lib/logger'
 
 const STOMP_CONSTANTS = {
   HEARTBEAT_INCOMING_MS: 20000,
@@ -13,7 +14,7 @@ const STOMP_CONSTANTS = {
 export const createStompClient = (config: StompClientConfig): Client => {
   return new Client({
     webSocketFactory: () => new SockJS(config.url),
-    debug: str => console.log(`🔧 [STOMP Debug]`, str),
+    debug: (str: string) => logger.debug(`🔧 [STOMP Debug]`, str),
     connectHeaders: {
       Authorization: `Bearer ${config.token}`,
     },

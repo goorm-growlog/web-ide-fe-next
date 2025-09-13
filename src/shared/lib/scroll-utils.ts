@@ -1,3 +1,5 @@
+import { logger } from '@/shared/lib/logger'
+
 /**
  * HTML 요소를 최하단으로 스크롤
  *
@@ -15,7 +17,7 @@ const scrollToBottom = (element: HTMLElement): boolean => {
   } catch (err) {
     const { message = 'Unknown error', stack } = err as Error
 
-    console.error('Failed to scroll to bottom:', {
+    logger.error('Failed to scroll to bottom:', {
       message,
       stack,
       elementId: element.id,
@@ -61,7 +63,7 @@ export const requestScrollToBottom = (element: HTMLElement): (() => void) => {
     try {
       scrollToBottom(element)
     } catch (error) {
-      console.error('Failed to request scroll to bottom:', error)
+      logger.error('Failed to request scroll to bottom:', error)
     }
   })
 

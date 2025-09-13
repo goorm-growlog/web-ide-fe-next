@@ -1,3 +1,5 @@
+import { logger } from '@/shared/lib/logger'
+
 // 날짜 포맷팅 유틸리티
 export const formatDate = (dateString: string): string => {
   try {
@@ -16,7 +18,7 @@ export const formatDate = (dateString: string): string => {
 
     return `${year}.${month}.${day} (${weekday})`
   } catch {
-    console.error('Failed to format date')
+    logger.error('Failed to format date')
     return 'Invalid date'
   }
 }
@@ -37,7 +39,7 @@ export const formatTime = (dateString: string): string => {
       hour12: true,
     })
   } catch {
-    console.error('Failed to format time')
+    logger.error('Failed to format time')
     return 'Invalid time'
   }
 }
@@ -60,7 +62,7 @@ export const groupByDate = <T extends { sentAt: string }>(
         }
         groups[dateKey].push(item)
       } else {
-        console.error('Invalid date')
+        logger.error('Invalid date')
       }
     }
   })

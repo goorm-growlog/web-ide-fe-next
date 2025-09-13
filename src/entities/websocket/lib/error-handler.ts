@@ -1,6 +1,6 @@
+import { WEBSOCKET_MESSAGES } from '@/entities/websocket/config/websocket-config'
 import type { WebSocketError } from '@/entities/websocket/types/websocket-types'
-import { WEBSOCKET_MESSAGES } from '../config/websocket-config'
-import { logger } from './logger'
+import { logger } from '@/shared/lib/logger'
 
 export const createErrorHandler = (prefix: string) => ({
   // 에러 로깅 (모든 에러 타입을 하나로 통합)
