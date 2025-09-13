@@ -1,7 +1,8 @@
 import type { ComponentProps, ForwardedRef, ReactNode } from 'react'
 import { forwardRef } from 'react'
 import { cn } from '@/shared/lib/utils'
-import { Button, Input } from '@/shared/ui/shadcn'
+import { Button } from '@/shared/ui/shadcn/button'
+import { Input } from '@/shared/ui/shadcn/input'
 
 export interface InputWithButtonProps extends ComponentProps<'input'> {
   inputProps?: ComponentProps<typeof Input>

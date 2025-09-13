@@ -1,9 +1,9 @@
 import { FormProvider } from 'react-hook-form'
+import { useCodeVerification } from '@/features/auth/email-verification/model/use-code-verification'
+import { useEmailSend } from '@/features/auth/email-verification/model/use-email-send'
+import { useEmailVerificationForm } from '@/features/auth/email-verification/model/use-email-verification-form'
 import FormField from '@/features/auth/ui/form-field'
 import InputWithButton from '@/features/auth/ui/input-with-button'
-import { useCodeVerification } from '../model/use-code-verification'
-import { useEmailSend } from '../model/use-email-send'
-import { useEmailVerificationForm } from '../model/use-email-verification-form'
 
 interface Props {
   onSendCode?: (email: string) => Promise<void>

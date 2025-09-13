@@ -5,27 +5,23 @@ import EditorLayout from '@/widgets/sidebar/ui/editor-layout'
 import { ConnectionStatus, type ConnectionStatusType } from '@/entities/websocket/ui/connection-status'
 import { useWebSocketClient } from '@/entities/websocket/stores/websocket-client'
 import { useAuthStore } from '@/entities/auth/model/store'
-import { useFileTreeStore } from '@/features/file-explorer/stores/file-tree-store'
-import { WEBSOCKET_CONFIG } from '@/features/file-explorer/config/websocket-config'
+import { FILE_EXPLORER_WEBSOCKET_CONFIG } from '@/features/file-explorer/config/websocket-config'
 
 const ProjectPage = () => {
   const accessToken = useAuthStore(state => state.accessToken)
   const { connect, disconnect, reconnect, isConnecting, isConnected, error, status } = useWebSocketClient()
-  const { clear } = useFileTreeStore()
   const [isRetrying, setIsRetrying] = useState(false)
 
   useEffect(() => {
     const token = accessToken || process.env.NEXT_PUBLIC_ACCESS_TOKEN || ''
     connect({
-      url: WEBSOCKET_CONFIG.WS_URL,
+      url: FILE_EXPLORER_WEBSOCKET_CONFIG.WS_URL,
       token,
     })
     return () => {
       disconnect()
-      // 파일 트리 상태 초기화
-      clear()
     }
-  }, [connect, disconnect, accessToken, clear])
+  }, [connect, disconnect, accessToken])
 
   const handleRetry = async () => {
     setIsRetrying(true)

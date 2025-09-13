@@ -1,4 +1,4 @@
-import { handleApiError } from '../lib/api-error'
+import { handleApiError } from '@/shared/lib/api-error'
 
 /**
  * 비인증 API 클라이언트 (회원가입, 로그인 등)

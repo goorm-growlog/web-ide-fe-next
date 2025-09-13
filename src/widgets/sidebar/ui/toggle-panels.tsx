@@ -7,7 +7,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/shared/ui/shadcn'
+} from '@/shared/ui/shadcn/accordion'
 import { TAB_DEFINITIONS } from '@/widgets/sidebar/constants/config'
 import { useOpenPanels } from '@/widgets/sidebar/model/hooks'
 import type { PanelKey, TabKey } from '@/widgets/sidebar/model/types'

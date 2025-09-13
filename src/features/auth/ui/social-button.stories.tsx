@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import SocialButton from './social-button'
+import SocialButton from '@/features/auth/ui/social-button'
 
 const meta: Meta<typeof SocialButton> = {
   title: 'Features/Auth/SocialButton',

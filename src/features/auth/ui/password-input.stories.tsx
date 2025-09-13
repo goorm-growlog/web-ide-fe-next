@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/nextjs-vite'
 import type { JSX } from 'react'
 import { useState } from 'react'
-import PasswordInput from './password-input'
+import PasswordInput from '@/features/auth/ui/password-input'
 
 // 메타 설정과 적절한 타이핑
 const meta: Meta<typeof PasswordInput> = {

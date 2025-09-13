@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import InputWithButton from './input-with-button'
+import InputWithButton from '@/features/auth/ui/input-with-button'
 
 const meta: Meta<typeof InputWithButton> = {
   title: 'Features/Auth/InputWithButton',

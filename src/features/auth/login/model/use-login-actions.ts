@@ -5,10 +5,10 @@ import { useCallback } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/entities/auth/model/store'
+import { login as loginApi } from '@/features/auth/login/api/login'
 import type { LoginFormData } from '@/features/auth/model/types'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
-import { login as loginApi } from '../api/login'
 
 export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
   const setAuth = useAuthStore(state => state.setAuth)

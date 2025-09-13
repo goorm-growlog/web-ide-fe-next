@@ -4,7 +4,7 @@ import { Eye, EyeOff } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { forwardRef, useState } from 'react'
 import { cn } from '@/shared/lib/utils'
-import { Input } from '@/shared/ui/shadcn'
+import { Input } from '@/shared/ui/shadcn/input'
 
 type InputProps = ComponentProps<'input'>
 

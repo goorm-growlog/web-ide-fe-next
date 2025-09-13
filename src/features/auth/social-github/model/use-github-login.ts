@@ -2,8 +2,8 @@
 
 import { useCallback } from 'react'
 import { toast } from 'sonner'
+import { initiateGitHubAuth } from '@/features/auth/social-github/api/github-auth'
 import { getErrorMessage } from '@/shared/types/error'
-import { initiateGitHubAuth } from '../api/github-auth'
 
 /**
  * GitHub 소셜 로그인 액션 훅

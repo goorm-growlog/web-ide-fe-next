@@ -1,6 +1,9 @@
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
-import type { ProfileAvatarProps } from './types'
-import { ALLOWED_TYPES, MAX_SIZE } from './utils'
+import type { ProfileAvatarProps } from '@/features/auth/profile-avatar/model/types'
+import {
+  ALLOWED_TYPES,
+  MAX_SIZE,
+} from '@/features/auth/profile-avatar/model/utils'
 
 export const useProfileAvatar = ({
   src = 'https://github.com/shadcn.png',

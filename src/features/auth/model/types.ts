@@ -1,10 +1,10 @@
 import { z } from 'zod'
-import type { ApiResponse } from '@/shared/types/api'
 import {
   emailSchema,
   loginPasswordSchema,
   type passwordResetSchema,
-} from './validation-schema'
+} from '@/features/auth/model/validation-schema'
+import type { ApiResponse } from '@/shared/types/api'
 
 // 폼 관련 타입
 export const loginSchema = z.object({

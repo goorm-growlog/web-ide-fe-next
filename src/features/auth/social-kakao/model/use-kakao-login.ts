@@ -2,8 +2,8 @@
 
 import { useCallback } from 'react'
 import { toast } from 'sonner'
+import { initiateKakaoAuth } from '@/features/auth/social-kakao/api/kakao-auth'
 import { getErrorMessage } from '@/shared/types/error'
-import { initiateKakaoAuth } from '../api/kakao-auth'
 
 /**
  * Kakao 소셜 로그인 액션 훅

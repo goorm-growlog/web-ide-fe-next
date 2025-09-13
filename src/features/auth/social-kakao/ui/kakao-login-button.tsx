@@ -1,7 +1,7 @@
 'use client'
 
+import { useKakaoLogin } from '@/features/auth/social-kakao/model/use-kakao-login'
 import SocialButton from '@/features/auth/ui/social-button'
-import { useKakaoLogin } from '../model/use-kakao-login'
 
 /**
  * Kakao 소셜 로그인 버튼

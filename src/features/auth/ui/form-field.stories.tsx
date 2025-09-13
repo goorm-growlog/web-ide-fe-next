@@ -1,9 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { FormProvider, useForm } from 'react-hook-form'
-import { type FormData, formSchema } from '../model/validation-schema'
-import FormField from './form-field'
-import PasswordInput from './password-input'
+import {
+  type FormData,
+  formSchema,
+} from '@/features/auth/model/validation-schema'
+import FormField from '@/features/auth/ui/form-field'
+import PasswordInput from '@/features/auth/ui/password-input'
+import { logger } from '@/shared/lib/logger'
 
 // 메타 구성 (Storybook용)
 const meta: Meta<typeof FormField> = {
@@ -118,8 +122,7 @@ export const LiveValidationForm: Story = {
     })
 
     const onSubmit = (data: FormData) => {
-      // 검증 성공 시 데이터 알림
-      alert(`Validation success! Data: ${JSON.stringify(data, null, 2)}`)
+      logger.debug('Form submitted:', data)
     }
 
     return (

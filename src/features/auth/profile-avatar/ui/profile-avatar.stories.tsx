@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { useState } from 'react'
-import ProfileAvatar from './profile-avatar'
+import ProfileAvatar from '@/features/auth/profile-avatar/ui/profile-avatar'
 
 const meta: Meta<typeof ProfileAvatar> = {
   title: 'Features/Auth/ProfileAvatar',

@@ -2,7 +2,7 @@ import { FormProvider } from 'react-hook-form'
 import type { PasswordResetData } from '@/features/auth/model/validation-schema'
 import { usePasswordResetForm } from '@/features/auth/password-reset/model/use-password-reset-form'
 import FormField from '@/features/auth/ui/form-field'
-import { Input } from '@/shared/ui/shadcn'
+import { Input } from '@/shared/ui/shadcn/input'
 
 interface PasswordResetFormProps {
   onSubmit: (data: PasswordResetData) => Promise<void>

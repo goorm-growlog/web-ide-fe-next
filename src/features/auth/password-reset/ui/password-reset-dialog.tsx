@@ -1,14 +1,14 @@
 import type { PasswordResetData } from '@/features/auth/model/validation-schema'
 import PasswordResetForm from '@/features/auth/password-reset/ui/password-reset-form'
+import { Button } from '@/shared/ui/shadcn/button'
 import {
-  Button,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/shared/ui/shadcn'
+} from '@/shared/ui/shadcn/dialog'
 
 interface PasswordResetDialogProps {
   open: boolean

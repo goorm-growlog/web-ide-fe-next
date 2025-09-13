@@ -3,9 +3,9 @@
 import { useCallback } from 'react'
 import { toast } from 'sonner'
 import type { PasswordResetData } from '@/features/auth/model/validation-schema'
+import { resetPassword } from '@/features/auth/password-reset/api/reset-password'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
-import { resetPassword } from '../api/reset-password'
 
 export const usePasswordResetActions = () => {
   const { isLoading, withLoading } = useLoadingState()
