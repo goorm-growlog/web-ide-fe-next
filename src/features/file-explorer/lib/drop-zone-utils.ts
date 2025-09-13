@@ -1,5 +1,5 @@
 import type { ItemInstance } from '@headless-tree/core'
-import type { FileNode } from '../model/types'
+import type { FileNode } from '@/features/file-explorer/types/client'
 
 /**
  * 주어진 아이템이 드롭 영역인지 판단
