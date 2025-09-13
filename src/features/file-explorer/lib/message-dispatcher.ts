@@ -1,4 +1,4 @@
-import { FILE_EXPLORER_ERROR_MESSAGES } from '@/features/file-explorer/constants/error-messages'
+import { FILE_EXPLORER_ERROR_MESSAGES } from '@/features/file-explorer/constants/error-constants'
 import type { TreeMessageHandlers } from '@/features/file-explorer/lib/tree-message-handlers'
 import {
   FILE_TREE_MESSAGE_TYPES,

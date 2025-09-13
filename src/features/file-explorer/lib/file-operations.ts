@@ -1,6 +1,6 @@
 import type { ItemInstance } from '@headless-tree/core'
-import { FILE_EXPLORER_ERROR_MESSAGES } from '@/features/file-explorer/constants/error-messages'
-import { FILE_EXPLORER_LOG_MESSAGES } from '@/features/file-explorer/constants/log-messages'
+import { FILE_EXPLORER_ERROR_MESSAGES } from '@/features/file-explorer/constants/error-constants'
+import { FILE_EXPLORER_LOG_MESSAGES } from '@/features/file-explorer/constants/log-constants'
 import { useFileTreeStore } from '@/features/file-explorer/stores/file-tree-store'
 import type { FileNode } from '@/features/file-explorer/types/client'
 

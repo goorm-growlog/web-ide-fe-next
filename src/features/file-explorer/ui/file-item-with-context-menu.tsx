@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { FILE_EXPLORER_UI_TEXTS } from '@/features/file-explorer/constants/ui-texts'
+import { FILE_EXPLORER_UI_TEXTS } from '@/features/file-explorer/constants/ui-constants'
 import type { FileItemWithContextMenuProps } from '@/features/file-explorer/types/file-explorer'
 import { FILE_SHORTCUTS } from '@/shared/constants/keyboard-shortcuts'
 import {

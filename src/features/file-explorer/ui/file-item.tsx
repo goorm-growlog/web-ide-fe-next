@@ -7,7 +7,7 @@ import {
   FolderOpenIcon,
 } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
-import { isItemDropZone } from '@/features/file-explorer/lib/drop-zone-utils'
+import { isItemDropZone } from '@/features/file-explorer/lib/drop-zone-helpers'
 import type { FileItemProps } from '@/features/file-explorer/types/file-explorer'
 import { INDENT_SIZE_PX } from '@/shared/constants/ui'
 import { cn } from '@/shared/lib/utils'

@@ -7,7 +7,7 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
-import { FILE_EXPLORER_UI_TEXTS } from '@/features/file-explorer/constants/ui-texts'
+import { FILE_EXPLORER_UI_TEXTS } from '@/features/file-explorer/constants/ui-constants'
 import type { FileNodeType } from '@/features/file-explorer/types/api'
 import {
   Button,
