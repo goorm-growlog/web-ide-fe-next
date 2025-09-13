@@ -3,9 +3,9 @@ import {
   MESSAGE_TYPES,
   type SystemMessage,
   type TalkMessage,
-} from '@/features/chat/model/message-types'
-import { SystemMessageItem } from '@/features/chat/ui/message-items/system-message-item'
-import { TalkMessageItem } from '@/features/chat/ui/message-items/talk-message-item'
+} from '@/features/chat/types/message-types'
+import { SystemMessageItem } from '@/features/chat/ui/message-types/system-message-item'
+import { TalkMessageItem } from '@/features/chat/ui/message-types/talk-message-item'
 
 interface MessageContentProps {
   message: SystemMessage | TalkMessage

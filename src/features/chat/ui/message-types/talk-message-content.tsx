@@ -1,7 +1,7 @@
-import { getPartText } from '@/features/chat/lib/code-link-utils'
-import type { MessagePart } from '@/features/chat/model/message-types'
-import { CodeLink } from '@/features/chat/ui/shared/code-link'
-import { MessageTime } from '@/features/chat/ui/shared/message-time'
+import { getPartText } from '@/features/chat/lib/file-link-parser'
+import type { MessagePart } from '@/features/chat/types/message-types'
+import { CodeLink } from '@/features/chat/ui/common/code-link'
+import { MessageTime } from '@/features/chat/ui/common/message-time'
 import { cn } from '@/shared/lib/utils'
 
 interface TalkMessageContentProps {

@@ -1,9 +1,9 @@
 'use client'
 
 import { memo, useCallback } from 'react'
-import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/config'
-import { useChatMessages } from '@/features/chat/model/use-chat-messages'
-import { useChatScroll } from '@/features/chat/model/use-chat-scroll'
+import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/chat-config'
+import { useChatScroll } from '@/features/chat/hooks/use-auto-scroll'
+import { useChatMessages } from '@/features/chat/hooks/use-messages'
 import { MessageList } from '@/features/chat/ui/message-list/message-list'
 import { SCROLLABLE_PANEL_CONTENT_STYLES } from '@/shared/constants/ui'
 import { cn } from '@/shared/lib/utils'

@@ -1,10 +1,10 @@
 import { memo, useCallback, useMemo } from 'react'
-import { shouldShowDateHeader } from '@/features/chat/lib/message-utils'
+import { shouldShowDateHeader } from '@/features/chat/lib/message-helpers'
 import {
   MESSAGE_TYPES,
   type Message,
-} from '@/features/chat/model/message-types'
-import { DateHeader } from '@/features/chat/ui/message-items/system-message-item'
+} from '@/features/chat/types/message-types'
+import { DateHeader } from '@/features/chat/ui/message-types/system-message-item'
 import { MessageContent } from './message-content'
 
 interface MessageItemProps {

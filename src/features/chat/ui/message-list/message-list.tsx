@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, useMemo } from 'react'
-import type { Message } from '@/features/chat/model/message-types'
+import type { Message } from '@/features/chat/types/message-types'
 import { EmptyMessageList } from './empty-message-list'
 import { MessageItem } from './message-item'
 

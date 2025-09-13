@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { getSystemMessageText } from '@/features/chat/lib/message-utils'
-import type { SystemMessage } from '@/features/chat/model/message-types'
+import { getSystemMessageText } from '@/features/chat/lib/message-helpers'
+import type { SystemMessage } from '@/features/chat/types/message-types'
 import { formatDate } from '@/shared/lib/date-utils'
 import { cn } from '@/shared/lib/utils'
 import { Badge } from '@/shared/ui/shadcn'

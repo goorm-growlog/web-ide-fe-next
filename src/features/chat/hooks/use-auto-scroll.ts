@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import type { Message } from '@/features/chat/model/message-types'
+import type { Message } from '@/features/chat/types/message-types'
 import { requestScrollToBottom } from '@/shared/lib/scroll-utils'
 
 // Radix UI ScrollArea 컴포넌트와 함께 사용하도록 설계

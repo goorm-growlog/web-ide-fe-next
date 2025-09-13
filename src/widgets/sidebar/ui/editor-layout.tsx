@@ -1,7 +1,7 @@
 'use client'
 
 import { memo, type ReactNode } from 'react'
-import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/config'
+import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/chat-config'
 import { ChatPanel } from '@/features/chat/ui/chat-panel'
 import { cn } from '@/shared/lib/utils'
 import { ResizableGrowHandle } from '@/shared/ui/resizable-grow-handle'

@@ -1,8 +1,8 @@
 import { memo, useMemo } from 'react'
-import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/config'
-import { parseChatMessage } from '@/features/chat/lib/code-link-utils'
-import type { TalkMessage } from '@/features/chat/model/message-types'
-import { OtherUserAvatar } from '@/features/chat/ui/shared/other-user-avatar'
+import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/chat-config'
+import { parseChatMessage } from '@/features/chat/lib/file-link-parser'
+import type { TalkMessage } from '@/features/chat/types/message-types'
+import { OtherUserAvatar } from '@/features/chat/ui/common/other-user-avatar'
 import { cn } from '@/shared/lib/utils'
 import { TalkMessageContent } from './talk-message-content'
 
