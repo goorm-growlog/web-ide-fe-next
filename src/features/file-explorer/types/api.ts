@@ -1,43 +1,43 @@
-export type FileNodeType = 'file' | 'folder'
+export type FileTreeNodeType = 'file' | 'folder'
 
 /**
- * 서버에서 받는 트리 노드 데이터 구조
+ * 서버에서 받는 파일 트리 노드 데이터 구조
  * @param id 노드의 고유 식별자
  * @param path 파일/폴더의 경로
  * @param type 노드 타입 (파일 또는 폴더)
  * @param children 자식 노드들 (폴더인 경우)
  */
-export interface TreeNodeDto {
+export interface FileTreeNodeDto {
   id: number
   path: string
-  type: FileNodeType
-  children?: TreeNodeDto[] | null
+  type: FileTreeNodeType
+  children?: FileTreeNodeDto[] | null
 }
 
 /**
- * 트리 노드 추가 이벤트 페이로드
+ * 파일 트리 노드 추가 이벤트 페이로드
  * @param path 추가될 노드의 경로
  * @param type 추가될 노드의 타입
  */
-export interface TreeAddPayload {
+export interface FileTreeAddPayload {
   path: string
-  type: FileNodeType
+  type: FileTreeNodeType
 }
 
 /**
- * 트리 노드 제거 이벤트 페이로드
+ * 파일 트리 노드 제거 이벤트 페이로드
  * @param path 제거될 노드의 경로
  */
-export interface TreeRemovePayload {
+export interface FileTreeRemovePayload {
   path: string
 }
 
 /**
- * 트리 노드 이동 이벤트 페이로드
+ * 파일 트리 노드 이동 이벤트 페이로드
  * @param fromPath 이동할 노드의 원본 경로
  * @param toPath 이동할 노드의 대상 경로
  */
-export interface TreeMovePayload {
+export interface FileTreeMovePayload {
   fromPath: string
   toPath: string
 }
@@ -53,47 +53,47 @@ export type FileTreeMessageType =
   (typeof FILE_TREE_MESSAGE_TYPES)[keyof typeof FILE_TREE_MESSAGE_TYPES]
 
 /**
- * 트리 초기화 메시지
+ * 파일 트리 초기화 서버 메시지
  * @param type 메시지 타입
  * @param payload 초기화할 트리 노드 데이터
  */
-export interface TreeInitMessage {
+export interface FileTreeInitServerMessage {
   type: 'tree:init'
-  payload: TreeNodeDto[]
+  payload: FileTreeNodeDto[]
 }
 
 /**
- * 트리 노드 추가 메시지
+ * 파일 트리 노드 추가 서버 메시지
  * @param type 메시지 타입
  * @param payload 추가할 노드 정보
  */
-export interface TreeAddMessage {
+export interface FileTreeAddServerMessage {
   type: 'tree:add'
-  payload: TreeAddPayload
+  payload: FileTreeAddPayload
 }
 
 /**
- * 트리 노드 제거 메시지
+ * 파일 트리 노드 제거 서버 메시지
  * @param type 메시지 타입
  * @param payload 제거할 노드 정보
  */
-export interface TreeRemoveMessage {
+export interface FileTreeRemoveServerMessage {
   type: 'tree:remove'
-  payload: TreeRemovePayload
+  payload: FileTreeRemovePayload
 }
 
 /**
- * 트리 노드 이동 메시지
+ * 파일 트리 노드 이동 서버 메시지
  * @param type 메시지 타입
  * @param payload 이동할 노드 정보
  */
-export interface TreeMoveMessage {
+export interface FileTreeMoveServerMessage {
   type: 'tree:move'
-  payload: TreeMovePayload
+  payload: FileTreeMovePayload
 }
 
-export type FileTreeMessage =
-  | TreeInitMessage
-  | TreeAddMessage
-  | TreeRemoveMessage
-  | TreeMoveMessage
+export type FileTreeServerMessage =
+  | FileTreeInitServerMessage
+  | FileTreeAddServerMessage
+  | FileTreeRemoveServerMessage
+  | FileTreeMoveServerMessage

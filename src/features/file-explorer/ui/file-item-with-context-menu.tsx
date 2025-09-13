@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 import { FILE_EXPLORER_UI_TEXTS } from '@/features/file-explorer/constants/ui-constants'
 import type { FileItemWithContextMenuProps } from '@/features/file-explorer/types/file-explorer'
+import FileItem from '@/features/file-explorer/ui/file-item'
 import { FILE_SHORTCUTS } from '@/shared/constants/keyboard-shortcuts'
+import { COMMON_UI_TEXTS } from '@/shared/constants/ui'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -9,8 +11,7 @@ import {
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuTrigger,
-} from '@/shared/ui/shadcn'
-import FileItem from './file-item'
+} from '@/shared/ui/shadcn/context-menu'
 
 const FileItemWithContextMenu = ({
   item,
@@ -49,14 +50,14 @@ const FileItemWithContextMenu = ({
           <>
             <ContextMenuSeparator />
             <ContextMenuItem onClick={() => onAction('rename', item)}>
-              {FILE_EXPLORER_UI_TEXTS.RENAME}
+              {COMMON_UI_TEXTS.RENAME}
               <ContextMenuShortcut>{FILE_SHORTCUTS.RENAME}</ContextMenuShortcut>
             </ContextMenuItem>
             <ContextMenuItem
               variant="destructive"
               onClick={() => onAction('delete', item)}
             >
-              {FILE_EXPLORER_UI_TEXTS.DELETE}
+              {COMMON_UI_TEXTS.DELETE}
               <ContextMenuShortcut>{FILE_SHORTCUTS.DELETE}</ContextMenuShortcut>
             </ContextMenuItem>
           </>

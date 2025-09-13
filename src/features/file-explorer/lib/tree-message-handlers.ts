@@ -1,10 +1,10 @@
 import type React from 'react'
 import { convertTreeNodeDtoToFileData } from '@/features/file-explorer/lib/tree-converter'
 import type {
-  TreeAddPayload,
-  TreeMovePayload,
-  TreeNodeDto,
-  TreeRemovePayload,
+  FileTreeAddPayload,
+  FileTreeMovePayload,
+  FileTreeNodeDto,
+  FileTreeRemovePayload,
 } from '@/features/file-explorer/types/api'
 import type { FileNode } from '@/features/file-explorer/types/client'
 
@@ -24,29 +24,28 @@ export interface TreeMessageDependencies {
  * 각 핸들러는 특정 유형의 트리 작업을 처리
  */
 export interface TreeMessageHandlers {
-  handleTreeInit: (payload: TreeNodeDto[]) => void
-  handleTreeAdd: (payload: TreeAddPayload) => void
-  handleTreeRemove: (payload: TreeRemovePayload) => void
-  handleTreeMove: (payload: TreeMovePayload) => void
+  handleTreeInit: (payload: FileTreeNodeDto[]) => void
+  handleTreeAdd: (payload: FileTreeAddPayload) => void
+  handleTreeRemove: (payload: FileTreeRemovePayload) => void
+  handleTreeMove: (payload: FileTreeMovePayload) => void
 }
 
 /**
  * 트리 메시지 핸들러를 생성하는 팩토리 함수
  * WebSocket 메시지를 파일 트리의 상태 업데이트로 변환
  *
- * @param deps - 상태 관리 함수들을 포함하는 의존성
+ * @param {TreeMessageDependencies} TreeMessageDependencies - 상태 관리 함수들을 포함하는 의존성
  * @returns 모든 트리 메시지 핸들러를 포함하는 객체
  */
-export const createTreeMessageHandlers = (
-  deps: TreeMessageDependencies,
-): TreeMessageHandlers => {
-  const { setFlatFileNodes, setIsLoading } = deps
-
+export const createTreeMessageHandlers = ({
+  setFlatFileNodes,
+  setIsLoading,
+}: TreeMessageDependencies): TreeMessageHandlers => {
   /**
    * 서버로부터의 초기 트리 데이터 처리
    * 서버 DTO를 클라이언트 측 파일 노드로 변환하고 로딩을 false로 설정
    */
-  const handleTreeInit = (payload: TreeNodeDto[]) => {
+  const handleTreeInit = (payload: FileTreeNodeDto[]) => {
     const tree = convertTreeNodeDtoToFileData(payload)
     setFlatFileNodes(tree)
     setIsLoading(false)
@@ -56,7 +55,7 @@ export const createTreeMessageHandlers = (
    * 트리에 새로운 파일이나 폴더 추가 처리
    * 새로운 파일 노드를 생성하고 부모의 자식 배열을 업데이트
    */
-  const handleTreeAdd = (payload: TreeAddPayload) => {
+  const handleTreeAdd = (payload: FileTreeAddPayload) => {
     setFlatFileNodes((prev: Record<string, FileNode> | null) => {
       if (!prev) return prev
 
@@ -88,7 +87,7 @@ export const createTreeMessageHandlers = (
    * 트리에서 파일이나 폴더 제거 처리
    * 노드를 제거하고 부모 노드들의 참조를 정리
    */
-  const handleTreeRemove = (payload: TreeRemovePayload) => {
+  const handleTreeRemove = (payload: FileTreeRemovePayload) => {
     setFlatFileNodes((prev: Record<string, FileNode> | null) => {
       if (!prev) return prev
 
@@ -116,7 +115,7 @@ export const createTreeMessageHandlers = (
    * 트리에서 파일이나 폴더 이동 처리
    * 노드를 새로운 위치로 이동하고 관련된 모든 참조를 업데이트
    */
-  const handleTreeMove = (payload: TreeMovePayload) => {
+  const handleTreeMove = (payload: FileTreeMovePayload) => {
     setFlatFileNodes((prev: Record<string, FileNode> | null) => {
       if (!prev || !prev[payload.fromPath]) return prev
 

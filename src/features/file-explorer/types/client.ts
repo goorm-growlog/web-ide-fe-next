@@ -29,6 +29,5 @@ export interface FileNode {
 export interface FileTreeReturn {
   tree: TreeInstance<FileNode> | null
   isLoading: boolean
-  error: string | null
-  refresh: () => void
+  clear: () => void
 }

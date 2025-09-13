@@ -8,17 +8,17 @@ import {
   useState,
 } from 'react'
 import { FILE_EXPLORER_UI_TEXTS } from '@/features/file-explorer/constants/ui-constants'
-import type { FileNodeType } from '@/features/file-explorer/types/api'
+import type { FileTreeNodeType } from '@/features/file-explorer/types/api'
+import { Button } from '@/shared/ui/shadcn/button'
 import {
-  Button,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  Input,
-} from '@/shared/ui/shadcn'
+} from '@/shared/ui/shadcn/dialog'
+import { Input } from '@/shared/ui/shadcn/input'
 
 export interface FileCreateDialogRef {
   readonly openAsFile: (targetPath: string) => void
@@ -35,7 +35,7 @@ export const FileCreateDialog = forwardRef<
   FileCreateDialogProps
 >(({ createFile, createFolder }, ref) => {
   const [open, setOpen] = useState(false)
-  const [type, setType] = useState<FileNodeType | null>(null)
+  const [type, setType] = useState<FileTreeNodeType | null>(null)
   const [targetPath, setTargetPath] = useState('')
   const [inputValue, setInputValue] = useState('')
 

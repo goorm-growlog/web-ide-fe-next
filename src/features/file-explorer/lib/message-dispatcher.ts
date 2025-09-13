@@ -2,8 +2,9 @@ import { FILE_EXPLORER_ERROR_MESSAGES } from '@/features/file-explorer/constants
 import type { TreeMessageHandlers } from '@/features/file-explorer/lib/tree-message-handlers'
 import {
   FILE_TREE_MESSAGE_TYPES,
-  type FileTreeMessage,
+  type FileTreeServerMessage,
 } from '@/features/file-explorer/types/api'
+import { logger } from '@/shared/lib/logger'
 
 export interface MessageHandlerConfig {
   handlers: TreeMessageHandlers
@@ -16,7 +17,7 @@ export const createMessageDispatcher = ({
 }: MessageHandlerConfig) => {
   return (message: { body: string }) => {
     try {
-      const data: FileTreeMessage = JSON.parse(message.body)
+      const data: FileTreeServerMessage = JSON.parse(message.body)
 
       switch (data.type) {
         case FILE_TREE_MESSAGE_TYPES.TREE_INIT:
@@ -33,12 +34,12 @@ export const createMessageDispatcher = ({
           break
         default: {
           const unknownError = `Unknown message type: ${String(data)}`
-          console.warn(unknownError)
+          logger.warn(unknownError)
           onError(FILE_EXPLORER_ERROR_MESSAGES.UNKNOWN_MESSAGE)
         }
       }
     } catch (parseError) {
-      console.error(
+      logger.error(
         `${FILE_EXPLORER_ERROR_MESSAGES.LOG_MESSAGE_PARSING_FAILED}`,
         parseError,
       )

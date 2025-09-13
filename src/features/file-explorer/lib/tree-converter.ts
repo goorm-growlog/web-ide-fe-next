@@ -1,5 +1,7 @@
-import type { TreeNodeDto } from '@/features/file-explorer/types/api'
-import type { FileNode, FileTree } from '@/features/file-explorer/types/client'
+import type { FileTreeNodeDto } from '@/features/file-explorer/types/api'
+import type { FileNode } from '@/features/file-explorer/types/client'
+
+type FileTree = Record<string, FileNode>
 
 const PATH_SEPARATOR = '/'
 
@@ -14,13 +16,13 @@ const normalizePath = (path: string, isRoot = false): string => {
  * 이전 방식의 장점을 적용한 개선된 버전
  */
 export const convertTreeNodeDtoToFileData = (
-  nodes: TreeNodeDto[],
+  nodes: FileTreeNodeDto[],
 ): FileTree => {
   if (!nodes || nodes.length === 0) return {}
 
   const tree: FileTree = {}
 
-  const convertNode = (node: TreeNodeDto, isRoot = false) => {
+  const convertNode = (node: FileTreeNodeDto, isRoot = false) => {
     const normalizedPath = normalizePath(node.path, isRoot)
 
     const fileNode: FileNode = {
