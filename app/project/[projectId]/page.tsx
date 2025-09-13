@@ -36,7 +36,7 @@ export default function ProjectDetailPage() {
         } else if (isProjectInactive(project)) {
           // INACTIVE 프로젝트: openProject API 호출 필요
           
-          const response = await authApi.post(`projects/${projectId}/open`).json()
+          const response = await authApi.post(`/projects/${projectId}/open`).json()
           toast.success('Project has been activated')
           
           // 프로젝트 상태가 변경되었으므로 캐시 무효화

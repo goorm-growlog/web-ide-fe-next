@@ -8,7 +8,7 @@ import { transformToProject, transformToProjectMember } from '../api/project'
  */
 export function useProjects(type?: 'own' | 'joined') {
   const { data, error, isLoading, mutate } = useSWR(
-    type ? `projects?type=${type}` : 'projects',
+    type ? `/projects?type=${type}` : '/projects',
     // fetcher는 전역 설정에서 자동으로 사용됨
   )
 
@@ -28,7 +28,7 @@ export function useProjects(type?: 'own' | 'joined') {
  */
 export function useProject(projectId: number | null) {
   const { data, error, isLoading, mutate } = useSWR(
-    projectId ? `projects/${projectId}` : null,
+    projectId ? `/projects/${projectId}` : null,
     // fetcher는 전역 설정에서 자동으로 사용됨
   )
 
@@ -48,7 +48,7 @@ export function useProject(projectId: number | null) {
  */
 export function useProjectMembers(projectId: number | null) {
   const { data, error, isLoading, mutate } = useSWR(
-    projectId ? `projects/${projectId}/members` : null,
+    projectId ? `/projects/${projectId}/members` : null,
     // fetcher는 전역 설정에서 자동으로 사용됨
   )
 
