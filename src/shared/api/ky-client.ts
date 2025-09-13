@@ -3,9 +3,6 @@ import { getSession, signOut } from 'next-auth/react'
 import { handleApiError } from '@/shared/lib/api-error'
 import type { ApiResponse } from '@/shared/types/api'
 
-// 모든 환경에서 프록시 사용
-const BASE_URL = '' // 항상 상대 경로 사용
-
 // 토큰 갱신 동시성 처리를 위한 Promise 캐시
 let refreshPromise: Promise<string> | null = null
 
@@ -50,7 +47,6 @@ async function getCachedSession(): Promise<SessionData | null> {
  * 기본 API 클라이언트 (인증 불필요)
  */
 export const api = ky.create({
-  prefixUrl: BASE_URL,
   credentials: 'include',
   timeout: 10000,
   retry: { limit: 1 },
@@ -70,7 +66,6 @@ export const api = ky.create({
  * 인증 API 클라이언트
  */
 export const authApi = ky.create({
-  prefixUrl: BASE_URL,
   credentials: 'include',
   timeout: 10000,
   retry: { limit: 1 },

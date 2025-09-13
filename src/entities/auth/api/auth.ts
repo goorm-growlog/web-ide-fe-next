@@ -24,7 +24,7 @@ export interface SignupData {
  */
 export const loginApi = async (data: LoginFormData): Promise<LoginData> => {
   const response = await api
-    .post('auth/login', {
+    .post('/auth/login', {
       json: {
         email: data.email,
         password: data.password,
@@ -59,7 +59,7 @@ export const resetPasswordApi = async (
   data: PasswordResetData,
 ): Promise<void> => {
   const response = await api
-    .post('auth/reset-password', {
+    .post('/auth/reset-password', {
       json: {
         name: data.name,
         email: data.email,
@@ -79,18 +79,28 @@ export const githubLoginApi = async (data: {
   email: string | null
   avatarUrl: string | null
 }): Promise<{ accessToken: string }> => {
-  const response = await api
-    .post('auth/login/github', {
-      json: {
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        avatarUrl: data.avatarUrl,
-      },
-    })
-    .json<ApiResponse<{ accessToken: string }>>()
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000'
+  const response = await fetch(`${baseUrl}/auth/login/github`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      avatarUrl: data.avatarUrl,
+    }),
+  })
 
-  return apiHelpers.extractData(response)
+  if (!response.ok) {
+    throw new Error(`GitHub login failed: ${response.status}`)
+  }
+
+  const result = (await response.json()) as ApiResponse<{ accessToken: string }>
+  return apiHelpers.extractData(result)
 }
 
 /**
@@ -102,7 +112,7 @@ export const kakaoLoginApi = async (data: {
   accessToken: string
 }): Promise<{ accessToken: string }> => {
   const response = await api
-    .post('auth/login/kakao', {
+    .post('/auth/login/kakao', {
       json: {
         userId: data.userId,
         name: data.name,
@@ -118,7 +128,7 @@ export const kakaoLoginApi = async (data: {
  * 로그아웃 API
  */
 export const logoutApi = async (): Promise<void> => {
-  const response = await authApi.post('auth/logout').json<ApiResponse<null>>()
+  const response = await authApi.post('/auth/logout').json<ApiResponse<null>>()
 
   apiHelpers.checkSuccess(response)
 }
