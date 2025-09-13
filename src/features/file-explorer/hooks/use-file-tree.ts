@@ -3,7 +3,7 @@ import { useTree } from '@headless-tree/react'
 import { useEffect } from 'react'
 import { useWebSocketClient } from '@/entities/websocket/stores/websocket-client'
 import { useFileTreeConfig } from '@/features/file-explorer/config/file-tree-config'
-import { WEBSOCKET_CONFIG } from '@/features/file-explorer/config/websocket-config'
+import { FILE_EXPLORER_WEBSOCKET_CONFIG } from '@/features/file-explorer/config/websocket-config'
 import { createMessageDispatcher } from '@/features/file-explorer/lib/message-dispatcher'
 import { createTreeMessageHandlers } from '@/features/file-explorer/lib/tree-message-handlers'
 import { useFileTreeStore } from '@/features/file-explorer/stores/file-tree-store'
@@ -51,13 +51,14 @@ const useFileTree = (projectId: string): FileTreeReturn => {
     })
 
     const subId = subscribe(
-      WEBSOCKET_CONFIG.DESTINATIONS.SUBSCRIBE(projectId),
+      FILE_EXPLORER_WEBSOCKET_CONFIG.DESTINATIONS.SUBSCRIBE(projectId),
       messageDispatcher,
     )
 
     if (subId) {
       publish({
-        destination: WEBSOCKET_CONFIG.DESTINATIONS.PUBLISH_INIT(projectId),
+        destination:
+          FILE_EXPLORER_WEBSOCKET_CONFIG.DESTINATIONS.PUBLISH_INIT(projectId),
       })
     }
 

@@ -1,15 +1,15 @@
 /**
- * WebSocket Configuration for File Explorer
+ * WebSocket Configuration for Chat
  * WebSocket connection and STOMP destination settings
  */
-export const FILE_EXPLORER_WEBSOCKET_CONFIG = {
+export const CHAT_WEBSOCKET_CONFIG = {
   WS_URL: process.env.NEXT_PUBLIC_URL
     ? `${process.env.NEXT_PUBLIC_URL}/ws`
     : 'https://growlog-web-ide.duckdns.org/ws',
 
   // STOMP Destinations
   DESTINATIONS: {
-    SUBSCRIBE: (projectId: string) => `/topic/projects/${projectId}/tree`,
-    PUBLISH_INIT: (projectId: string) => `/app/projects/${projectId}/tree/init`,
+    SUBSCRIBE: (projectId: string) => `/topic/projects/${projectId}/chat`,
+    PUBLISH_TALK: (projectId: string) => `/app/projects/${projectId}/chat/talk`,
   },
 } as const
