@@ -361,6 +361,8 @@ export function useLiveKit({
             maxBitrate: 64000, // 낮은 비트레이트로 빠른 연결
           },
         },
+        // 더 빠른 반응을 위한 설정
+        dynacast: true, // 동적 스트림 품질 조정
       })
 
       // 4. 이벤트 리스너 설정
@@ -478,11 +480,15 @@ export function useLiveKit({
     }
   }, [connect, isConnected, isConnecting, error])
 
-  // 참여자 상태 주기적 동기화 - 백업용
+  // 참여자 상태 동기화 - 나중에 들어온 사람을 위한 백업
   useEffect(() => {
     if (!isConnected || !room) return
 
-    const interval = setInterval(syncParticipants, 1000) // 1초마다 동기화
+    // 연결 직후 한 번 동기화
+    syncParticipants()
+
+    // 주기적 동기화 (간단하게)
+    const interval = setInterval(syncParticipants, 2000) // 2초마다
 
     return () => clearInterval(interval)
   }, [isConnected, room, syncParticipants])
