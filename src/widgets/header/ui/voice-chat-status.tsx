@@ -103,11 +103,6 @@ export function VoiceChatStatus({
       {/* 참가자들 */}
       {participants.map(participant => {
         const avatarInfo = getParticipantAvatarInfo(participant)
-        console.log(`VoiceChatStatus rendering participant:`, {
-          identity: participant.identity,
-          isMicrophoneEnabled: participant.isMicrophoneEnabled,
-          isSpeaking: participant.isSpeaking,
-        })
         return (
           <VoiceAvatar
             key={participant.identity}

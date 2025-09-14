@@ -68,7 +68,7 @@ export function useLiveKit({
     return participant.isMicrophoneEnabled
   }
 
-  // 참여자 상태 동기화 - LiveKit 권장 방식
+  // 참여자 상태 동기화 - 백업용
   const syncParticipants = () => {
     if (!room) return
 
@@ -83,19 +83,7 @@ export function useLiveKit({
       }),
     )
 
-    setParticipants(prev => {
-      // 참여자 순서 유지하면서 업데이트
-      const updated = newParticipants.map(newParticipant => {
-        const existing = prev.find(p => p.identity === newParticipant.identity)
-        return existing ? { ...existing, ...newParticipant } : newParticipant
-      })
-
-      // 새로 추가된 참여자들만 추가
-      const existingIdentities = new Set(updated.map(p => p.identity))
-      const newOnly = prev.filter(p => !existingIdentities.has(p.identity))
-
-      return [...updated, ...newOnly]
-    })
+    setParticipants(newParticipants)
   }
 
   // Room 이벤트 리스너 설정 - 중복 방지
@@ -103,39 +91,16 @@ export function useLiveKit({
     if (eventListenersSetup.current) return
     eventListenersSetup.current = true
 
-    console.log('Setting up room event listeners')
-
     // 연결 상태 변경
     room.on(RoomEvent.ConnectionStateChanged, (state: ConnectionState) => {
-      console.log(`Connection state changed: ${state}`)
       setConnectionState(state)
       isConnectingRef.current = false
 
       if (state === ConnectionState.Connected) {
         setError(null)
         setLocalParticipant(room.localParticipant)
-
-        // 연결 시 기존 참여자들 즉시 로드
-        const existingParticipants = Array.from(
-          room.remoteParticipants.values(),
-        )
-        const initialParticipants: Participant[] = existingParticipants.map(
-          participant => ({
-            identity: participant.identity,
-            name: participant.name || participant.identity,
-            isMicrophoneEnabled: getMicrophoneEnabled(participant),
-            isSpeaking: false,
-            volume: 100,
-          }),
-        )
-        setParticipants(initialParticipants)
-        console.log(
-          `Loaded existing participants:`,
-          initialParticipants.map(p => p.identity),
-        )
-
-        // 참여자 상태 동기화 (백업용)
-        setTimeout(syncParticipants, 100)
+        // 기존 참여자들 로드
+        syncParticipants()
       } else if (state === ConnectionState.Disconnected) {
         setParticipants([])
         setLocalParticipant(null)
@@ -145,7 +110,6 @@ export function useLiveKit({
 
     // 연결 해제
     room.on(RoomEvent.Disconnected, (reason?: DisconnectReason) => {
-      console.log('Disconnected:', reason)
       if (reason === DisconnectReason.ERROR) {
         setError('연결 오류가 발생했습니다')
       }
@@ -187,11 +151,9 @@ export function useLiveKit({
     // 트랙 상태 변경 - 실시간 업데이트
     room.on(RoomEvent.TrackMuted, (publication, participant) => {
       if (publication.kind === Track.Kind.Audio) {
-        console.log(`🔇 TrackMuted: ${participant.identity}`)
         if (participant === room.localParticipant) {
           setLocalParticipant(room.localParticipant)
         } else {
-          // 원격 참여자 상태 즉시 업데이트
           setParticipants(prev =>
             prev.map(p =>
               p.identity === participant.identity
@@ -205,11 +167,9 @@ export function useLiveKit({
 
     room.on(RoomEvent.TrackUnmuted, (publication, participant) => {
       if (publication.kind === Track.Kind.Audio) {
-        console.log(`🔊 TrackUnmuted: ${participant.identity}`)
         if (participant === room.localParticipant) {
           setLocalParticipant(room.localParticipant)
         } else {
-          // 원격 참여자 상태 즉시 업데이트
           setParticipants(prev =>
             prev.map(p =>
               p.identity === participant.identity
@@ -234,9 +194,6 @@ export function useLiveKit({
     room.on(
       RoomEvent.ParticipantConnected,
       (participant: RemoteParticipant) => {
-        console.log(`Participant connected: ${participant.identity}`)
-
-        // 새 참여자 즉시 추가
         const newParticipant: Participant = {
           identity: participant.identity,
           name: participant.name || participant.identity,
@@ -246,11 +203,9 @@ export function useLiveKit({
         }
 
         setParticipants(prev => {
-          // 중복 방지
           if (prev.some(p => p.identity === participant.identity)) {
             return prev
           }
-          console.log(`Added participant: ${participant.identity}`)
           return [...prev, newParticipant]
         })
       },
@@ -259,14 +214,9 @@ export function useLiveKit({
     room.on(
       RoomEvent.ParticipantDisconnected,
       (participant: RemoteParticipant) => {
-        console.log(`Participant disconnected: ${participant.identity}`)
-
-        // 참여자 즉시 제거
-        setParticipants(prev => {
-          const updated = prev.filter(p => p.identity !== participant.identity)
-          console.log(`Removed participant: ${participant.identity}`)
-          return updated
-        })
+        setParticipants(prev =>
+          prev.filter(p => p.identity !== participant.identity),
+        )
       },
     )
   }
@@ -330,9 +280,7 @@ export function useLiveKit({
       await Promise.race([connectPromise, timeoutPromise])
 
       // 5. 연결 완료 후 마이크 트랙 발행
-      newRoom.localParticipant
-        .setMicrophoneEnabled(true)
-        .catch(err => console.warn('마이크 활성화 실패:', err))
+      await newRoom.localParticipant.setMicrophoneEnabled(true)
 
       setRoom(newRoom)
       roomRef.current = newRoom
@@ -382,8 +330,6 @@ export function useLiveKit({
 
       // 3. 성공 시 실제 상태로 동기화
       setLocalParticipant(currentRoom.localParticipant)
-
-      console.log(`Microphone toggled: ${newState}`)
     } catch (err) {
       console.error('마이크 토글 실패:', err)
 
@@ -431,11 +377,11 @@ export function useLiveKit({
     }
   }, [roomName, userName, userId])
 
-  // 참여자 상태 주기적 동기화 - LiveKit 권장 방식
+  // 참여자 상태 주기적 동기화 - 백업용
   useEffect(() => {
     if (!isConnected || !room) return
 
-    const interval = setInterval(syncParticipants, 300) // 300ms마다 동기화
+    const interval = setInterval(syncParticipants, 1000) // 1초마다 동기화
 
     return () => clearInterval(interval)
   }, [isConnected, room, speakingParticipants])
@@ -453,17 +399,6 @@ export function useLiveKit({
       }
     }
   }, [])
-
-  // 최종 participants 결과 로그
-  if (process.env.NODE_ENV === 'development' && participants.length > 0) {
-    console.log(
-      'Final participants for UI:',
-      participants.map(p => ({
-        identity: p.identity,
-        isMicrophoneEnabled: p.isMicrophoneEnabled,
-      })),
-    )
-  }
 
   return {
     // 상태
