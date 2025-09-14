@@ -99,14 +99,39 @@ export function VoiceChatStatus({
       })
     : null
 
+  // 참가자 볼륨 슬라이더 렌더링
+  const renderVolumeSlider = (participant: Participant) => {
+    if (!onVolumeChange) return null
+
+    return (
+      <div className="absolute top-full z-5 mt-2 translate-y-1 transform opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+        <div className="relative w-fit pt-1">
+          <div className="-translate-x-1/2 -translate-y-1/2 absolute top-0 left-1/2 h-2 w-2 rotate-45 transform border-border border-t border-l bg-background" />
+          <div className="min-w-[140px] rounded-xl border-border border-r border-b border-l bg-background p-3 shadow-xl backdrop-blur-sm">
+            <div className="mb-2 text-center">
+              <div className="font-medium text-foreground text-xs">
+                {participant.name}
+              </div>
+              <div className="text-muted-foreground text-xs">Volume</div>
+            </div>
+            <VolumeSlider
+              value={participant.volume}
+              onChange={volume => onVolumeChange(participant.identity, volume)}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      {/* 상태 표시 (이상한 상태일 때만) */}
+      {/* 상태 표시 */}
       {getStatusIcon() && (
         <div className="flex items-center">{getStatusIcon()}</div>
       )}
 
-      {/* 참가자들 - 연결 완료일 때만 표시 */}
+      {/* 참가자들 */}
       {isConnected &&
         participants.map(participant => {
           const avatarInfo = getParticipantAvatarInfo(participant)
@@ -122,39 +147,12 @@ export function VoiceChatStatus({
                 showVoiceActivity={true}
                 isSpeaking={participant.isSpeaking}
               />
-              {/* 볼륨 슬라이더 - 호버 시 하단에 말풍선 스타일로 표시 */}
-              {onVolumeChange && (
-                <div className="absolute top-full z-5 mt-2 translate-y-1 transform opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
-                  {/* 부모 요소에 tail을 위한 공간(pt-2)과 위치 기준(relative)을 설정합니다. */}
-                  <div className="relative w-fit pt-1">
-                    {/* 말풍선 꼬리 (위치를 정밀하게 조정) */}
-                    <div className="-translate-x-1/2 -translate-y-1/2 absolute top-0 left-1/2 h-2 w-2 rotate-45 transform border-border border-t border-l bg-background" />
-
-                    {/* 말풍선 본체 (위쪽 테두리를 제거하고 아래와 양옆 테두리만 적용) */}
-                    <div className="min-w-[140px] rounded-xl border-border border-r border-b border-l bg-background p-3 shadow-xl backdrop-blur-sm">
-                      <div className="mb-2 text-center">
-                        <div className="font-medium text-foreground text-xs">
-                          {participant.name}
-                        </div>
-                        <div className="text-muted-foreground text-xs">
-                          Volume
-                        </div>
-                      </div>
-                      <VolumeSlider
-                        value={participant.volume}
-                        onChange={volume =>
-                          onVolumeChange(participant.identity, volume)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
+              {renderVolumeSlider(participant)}
             </div>
           )
         })}
 
-      {/* 현재 사용자 아바타 - 연결 완료일 때만 표시 */}
+      {/* 현재 사용자 아바타 */}
       {isConnected && currentUserAvatarInfo && (
         <div className="relative z-20">
           <VoiceAvatar
@@ -167,7 +165,7 @@ export function VoiceChatStatus({
         </div>
       )}
 
-      {/* 마이크 토글 버튼 - 연결 완료일 때만 표시 */}
+      {/* 마이크 토글 버튼 */}
       {isConnected && onToggleMicrophone && (
         <Button
           variant="ghost"
@@ -197,7 +195,7 @@ export function VoiceChatStatus({
         </Button>
       )}
 
-      {/* 재연결 버튼 (에러 또는 연결 끊김 시) */}
+      {/* 재연결 버튼 */}
       {(hasError || isDisconnected) && onReconnect && (
         <Button
           variant="ghost"

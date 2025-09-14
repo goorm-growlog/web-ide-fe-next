@@ -8,6 +8,7 @@ import {
   Track,
 } from 'livekit-client'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import type { Participant, VoiceChatState } from '../model/types'
 
 interface UseLiveKitProps {
@@ -84,8 +85,8 @@ export function useLiveKit({
         setParticipantVolumes(volumes)
         return volumes
       }
-    } catch (error) {
-      console.warn('볼륨 설정 로드 실패:', error)
+    } catch {
+      // 볼륨 설정 로드 실패 시 기본값 사용
     }
     return {}
   }, [])
@@ -94,8 +95,8 @@ export function useLiveKit({
   const saveVolumeSettings = useCallback((volumes: Record<string, number>) => {
     try {
       localStorage.setItem('voice-chat-volumes', JSON.stringify(volumes))
-    } catch (error) {
-      console.warn('볼륨 설정 저장 실패:', error)
+    } catch {
+      // 볼륨 설정 저장 실패 시 무시
     }
   }, [])
 
@@ -103,12 +104,8 @@ export function useLiveKit({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const setParticipantVolume = useCallback(
     (participantIdentity: string, volume: number) => {
-      console.log('🔊 볼륨 변경 시작:', participantIdentity, volume)
-      console.log('🔊 현재 participantVolumes:', participantVolumes)
-
       setParticipantVolumes(prev => {
         const newVolumes = { ...prev, [participantIdentity]: volume }
-        console.log('🔊 새로운 participantVolumes:', newVolumes)
         saveVolumeSettings(newVolumes)
         return newVolumes
       })
@@ -118,7 +115,6 @@ export function useLiveKit({
         const updated = prev.map(p =>
           p.identity === participantIdentity ? { ...p, volume } : p,
         )
-        console.log('🔊 참여자 상태 업데이트:', updated)
         return updated
       })
 
@@ -128,20 +124,11 @@ export function useLiveKit({
         const participant =
           currentRoom.remoteParticipants.get(participantIdentity)
         if (participant) {
-          console.log(
-            '🔊 LiveKit 볼륨 설정:',
-            participantIdentity,
-            volume / 100,
-          )
           participant.setVolume(volume / 100) // LiveKit은 0-1 범위 사용
-        } else {
-          console.warn('🔊 참여자를 찾을 수 없음:', participantIdentity)
         }
-      } else {
-        console.warn('🔊 Room이 연결되지 않음')
       }
     },
-    [participantVolumes, saveVolumeSettings],
+    [saveVolumeSettings],
   )
 
   // 참여자 볼륨 가져오기 (기본값 100)
@@ -172,7 +159,6 @@ export function useLiveKit({
         },
       )
 
-      console.log('참여자 동기화:', newParticipants)
       return newParticipants
     })
   }, [room, speakingParticipants, participantVolumes, getMicrophoneEnabled])
@@ -341,24 +327,36 @@ export function useLiveKit({
     setError(null)
 
     try {
-      // 1. 마이크 권한과 토큰을 병렬로 요청
-      const [_, tokenResponse] = await Promise.all([
-        navigator.mediaDevices.getUserMedia({ audio: true }),
-        fetch('/api/livekit/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            room: roomName,
-            identity: `user_${userId}`,
-            name: userName,
-          }),
+      // 1. 마이크 권한 확인 및 요청
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true })
+      } catch (error) {
+        // NotAllowedError는 사용자가 권한을 거부한 경우
+        if (error instanceof Error && error.name === 'NotAllowedError') {
+          toast.error(
+            'Please allow microphone access in your browser settings to use voice chat.',
+          )
+        } else {
+          toast.error('Failed to connect microphone. Please try again.')
+        }
+        throw new Error('Microphone permission is required.')
+      }
+
+      // 2. 토큰 요청
+      const tokenResponse = await fetch('/api/livekit/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          room: roomName,
+          identity: `user_${userId}`,
+          name: userName,
         }),
-      ])
+      })
 
       const tokenData = await tokenResponse.json()
       const token = tokenData.token
 
-      // 2. LiveKit Room 생성 및 연결
+      // 3. LiveKit Room 생성 및 연결
       const newRoom = new Room({
         publishDefaults: {
           audioPreset: {
@@ -367,10 +365,10 @@ export function useLiveKit({
         },
       })
 
-      // 3. 이벤트 리스너 설정
+      // 4. 이벤트 리스너 설정
       setupRoomEventListeners(newRoom)
 
-      // 4. 연결 (타임아웃 포함)
+      // 5. 연결 (타임아웃 포함)
       const livekitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL
       if (!livekitUrl) throw new Error('LiveKit URL이 설정되지 않았습니다')
 
@@ -381,10 +379,10 @@ export function useLiveKit({
 
       await Promise.race([connectPromise, timeoutPromise])
 
-      // 5. 연결 완료 후 마이크 트랙 발행 (뮤트 상태로 시작)
+      // 6. 연결 완료 후 마이크 트랙 발행 (뮤트 상태로 시작)
       await newRoom.localParticipant.setMicrophoneEnabled(false)
 
-      // 6. 볼륨 설정 로드
+      // 7. 볼륨 설정 로드
       loadVolumeSettings()
 
       setRoom(newRoom)
@@ -440,8 +438,6 @@ export function useLiveKit({
       // 3. 성공 시 실제 상태로 동기화
       setLocalParticipant(currentRoom.localParticipant)
     } catch (err) {
-      console.error('마이크 토글 실패:', err)
-
       // 4. 실패 시 원래 상태로 재설정
       setLocalParticipant(currentRoom.localParticipant)
       onError?.(

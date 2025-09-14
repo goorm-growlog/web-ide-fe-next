@@ -55,6 +55,7 @@ export function ProjectLayoutClient({ projectId }: ProjectLayoutClientProps) {
         currentUser={currentUser}
         onReconnect={voiceChat.connect}
         onToggleMicrophone={voiceChat.toggleMicrophone}
+        onSetParticipantVolume={voiceChat.setParticipantVolume}
       />
 
       <div className="h-screen pt-[70px]">
