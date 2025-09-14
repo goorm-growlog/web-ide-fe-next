@@ -13,7 +13,7 @@ export function VolumeSlider({
   className,
 }: VolumeSliderProps) {
   const handleValueChange = (newValues: number[]) => {
-    if (newValues.length > 0) {
+    if (newValues.length > 0 && newValues[0] !== undefined) {
       onChange(newValues[0])
     }
   }

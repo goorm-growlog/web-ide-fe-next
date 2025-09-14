@@ -1,4 +1,5 @@
-import { apiHelpers, authApi } from '@/shared/api/ky-client'
+import { authApi } from '@/shared/api/ky-client'
+import { apiHelpers } from '@/shared/lib/api-helpers'
 import type { ApiResponse } from '@/shared/types/api'
 import type { User } from '@/shared/types/user'
 
