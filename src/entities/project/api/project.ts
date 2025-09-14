@@ -5,7 +5,8 @@ import type {
   Project,
   ProjectMember,
 } from '@/entities/project/model/types'
-import { apiHelpers, authApi } from '@/shared/api/ky-client'
+import { authApi } from '@/shared/api/ky-client'
+import { apiHelpers } from '@/shared/lib/api-helpers'
 import type { ApiResponse } from '@/shared/types/api'
 
 // API 요청/응답 스키마 타입들
