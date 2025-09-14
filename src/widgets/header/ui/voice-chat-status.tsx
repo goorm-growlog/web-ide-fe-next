@@ -122,15 +122,32 @@ export function VoiceChatStatus({
                 showVoiceActivity={true}
                 isSpeaking={participant.isSpeaking}
               />
-              {/* 볼륨 슬라이더 - 호버 시 하단에 표시 */}
+              {/* 볼륨 슬라이더 - 호버 시 하단에 말풍선 스타일로 표시 */}
               {onVolumeChange && (
-                <div className="absolute top-full z-10 mt-1 rounded-md border bg-background p-2 opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
-                  <VolumeSlider
-                    value={participant.volume}
-                    onChange={volume =>
-                      onVolumeChange(participant.identity, volume)
-                    }
-                  />
+                <div className="absolute top-full z-10 mt-2 translate-y-1 transform opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                  {/* 부모 요소에 tail을 위한 공간(pt-2)과 위치 기준(relative)을 설정합니다. */}
+                  <div className="relative w-fit pt-1">
+                    {/* 말풍선 꼬리 (위치를 정밀하게 조정) */}
+                    <div className="-translate-x-1/2 -translate-y-1/2 absolute top-0 left-1/2 h-2 w-2 rotate-45 transform border-border border-t border-l bg-background" />
+
+                    {/* 말풍선 본체 (위쪽 테두리를 제거하고 아래와 양옆 테두리만 적용) */}
+                    <div className="min-w-[140px] rounded-xl border-border border-r border-b border-l bg-background p-3 shadow-xl backdrop-blur-sm">
+                      <div className="mb-2 text-center">
+                        <div className="font-medium text-foreground text-xs">
+                          {participant.name}
+                        </div>
+                        <div className="text-muted-foreground text-xs">
+                          Volume
+                        </div>
+                      </div>
+                      <VolumeSlider
+                        value={participant.volume}
+                        onChange={volume =>
+                          onVolumeChange(participant.identity, volume)
+                        }
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

@@ -19,17 +19,19 @@ export function VolumeSlider({
   }
 
   return (
-    <div className={`flex items-center space-x-2 ${className}`}>
-      <Volume2 className="h-3 w-3 text-muted-foreground" />
+    <div className={`flex items-center space-x-3 ${className}`}>
+      <Volume2 className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
       <Slider
         value={[value]}
         onValueChange={handleValueChange}
         max={100}
         min={0}
         step={1}
-        className="w-16"
+        className="flex-1"
       />
-      <span className="w-6 text-muted-foreground text-xs">{value}</span>
+      <span className="w-4 flex-shrink-0 pr-4+ text-center font-medium text-foreground text-sm">
+        {value}
+      </span>
     </div>
   )
 }
