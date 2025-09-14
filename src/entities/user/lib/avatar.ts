@@ -2,22 +2,22 @@ import type { UserAvatarInfo } from '../model/types'
 
 // 아바타 색상 팔레트 (16색)
 const AVATAR_COLORS: readonly string[] = [
-  '#FF6B6B', // 빨강
-  '#4ECDC4', // 청록
-  '#45B7D1', // 파랑
-  '#96CEB4', // 민트
-  '#FFEAA7', // 노랑
-  '#DDA0DD', // 자주
-  '#98D8C8', // 연두
-  '#F7DC6F', // 황금
-  '#BB8FCE', // 보라
-  '#85C1E9', // 하늘
-  '#F8C471', // 주황
-  '#82E0AA', // 라임
-  '#F1948A', // 연분홍
-  '#85C1E9', // 하늘파랑
-  '#D7BDE2', // 연보라
-  '#A9DFBF', // 연초록
+  '#FF0000', // 순수 빨강
+  '#FF6600', // 밝은 주황
+  '#FFCC00', // 밝은 노랑
+  '#FF0099', // 밝은 핑크
+  '#FF9900', // 밝은 황금
+  '#CC3300', // 밝은 적갈색
+  '#9900FF', // 밝은 보라
+  '#0066FF', // 밝은 파랑
+  '#00CCCC', // 밝은 청록
+  '#FF3366', // 밝은 로즈
+  '#6600CC', // 밝은 자주
+  '#FF6699', // 밝은 자홍
+  '#3366FF', // 밝은 바이올렛
+  '#0099FF', // 밝은 스카이블루
+  '#CC0066', // 밝은 마젠타
+  '#FF3300', // 밝은 오렌지레드
 ] as const
 
 export function getUserInitials(name: string): string {
