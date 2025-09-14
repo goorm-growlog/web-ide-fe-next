@@ -114,7 +114,27 @@ export function useLiveKit({
       if (state === ConnectionState.Connected) {
         setError(null)
         setLocalParticipant(room.localParticipant)
-        // 참여자 상태 동기화
+
+        // 연결 시 기존 참여자들 즉시 로드
+        const existingParticipants = Array.from(
+          room.remoteParticipants.values(),
+        )
+        const initialParticipants: Participant[] = existingParticipants.map(
+          participant => ({
+            identity: participant.identity,
+            name: participant.name || participant.identity,
+            isMicrophoneEnabled: getMicrophoneEnabled(participant),
+            isSpeaking: false,
+            volume: 100,
+          }),
+        )
+        setParticipants(initialParticipants)
+        console.log(
+          `Loaded existing participants:`,
+          initialParticipants.map(p => p.identity),
+        )
+
+        // 참여자 상태 동기화 (백업용)
         setTimeout(syncParticipants, 100)
       } else if (state === ConnectionState.Disconnected) {
         setParticipants([])
@@ -210,12 +230,29 @@ export function useLiveKit({
       setLocalParticipant(participant)
     })
 
-    // 참여자 연결/해제 - 단순화
+    // 참여자 연결/해제 - 실시간 업데이트
     room.on(
       RoomEvent.ParticipantConnected,
       (participant: RemoteParticipant) => {
         console.log(`Participant connected: ${participant.identity}`)
-        // 참여자 상태는 주기적 동기화에서 처리
+
+        // 새 참여자 즉시 추가
+        const newParticipant: Participant = {
+          identity: participant.identity,
+          name: participant.name || participant.identity,
+          isMicrophoneEnabled: getMicrophoneEnabled(participant),
+          isSpeaking: false,
+          volume: 100,
+        }
+
+        setParticipants(prev => {
+          // 중복 방지
+          if (prev.some(p => p.identity === participant.identity)) {
+            return prev
+          }
+          console.log(`Added participant: ${participant.identity}`)
+          return [...prev, newParticipant]
+        })
       },
     )
 
@@ -223,7 +260,13 @@ export function useLiveKit({
       RoomEvent.ParticipantDisconnected,
       (participant: RemoteParticipant) => {
         console.log(`Participant disconnected: ${participant.identity}`)
-        // 참여자 상태는 주기적 동기화에서 처리
+
+        // 참여자 즉시 제거
+        setParticipants(prev => {
+          const updated = prev.filter(p => p.identity !== participant.identity)
+          console.log(`Removed participant: ${participant.identity}`)
+          return updated
+        })
       },
     )
   }
@@ -392,7 +435,7 @@ export function useLiveKit({
   useEffect(() => {
     if (!isConnected || !room) return
 
-    const interval = setInterval(syncParticipants, 100) // 100ms마다 동기화
+    const interval = setInterval(syncParticipants, 300) // 300ms마다 동기화
 
     return () => clearInterval(interval)
   }, [isConnected, room, speakingParticipants])
