@@ -333,9 +333,7 @@ export function useLiveKit({
       } catch (error) {
         // NotAllowedError는 사용자가 권한을 거부한 경우
         if (error instanceof Error && error.name === 'NotAllowedError') {
-          toast.error(
-            'Please allow microphone access in your browser settings to use voice chat.',
-          )
+          toast.error('Please allow mic access in your browser settings.')
         } else {
           toast.error('Failed to connect microphone. Please try again.')
         }
