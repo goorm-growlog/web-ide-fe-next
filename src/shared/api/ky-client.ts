@@ -3,8 +3,6 @@
 import ky from 'ky'
 import { getSession, signOut } from 'next-auth/react'
 import { handleApiError } from '@/shared/lib/api-error'
-import { apiHelpers } from '@/shared/lib/api-helpers'
-import type { ApiResponse } from '@/shared/types/api'
 
 // NextAuth 세션 강제 업데이트 함수
 let updateSession: ((data?: unknown) => Promise<unknown>) | null = null
