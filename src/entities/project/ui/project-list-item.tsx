@@ -1,9 +1,9 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { isProjectDeleting } from '../model/permissions'
-import type { Project } from '../model/types'
-import { ProjectMemberAvatars } from './project-member-avatars'
+import { isProjectDeleting } from '@/entities/project/model/permissions'
+import type { Project } from '@/entities/project/model/types'
+import { ProjectMemberAvatars } from '@/entities/project/ui/project-member-avatars'
 
 interface ProjectListItemProps {
   project: Project

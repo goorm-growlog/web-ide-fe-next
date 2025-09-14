@@ -1,5 +1,5 @@
-import type { Project } from '@/entities/project'
-import { calculateMemberCount } from '@/entities/project'
+import { calculateMemberCount } from '@/entities/project/model/project-service'
+import type { Project } from '@/entities/project/model/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
 
 interface ProjectMemberAvatarsProps {

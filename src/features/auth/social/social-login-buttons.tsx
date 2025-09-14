@@ -1,8 +1,8 @@
 'use client'
 
+import { useGitHubLogin } from '@/features/auth/social/use-github-login'
+import { useKakaoLogin } from '@/features/auth/social/use-kakao-login'
 import SocialButton from '@/shared/ui/auth/social-button'
-import { useGitHubLogin } from './use-github-login'
-import { useKakaoLogin } from './use-kakao-login'
 
 interface SocialLoginButtonsProps {
   className?: string

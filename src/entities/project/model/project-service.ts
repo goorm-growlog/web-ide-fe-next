@@ -1,6 +1,6 @@
 // 프로젝트 엔티티 유틸리티 함수들 (Legacy 호환성 유지)
 
-import type { Project } from './types'
+import type { Project } from '@/entities/project/model/types'
 
 /**
  * 프로젝트 목록을 타입별로 조회하고 멤버 정보를 추가하는 비즈니스 로직

@@ -2,8 +2,8 @@
 
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
-import type { Project } from '@/entities/project'
-import { deleteProject } from '@/entities/project'
+import { deleteProject } from '@/entities/project/api/project'
+import type { Project } from '@/entities/project/model/types'
 
 /**
  * 프로젝트 삭제 액션을 처리하는 훅 (Features 레이어)

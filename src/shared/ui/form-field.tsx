@@ -11,9 +11,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
   FormField as ShadcnFormField,
-} from '@/shared/ui/shadcn'
+} from '@/shared/ui/shadcn/form'
+import { Input } from '@/shared/ui/shadcn/input'
 
 interface FormFieldProps<
   TFieldValues extends FieldValues = FieldValues,

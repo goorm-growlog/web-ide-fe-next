@@ -1,6 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { type PasswordResetData, passwordResetSchema } from './schema'
+import {
+  type PasswordResetData,
+  passwordResetSchema,
+} from '@/features/verification/password-reset/model/schema'
 
 interface UsePasswordResetFormOptions {
   onSubmit: (data: PasswordResetData) => Promise<void>

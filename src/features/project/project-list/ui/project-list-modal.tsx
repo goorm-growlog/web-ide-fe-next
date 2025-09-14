@@ -1,17 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import type { Project } from '@/entities/project'
-import { useProjectActions } from '@/features/project/project-actions'
+import type { Project } from '@/entities/project/model/types'
+import { useProjectActions } from '@/features/project/project-actions/model/use-project-actions'
+import { useProjectSearch } from '@/features/project/project-list/model/use-project-search'
+import { ProjectList } from '@/features/project/project-list/ui/project-list'
+import { ProjectSearch } from '@/features/project/project-list/ui/project-search'
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
 } from '@/shared/ui/shadcn/dialog'
-import { useProjectSearch } from '../model/use-project-search'
-import { ProjectList } from './project-list'
-import { ProjectSearch } from './project-search'
 
 interface ProjectListModalProps {
   trigger: React.ReactNode

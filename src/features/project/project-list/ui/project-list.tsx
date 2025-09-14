@@ -1,12 +1,10 @@
 'use client'
 
-import type { Project } from '@/entities/project'
-import { ProjectListItem } from '@/entities/project'
-import type { useProjectActions } from '@/features/project/project-actions'
-import {
-  ProjectActionMenu,
-  ProjectDialogs,
-} from '@/features/project/project-actions'
+import type { Project } from '@/entities/project/model/types'
+import { ProjectListItem } from '@/entities/project/ui/project-list-item'
+import type { useProjectActions } from '@/features/project/project-actions/model/use-project-actions'
+import { ProjectActionMenu } from '@/features/project/project-actions/ui/project-action-menu'
+import { ProjectDialogs } from '@/features/project/project-actions/ui/project-dialogs'
 
 export interface ProjectListProps {
   projects: Project[]

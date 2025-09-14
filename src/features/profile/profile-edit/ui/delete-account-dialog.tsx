@@ -7,16 +7,16 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import FormField from '@/shared/ui/form-field'
 import PasswordInput from '@/shared/ui/password-input'
+import { Button } from '@/shared/ui/shadcn/button'
 import {
-  Button,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  Form,
-} from '@/shared/ui/shadcn'
+} from '@/shared/ui/shadcn/dialog'
+import { Form } from '@/shared/ui/shadcn/form'
 
 const passwordSchema = z.object({
   password: z.string().min(1, 'Password is required'),

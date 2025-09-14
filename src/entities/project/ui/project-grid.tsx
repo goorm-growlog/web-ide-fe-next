@@ -1,7 +1,7 @@
 'use client'
 
-import type { Project, ProjectAction } from '@/entities/project'
-import { ProjectCard } from './project-card'
+import type { Project, ProjectAction } from '@/entities/project/model/types'
+import { ProjectCard } from '@/entities/project/ui/project-card'
 
 interface ProjectGridProps {
   projects: Project[]

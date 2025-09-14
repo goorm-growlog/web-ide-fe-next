@@ -1,8 +1,12 @@
 // 프로젝트 엔티티 API 클라이언트 - 순수 CRUD 작업만 담당
 
+import type {
+  CreateProjectData,
+  Project,
+  ProjectMember,
+} from '@/entities/project/model/types'
 import { apiHelpers, authApi } from '@/shared/api/ky-client'
 import type { ApiResponse } from '@/shared/types/api'
-import type { CreateProjectData, Project, ProjectMember } from '../model/types'
 
 // API 요청/응답 스키마 타입들
 export interface CreateProjectRequest {

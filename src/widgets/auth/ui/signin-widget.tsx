@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import AuthLayout from '@/shared/ui/auth-layout'
-import SigninForm from './signin-form'
+import SigninForm from '@/widgets/auth/ui/signin-form'
 
 // 서버 컴포넌트
 const SigninWidget = () => {

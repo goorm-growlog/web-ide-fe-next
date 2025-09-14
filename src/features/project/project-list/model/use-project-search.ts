@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { Project } from '@/entities/project'
+import type { Project } from '@/entities/project/model/types'
 
 export const useProjectSearch = (projects: Project[], keyword: string) => {
   return useMemo(() => {

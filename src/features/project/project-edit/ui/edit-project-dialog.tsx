@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import type { Project } from '@/entities/project'
 import { updateProject } from '@/entities/project/api/project'
+import type { Project } from '@/entities/project/model/types'
+import type { CreateProjectFormData } from '@/features/project/project-create/model/validation'
+import { CreateProjectForm } from '@/features/project/project-create/ui/create-project-form'
 import {
   Dialog,
   DialogContent,
@@ -10,8 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/ui/shadcn/dialog'
-import type { CreateProjectFormData } from '../../project-create/model/validation'
-import { CreateProjectForm } from '../../project-create/ui/create-project-form'
 
 interface EditProjectDialogProps {
   project: Project

@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import ProfileAvatar from '@/features/profile/profile-avatar/ui/profile-avatar'
+import type { ProfileEditFormData } from '@/features/profile/profile-edit/model/schema'
+import { useProfileEditActions } from '@/features/profile/profile-edit/model/use-profile-edit-actions'
+import DeleteAccountDialog from '@/features/profile/profile-edit/ui/delete-account-dialog'
+import PasswordSection from '@/features/profile/profile-edit/ui/password-section'
 import type { User } from '@/shared/types/user'
 import FormField from '@/shared/ui/form-field'
-import { Button, Form } from '@/shared/ui/shadcn'
-import type { ProfileEditFormData } from '../model/schema'
-import { useProfileEditActions } from '../model/use-profile-edit-actions'
-import DeleteAccountDialog from './delete-account-dialog'
-import PasswordSection from './password-section'
+import { Button } from '@/shared/ui/shadcn/button'
+import { Form } from '@/shared/ui/shadcn/form'
 
 interface ProfileEditFormProps {
   form: UseFormReturn<ProfileEditFormData>

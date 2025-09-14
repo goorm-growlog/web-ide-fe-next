@@ -6,10 +6,10 @@ import { useCallback } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
 import { mutate } from 'swr'
-import { loginApi } from '@/entities/auth'
+import { loginApi } from '@/entities/auth/api/auth'
+import type { LoginFormData } from '@/features/auth/lib/validation'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
-import type { LoginFormData } from '../lib/validation'
 
 export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
   const { isLoading, withLoading } = useLoadingState()

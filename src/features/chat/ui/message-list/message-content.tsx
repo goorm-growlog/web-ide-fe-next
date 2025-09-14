@@ -1,14 +1,10 @@
 import { memo } from 'react'
-import {
-  MESSAGE_TYPES,
-  type SystemMessage,
-  type TalkMessage,
-} from '@/features/chat/model/message-types'
-import { SystemMessageItem } from '@/features/chat/ui/message-items/system-message-item'
-import { TalkMessageItem } from '@/features/chat/ui/message-items/talk-message-item'
+import type { ChatMessage } from '@/features/chat/types/client'
+import { SystemMessageItem } from '@/features/chat/ui/message-types/system-message-item'
+import { TalkMessageItem } from '@/features/chat/ui/message-types/talk-message-item'
 
 interface MessageContentProps {
-  message: SystemMessage | TalkMessage
+  message: ChatMessage
   isOwnMessage: boolean
   isFirstInGroup: boolean
 }
@@ -22,7 +18,7 @@ interface MessageContentProps {
  */
 export const MessageContent = memo(
   ({ message, isOwnMessage, isFirstInGroup }: MessageContentProps) => {
-    if (message.messageType !== MESSAGE_TYPES.TALK) {
+    if (message.type !== 'TALK') {
       return <SystemMessageItem message={message} />
     }
 

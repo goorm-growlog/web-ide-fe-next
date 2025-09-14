@@ -1,4 +1,4 @@
-import { FilesIcon, SearchIcon, SettingsIcon, Share2Icon } from 'lucide-react'
+import { FilesIcon, Share2Icon } from 'lucide-react'
 import type {
   SidebarConfig,
   SidebarState,
@@ -6,8 +6,6 @@ import type {
 } from 'src/widgets/sidebar/model/types'
 import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel'
 import InvitePanel from '@/features/invite/ui/invite-panel'
-import SearchPanel from '@/features/search/ui/search-panel'
-import SettingsPanel from '@/features/setting/ui/setting-panel'
 
 export const DEFAULT_SIDEBAR_CONFIG: SidebarConfig = {
   primaryMinSize: 2.5,
@@ -29,18 +27,6 @@ export const TAB_DEFINITIONS: Tab[] = [
     position: 'top',
   },
   {
-    key: 'search',
-    panels: [
-      {
-        key: 'search',
-        title: 'Search',
-        content: SearchPanel,
-      },
-    ],
-    icon: SearchIcon,
-    position: 'top',
-  },
-  {
     key: 'invite' as const,
     panels: [
       {
@@ -52,18 +38,6 @@ export const TAB_DEFINITIONS: Tab[] = [
     icon: Share2Icon,
     position: 'top',
   },
-  {
-    key: 'settings',
-    panels: [
-      {
-        key: 'settings',
-        title: 'Settings',
-        content: SettingsPanel,
-      },
-    ],
-    icon: SettingsIcon,
-    position: 'bottom',
-  },
 ] as const
 
 const DEFAULT_LAYOUT = [25, 50, 25]
@@ -71,7 +45,7 @@ const DEFAULT_LAYOUT = [25, 50, 25]
 export const INITIAL_STATE: SidebarState = {
   activeTab: 'files',
   openPanelsByTab: {
-    files: [],
+    files: ['files'],
     search: [],
     invite: [],
     settings: [],

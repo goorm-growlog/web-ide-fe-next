@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { useEffect, useRef } from 'react'
+import { logger } from '@/shared/lib/logger'
 
 /**
  * GitHub 로그인 시 리프레시 토큰 쿠키 설정
@@ -35,9 +36,9 @@ export default function GitHubCookieSetup() {
         avatarUrl: session.githubUser.image || '',
       }),
     })
-      .then(() => console.log('GitHub cookie setup complete'))
+      .then(() => logger.debug('GitHub cookie setup complete'))
       .catch(error => {
-        console.error('GitHub cookie setup failed:', error)
+        logger.error('GitHub cookie setup failed:', error)
         setupCompleteRef.current = false
       })
   }, [session?.needsCookieSetup, session?.githubUser])

@@ -4,16 +4,16 @@ import { useRouter } from 'next/navigation'
 import { ProjectListWidget } from '@/widgets/project/ui/project-list-widget'
 import { useUnifiedProjects } from '@/features/project/project-list/model/use-unified-projects'
 import { MainHeader } from '@/widgets/header/ui/main-header'
-import { ProjectListSkeleton } from '@/entities/project'
-import type { Project } from '@/entities/project'
+import { ProjectListSkeleton } from '@/entities/project/ui/project-skeleton'
+import type { Project } from '@/entities/project/model/types'
 
 export default function ProjectPage() {
-  const { 
-    ownProjects, 
-    joinedProjects, 
-    isLoading, 
-    error, 
-    refetch 
+  const {
+    ownProjects,
+    joinedProjects,
+    isLoading,
+    error,
+    refetch
   } = useUnifiedProjects()
 
   const router = useRouter()
@@ -33,7 +33,7 @@ export default function ProjectPage() {
   const renderContent = () => {
     if (isLoading) return <ProjectListSkeleton />
     if (error) return <div className="text-destructive">Error: {error}</div>
-    
+
     return (
       <div className="w-full max-w-[844px]">
         <ProjectListWidget

@@ -1,13 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import type { Project } from '@/entities/project'
-import {
-  CreateProjectCard,
-  CreateProjectDialog,
-  ProjectSection,
-} from '@/features/project'
-import { useProjectActions } from '@/features/project/project-actions'
+import type { Project } from '@/entities/project/model/types'
+import { useProjectActions } from '@/features/project/project-actions/model/use-project-actions'
+import { CreateProjectCard } from '@/features/project/project-create/ui/create-project-card'
+import { CreateProjectDialog } from '@/features/project/project-create/ui/create-project-dialog'
+import { ProjectSection } from '@/features/project/project-list/ui/project-section'
 
 interface ProjectListWidgetProps {
   hostProjects: Project[]

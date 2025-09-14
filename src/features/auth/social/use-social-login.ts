@@ -1,7 +1,7 @@
 'use client'
 
-import { useGitHubLogin } from './use-github-login'
-import { useKakaoLogin } from './use-kakao-login'
+import { useGitHubLogin } from '@/features/auth/social/use-github-login'
+import { useKakaoLogin } from '@/features/auth/social/use-kakao-login'
 
 /**
  * 통합 소셜 로그인 훅

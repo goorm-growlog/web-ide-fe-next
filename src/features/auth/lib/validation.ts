@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { emailSchema, nameSchema } from '@/shared/lib/validation'
+import { emailSchema } from '@/shared/lib/validation/email'
+import { nameSchema } from '@/shared/lib/validation/name'
 
 // Auth 관련 메시지 상수
 export const LOGIN_PASSWORD_REQUIRED_MSG = 'Please enter your password.'

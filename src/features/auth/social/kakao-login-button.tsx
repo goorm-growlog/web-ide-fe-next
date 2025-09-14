@@ -1,7 +1,7 @@
 'use client'
 
+import { useKakaoLogin } from '@/features/auth/social/use-kakao-login'
 import SocialButton from '@/shared/ui/auth/social-button'
-import { useKakaoLogin } from './use-kakao-login'
 
 export function KakaoLoginButton() {
   const { loginWithKakao, isLoading } = useKakaoLogin()

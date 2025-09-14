@@ -3,7 +3,7 @@
 import type { LucideIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { cn } from '@/shared/lib/utils'
-import { Button } from '@/shared/ui/shadcn'
+import { Button } from '@/shared/ui/shadcn/button'
 
 interface IconButtonProps
   extends Omit<ComponentProps<typeof Button>, 'children'> {

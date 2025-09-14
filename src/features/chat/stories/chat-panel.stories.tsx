@@ -16,7 +16,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: () => (
     <div className="flex border">
-      <ChatPanel />
+      <ChatPanel projectId="test-project" />
     </div>
   ),
 }

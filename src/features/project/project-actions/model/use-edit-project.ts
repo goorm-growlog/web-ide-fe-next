@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
-import type { Project } from '@/entities/project'
+import type { Project } from '@/entities/project/model/types'
 
 /**
  * 프로젝트 편집 액션을 처리하는 훅 (Features 레이어)

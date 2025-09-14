@@ -1,7 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { LoginForm, useLoginActions, useLoginForm } from '@/features/auth'
+import LoginForm from '@/features/auth/login/login-form'
+import { useLoginActions } from '@/features/auth/login/use-login-actions'
+import { useLoginForm } from '@/features/auth/login/use-login-form'
 import type { PasswordResetData } from '@/features/verification/password-reset/model/schema'
 import { usePasswordResetActions } from '@/features/verification/password-reset/model/use-password-reset-actions'
 import PasswordResetDialog from '@/features/verification/password-reset/ui/password-reset-dialog'

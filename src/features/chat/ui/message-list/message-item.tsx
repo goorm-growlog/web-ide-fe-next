@@ -1,16 +1,13 @@
 import { memo, useCallback, useMemo } from 'react'
-import { shouldShowDateHeader } from '@/features/chat/lib/message-utils'
-import {
-  MESSAGE_TYPES,
-  type Message,
-} from '@/features/chat/model/message-types'
-import { DateHeader } from '@/features/chat/ui/message-items/system-message-item'
-import { MessageContent } from './message-content'
+import { shouldShowDateHeader } from '@/features/chat/lib/message-helpers'
+import type { ChatMessage } from '@/features/chat/types/client'
+import { MessageContent } from '@/features/chat/ui/message-list/message-content'
+import { DateHeader } from '@/features/chat/ui/message-types/system-message-item'
 
 interface MessageItemProps {
-  message: Message
+  message: ChatMessage
   index: number
-  messages: Message[]
+  messages: ChatMessage[]
   currentUserId: number
 }
 
@@ -30,7 +27,7 @@ const MessageItem = memo(
     )
 
     const isOwnMessage = useMemo(
-      () => currentUserId === message.userId,
+      () => currentUserId.toString() === message.userId,
       [currentUserId, message.userId],
     )
 
@@ -39,17 +36,16 @@ const MessageItem = memo(
      */
     const checkIsFirstInGroup = useCallback(
       (showDateHeader: boolean): boolean => {
-        if (message.messageType !== MESSAGE_TYPES.TALK) return true
+        if (message.type !== 'TALK') return true
         if (index === 0 || showDateHeader) return true
 
         const prevMessage = messages[index - 1]
 
-        if (!prevMessage || prevMessage.messageType !== MESSAGE_TYPES.TALK)
-          return true
+        if (!prevMessage || prevMessage.type !== 'TALK') return true
 
         return prevMessage.userId !== message.userId
       },
-      [index, messages, message.messageType, message.userId],
+      [index, messages, message.type, message.userId],
     )
 
     const isFirstInGroup = useMemo(
@@ -59,7 +55,7 @@ const MessageItem = memo(
 
     return (
       <li>
-        {showDateHeader && <DateHeader date={message.sentAt} />}
+        {showDateHeader && <DateHeader date={message.timestamp} />}
         <MessageContent
           message={message}
           isOwnMessage={isOwnMessage}

@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { useState } from 'react'
-import { Button } from '@/shared/ui/shadcn'
-import DeleteAccountDialog from './delete-account-dialog'
+import DeleteAccountDialog from '@/features/profile/profile-edit/ui/delete-account-dialog'
+import { logger } from '@/shared/lib/logger'
+import { Button } from '@/shared/ui/shadcn/button'
 
 const meta = {
   title: 'Features/Auth/DeleteAccountDialog',
@@ -68,7 +69,7 @@ const RegularLoginDialog = ({
       throw new Error('Failed to delete account. Please try again.')
     }
 
-    console.log('Account deleted with password:', password)
+    logger.debug('Account deleted with password:', password)
   }
 
   return (
@@ -102,7 +103,7 @@ const SocialLoginDialog = ({
       throw new Error('Failed to delete social account. Please try again.')
     }
 
-    console.log('Social account deleted')
+    logger.debug('Social account deleted')
   }
 
   return (

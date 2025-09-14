@@ -4,7 +4,7 @@ import { ChevronDown, LogOut, UserRoundPen } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAuth } from '@/app/providers/auth-provider'
-import { useLogout } from '@/features/auth'
+import { useLogout } from '@/features/auth/logout/use-logout'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
 import {
   DropdownMenu,

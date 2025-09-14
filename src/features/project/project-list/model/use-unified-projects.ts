@@ -1,7 +1,7 @@
 'use client'
 
 import useSWR from 'swr'
-import { getEnrichedProjectsByType } from '@/entities/project'
+import { getEnrichedProjectsByType } from '@/entities/project/model/project-service'
 
 /**
  * 모든 프로젝트 정보를 한 번에 조회하는 통합 훅
