@@ -7,6 +7,7 @@ import type { Participant } from '@/entities/voice-chat/model/types'
 import { VoiceAvatar } from '@/entities/voice-chat/ui/voice-avatar'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/shadcn/button'
+import { VolumeSlider } from '@/shared/ui/volume-slider'
 
 interface VoiceChatStatusProps {
   isConnected: boolean
@@ -27,6 +28,9 @@ interface VoiceChatStatusProps {
     | undefined
   onReconnect?: (() => void) | undefined
   onToggleMicrophone?: (() => void) | undefined
+  onVolumeChange?:
+    | ((participantIdentity: string, volume: number) => void)
+    | undefined
   className?: string
 }
 
@@ -43,6 +47,7 @@ export function VoiceChatStatus({
   currentUser,
   onReconnect,
   onToggleMicrophone,
+  onVolumeChange,
   className,
 }: VoiceChatStatusProps) {
   // 상태 표시 아이콘 (이상한 상태일 때만)
@@ -106,14 +111,29 @@ export function VoiceChatStatus({
         participants.map(participant => {
           const avatarInfo = getParticipantAvatarInfo(participant)
           return (
-            <VoiceAvatar
+            <div
               key={participant.identity}
-              user={avatarInfo}
-              showMicrophoneStatus={true}
-              isMicrophoneEnabled={participant.isMicrophoneEnabled}
-              showVoiceActivity={true}
-              isSpeaking={participant.isSpeaking}
-            />
+              className="group relative flex flex-col items-center gap-1"
+            >
+              <VoiceAvatar
+                user={avatarInfo}
+                showMicrophoneStatus={true}
+                isMicrophoneEnabled={participant.isMicrophoneEnabled}
+                showVoiceActivity={true}
+                isSpeaking={participant.isSpeaking}
+              />
+              {/* 볼륨 슬라이더 - 호버 시 하단에 표시 */}
+              {onVolumeChange && (
+                <div className="absolute top-full z-10 mt-1 rounded-md border bg-background p-2 opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+                  <VolumeSlider
+                    value={participant.volume}
+                    onChange={volume =>
+                      onVolumeChange(participant.identity, volume)
+                    }
+                  />
+                </div>
+              )}
+            </div>
           )
         })}
 

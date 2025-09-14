@@ -37,5 +37,10 @@ export function useVoiceChat({
     connect: voiceChat.connect,
     disconnect: voiceChat.disconnect,
     toggleMicrophone: voiceChat.toggleMicrophone,
+
+    // 볼륨 관리
+    setParticipantVolume: voiceChat.setParticipantVolume,
+    getParticipantVolume: voiceChat.getParticipantVolume,
+    participantVolumes: voiceChat.participantVolumes,
   }
 }

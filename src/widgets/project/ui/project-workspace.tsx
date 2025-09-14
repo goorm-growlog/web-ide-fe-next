@@ -51,6 +51,7 @@ export function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
         currentUser={currentUser}
         onReconnect={voiceChat.connect}
         onToggleMicrophone={voiceChat.toggleMicrophone}
+        onSetParticipantVolume={voiceChat.setParticipantVolume}
       />
 
       {/* 에디터 레이아웃 (헤더 아래 나머지 전체 영역) */}

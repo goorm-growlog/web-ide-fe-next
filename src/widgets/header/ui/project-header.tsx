@@ -49,6 +49,7 @@ export function ProjectHeader({
   currentUser,
   onReconnect,
   onToggleMicrophone,
+  onSetParticipantVolume,
 }: ProjectHeaderProps) {
   const { logout } = useLogout()
   const { user, isLoading } = useAuth()
@@ -73,6 +74,7 @@ export function ProjectHeader({
           currentUser={currentUser}
           onReconnect={onReconnect}
           onToggleMicrophone={onToggleMicrophone}
+          onVolumeChange={onSetParticipantVolume}
         />
 
         {/* 사용자 메뉴 */}

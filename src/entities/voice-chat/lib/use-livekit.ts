@@ -8,7 +8,7 @@ import {
   RoomEvent,
   Track,
 } from 'livekit-client'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Participant, VoiceChatState } from '../model/types'
 
 interface UseLiveKitProps {
@@ -43,6 +43,11 @@ export function useLiveKit({
   )
   const [isTogglingMicrophone, setIsTogglingMicrophone] = useState(false)
 
+  // 개별 볼륨 상태 관리 (localStorage 연동)
+  const [participantVolumes, setParticipantVolumes] = useState<
+    Record<string, number>
+  >({})
+
   // 참조
   const roomRef = useRef<Room | null>(null)
   const remoteAudioRefs = useRef<Map<string, HTMLAudioElement>>(new Map())
@@ -68,23 +73,106 @@ export function useLiveKit({
     return participant.isMicrophoneEnabled
   }
 
-  // 참여자 상태 동기화 - 백업용
-  const syncParticipants = () => {
+  // localStorage에서 볼륨 설정 로드
+  const loadVolumeSettings = () => {
+    try {
+      const saved = localStorage.getItem('voice-chat-volumes')
+      if (saved) {
+        const volumes = JSON.parse(saved)
+        setParticipantVolumes(volumes)
+        return volumes
+      }
+    } catch (error) {
+      console.warn('볼륨 설정 로드 실패:', error)
+    }
+    return {}
+  }
+
+  // localStorage에 볼륨 설정 저장
+  const saveVolumeSettings = (volumes: Record<string, number>) => {
+    try {
+      localStorage.setItem('voice-chat-volumes', JSON.stringify(volumes))
+    } catch (error) {
+      console.warn('볼륨 설정 저장 실패:', error)
+    }
+  }
+
+  // 개별 참여자 볼륨 조절
+  const setParticipantVolume = useCallback(
+    (participantIdentity: string, volume: number) => {
+      console.log('🔊 볼륨 변경 시작:', participantIdentity, volume)
+      console.log('🔊 현재 participantVolumes:', participantVolumes)
+
+      setParticipantVolumes(prev => {
+        const newVolumes = { ...prev, [participantIdentity]: volume }
+        console.log('🔊 새로운 participantVolumes:', newVolumes)
+        saveVolumeSettings(newVolumes)
+        return newVolumes
+      })
+
+      // 참여자 상태 즉시 업데이트
+      setParticipants(prev => {
+        const updated = prev.map(p =>
+          p.identity === participantIdentity ? { ...p, volume } : p,
+        )
+        console.log('🔊 참여자 상태 업데이트:', updated)
+        return updated
+      })
+
+      // LiveKit API로 실제 볼륨 설정
+      const currentRoom = roomRef.current
+      if (currentRoom) {
+        const participant =
+          currentRoom.remoteParticipants.get(participantIdentity)
+        if (participant) {
+          console.log(
+            '🔊 LiveKit 볼륨 설정:',
+            participantIdentity,
+            volume / 100,
+          )
+          participant.setVolume(volume / 100) // LiveKit은 0-1 범위 사용
+        } else {
+          console.warn('🔊 참여자를 찾을 수 없음:', participantIdentity)
+        }
+      } else {
+        console.warn('🔊 Room이 연결되지 않음')
+      }
+    },
+    [participantVolumes],
+  )
+
+  // 참여자 볼륨 가져오기 (기본값 100)
+  const getParticipantVolume = (participantIdentity: string): number => {
+    return participantVolumes[participantIdentity] ?? 100
+  }
+
+  // 참여자 상태 동기화 - 백업용 (볼륨은 기존 값 유지)
+  const syncParticipants = useCallback(() => {
     if (!room) return
 
     const remoteParticipants = Array.from(room.remoteParticipants.values())
-    const newParticipants: Participant[] = remoteParticipants.map(
-      participant => ({
-        identity: participant.identity,
-        name: participant.name || participant.identity,
-        isMicrophoneEnabled: getMicrophoneEnabled(participant),
-        isSpeaking: speakingParticipants.has(participant.identity),
-        volume: 100,
-      }),
-    )
 
-    setParticipants(newParticipants)
-  }
+    setParticipants(prev => {
+      const newParticipants: Participant[] = remoteParticipants.map(
+        participant => {
+          const existing = prev.find(p => p.identity === participant.identity)
+          return {
+            identity: participant.identity,
+            name: participant.name || participant.identity,
+            isMicrophoneEnabled: getMicrophoneEnabled(participant),
+            isSpeaking: speakingParticipants.has(participant.identity),
+            volume:
+              existing?.volume ??
+              participantVolumes[participant.identity] ??
+              100, // 기존 볼륨 유지
+          }
+        },
+      )
+
+      console.log('참여자 동기화:', newParticipants)
+      return newParticipants
+    })
+  }, [room, speakingParticipants, participantVolumes])
 
   // Room 이벤트 리스너 설정 - 중복 방지
   const setupRoomEventListeners = (room: Room) => {
@@ -110,7 +198,7 @@ export function useLiveKit({
 
     // 연결 해제
     room.on(RoomEvent.Disconnected, (reason?: DisconnectReason) => {
-      if (reason === DisconnectReason.ERROR) {
+      if (reason === DisconnectReason.CLIENT_INITIATED) {
         setError('연결 오류가 발생했습니다')
       }
     })
@@ -286,6 +374,9 @@ export function useLiveKit({
       // 5. 연결 완료 후 마이크 트랙 발행 (뮤트 상태로 시작)
       await newRoom.localParticipant.setMicrophoneEnabled(false)
 
+      // 6. 볼륨 설정 로드
+      loadVolumeSettings()
+
       setRoom(newRoom)
       roomRef.current = newRoom
     } catch (err) {
@@ -420,5 +511,10 @@ export function useLiveKit({
     connect,
     disconnect,
     toggleMicrophone,
+
+    // 볼륨 관리
+    setParticipantVolume,
+    getParticipantVolume,
+    participantVolumes,
   }
 }
