@@ -31,6 +31,7 @@ interface VoiceChatStatusProps {
 }
 
 export function VoiceChatStatus({
+  isConnected,
   isConnecting,
   hasError,
   isDisconnected,
@@ -100,23 +101,24 @@ export function VoiceChatStatus({
         <div className="flex items-center">{getStatusIcon()}</div>
       )}
 
-      {/* 참가자들 */}
-      {participants.map(participant => {
-        const avatarInfo = getParticipantAvatarInfo(participant)
-        return (
-          <VoiceAvatar
-            key={participant.identity}
-            user={avatarInfo}
-            showMicrophoneStatus={true}
-            isMicrophoneEnabled={participant.isMicrophoneEnabled}
-            showVoiceActivity={true}
-            isSpeaking={participant.isSpeaking}
-          />
-        )
-      })}
+      {/* 참가자들 - 연결 완료일 때만 표시 */}
+      {isConnected &&
+        participants.map(participant => {
+          const avatarInfo = getParticipantAvatarInfo(participant)
+          return (
+            <VoiceAvatar
+              key={participant.identity}
+              user={avatarInfo}
+              showMicrophoneStatus={true}
+              isMicrophoneEnabled={participant.isMicrophoneEnabled}
+              showVoiceActivity={true}
+              isSpeaking={participant.isSpeaking}
+            />
+          )
+        })}
 
-      {/* 현재 사용자 아바타 */}
-      {currentUserAvatarInfo && (
+      {/* 현재 사용자 아바타 - 연결 완료일 때만 표시 */}
+      {isConnected && currentUserAvatarInfo && (
         <VoiceAvatar
           user={currentUserAvatarInfo}
           showMicrophoneStatus={true}
@@ -126,8 +128,8 @@ export function VoiceChatStatus({
         />
       )}
 
-      {/* 마이크 토글 버튼 */}
-      {onToggleMicrophone && (
+      {/* 마이크 토글 버튼 - 연결 완료일 때만 표시 */}
+      {isConnected && onToggleMicrophone && (
         <Button
           variant="ghost"
           size="sm"

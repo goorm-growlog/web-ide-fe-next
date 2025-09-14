@@ -283,8 +283,8 @@ export function useLiveKit({
 
       await Promise.race([connectPromise, timeoutPromise])
 
-      // 5. 연결 완료 후 마이크 트랙 발행
-      await newRoom.localParticipant.setMicrophoneEnabled(true)
+      // 5. 연결 완료 후 마이크 트랙 발행 (뮤트 상태로 시작)
+      await newRoom.localParticipant.setMicrophoneEnabled(false)
 
       setRoom(newRoom)
       roomRef.current = newRoom
