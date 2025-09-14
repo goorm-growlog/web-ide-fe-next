@@ -48,14 +48,9 @@ export function ProjectLayoutClient({ projectId }: ProjectLayoutClientProps) {
           isDisconnected: !voiceChat.isConnected && !voiceChat.isConnecting,
           isMicrophoneEnabled: voiceChat.isMicrophoneEnabled,
           isSpeaking: voiceChat.isSpeaking,
+          isTogglingMicrophone: voiceChat.isTogglingMicrophone,
         }}
-        participants={voiceChat.participants.map(p => ({
-          identity: p.identity,
-          name: p.name || p.identity,
-          isMicrophoneEnabled: true, // 간소화: 기본값 사용
-          isSpeaking: p.isSpeaking,
-          volume: 50, // 기본 볼륨
-        }))}
+        participants={voiceChat.participants}
         projectMembers={projectMembers}
         currentUser={currentUser}
         onReconnect={voiceChat.connect}

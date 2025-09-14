@@ -26,11 +26,12 @@ export function useVoiceChat({
     isConnected: voiceChat.isConnected,
     isConnecting: voiceChat.isConnecting,
     error: voiceChat.error,
-    participants: voiceChat.participants,
+    participants: voiceChat.participants, // ✅ 이미 mappedParticipants가 반환됨
     localParticipant: voiceChat.localParticipant,
     isMicrophoneEnabled:
       voiceChat.localParticipant?.isMicrophoneEnabled ?? false,
     isSpeaking: voiceChat.speakingParticipants.has(`user_${userId}`),
+    isTogglingMicrophone: voiceChat.isTogglingMicrophone,
 
     // 액션
     connect: voiceChat.connect,

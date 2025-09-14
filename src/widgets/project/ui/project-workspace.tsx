@@ -44,14 +44,9 @@ export function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
           isDisconnected: !voiceChat.isConnected && !voiceChat.isConnecting,
           isMicrophoneEnabled: voiceChat.isMicrophoneEnabled,
           isSpeaking: voiceChat.isSpeaking,
+          isTogglingMicrophone: voiceChat.isTogglingMicrophone,
         }}
-        participants={voiceChat.participants.map(p => ({
-          identity: p.identity,
-          name: p.name || p.identity,
-          isMicrophoneEnabled: true,
-          isSpeaking: p.isSpeaking,
-          volume: 50,
-        }))}
+        participants={voiceChat.participants}
         projectMembers={projectMembers}
         currentUser={currentUser}
         onReconnect={voiceChat.connect}

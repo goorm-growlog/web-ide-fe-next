@@ -23,7 +23,7 @@ export function VoiceAvatar({
   return (
     <div className={cn('relative', className)}>
       {/* 사용자 아바타 */}
-      <Avatar className="h-8 w-8">
+      <Avatar className="h-6 w-6">
         <AvatarImage src={user.profileImageUrl} alt={user.name} />
         <AvatarFallback
           className="font-semibold text-white text-xs"
@@ -37,7 +37,7 @@ export function VoiceAvatar({
       {showMicrophoneStatus && !isMicrophoneEnabled && (
         <div className="-bottom-0.5 -right-0.5 absolute">
           <MicOff
-            className="h-2.5 w-2.5 text-red-600"
+            className="h-2 w-2 text-red-600"
             strokeWidth={2.5}
             style={{
               filter:
@@ -51,7 +51,7 @@ export function VoiceAvatar({
       {showVoiceActivity && isMicrophoneEnabled && (
         <div
           className={cn(
-            '-bottom-0.5 -right-0.5 absolute h-2.5 w-2.5 rounded-full border-2 border-background',
+            '-bottom-0.5 -right-0.5 absolute h-2 w-2 rounded-full border border-background',
             isSpeaking ? 'bg-green-500' : 'bg-gray-400',
           )}
         />

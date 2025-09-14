@@ -9,7 +9,7 @@ import {
   Track,
 } from 'livekit-client'
 import { useEffect, useRef, useState } from 'react'
-import type { VoiceChatState } from '../model/types'
+import type { Participant, VoiceChatState } from '../model/types'
 
 interface UseLiveKitProps {
   roomName: string
@@ -20,7 +20,7 @@ interface UseLiveKitProps {
 }
 
 /**
- * LiveKit을 사용한 음성채팅 훅
+ * LiveKit을 사용한 음성채팅 훅 - LiveKit 권장 패턴 적용
  */
 export function useLiveKit({
   roomName,
@@ -35,144 +35,169 @@ export function useLiveKit({
     ConnectionState.Disconnected,
   )
   const [error, setError] = useState<string | null>(null)
-  const [participants, setParticipants] = useState<RemoteParticipant[]>([])
+  const [participants, setParticipants] = useState<Participant[]>([])
   const [localParticipant, setLocalParticipant] =
     useState<LocalParticipant | null>(null)
   const [speakingParticipants, setSpeakingParticipants] = useState<Set<string>>(
     new Set(),
   )
+  const [isTogglingMicrophone, setIsTogglingMicrophone] = useState(false)
 
   // 참조
   const roomRef = useRef<Room | null>(null)
   const remoteAudioRefs = useRef<Map<string, HTMLAudioElement>>(new Map())
   const isConnectingRef = useRef(false)
+  const eventListenersSetup = useRef(false)
 
   // 계산된 상태
   const isConnected = connectionState === ConnectionState.Connected
   const isConnecting = connectionState === ConnectionState.Connecting
   const isDisconnected = connectionState === ConnectionState.Disconnected
+  const hasError = !!error
 
-  // LiveKit 토큰 생성
-  const getToken = async (
-    roomName: string,
-    userName: string,
-    userId: string,
-  ) => {
-    const response = await fetch('/api/livekit/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        room: roomName,
-        identity: `user_${userId}`,
-        name: userName,
+  // LiveKit 문서에 따른 마이크 상태 확인 함수
+  function getMicrophoneEnabled(participant: RemoteParticipant): boolean {
+    const audioTracks = Array.from(
+      participant.audioTrackPublications?.values() || [],
+    ).filter(track => track.kind === Track.Kind.Audio)
+
+    if (audioTracks.length > 0) {
+      return audioTracks.some(track => !track.isMuted)
+    }
+
+    return participant.isMicrophoneEnabled
+  }
+
+  // 참여자 상태 동기화 - LiveKit 권장 방식
+  const syncParticipants = () => {
+    if (!room) return
+
+    const remoteParticipants = Array.from(room.remoteParticipants.values())
+    const newParticipants: Participant[] = remoteParticipants.map(
+      participant => ({
+        identity: participant.identity,
+        name: participant.name || participant.identity,
+        isMicrophoneEnabled: getMicrophoneEnabled(participant),
+        isSpeaking: speakingParticipants.has(participant.identity),
+        volume: 100,
       }),
+    )
+
+    setParticipants(prev => {
+      // 참여자 순서 유지하면서 업데이트
+      const updated = newParticipants.map(newParticipant => {
+        const existing = prev.find(p => p.identity === newParticipant.identity)
+        return existing ? { ...existing, ...newParticipant } : newParticipant
+      })
+
+      // 새로 추가된 참여자들만 추가
+      const existingIdentities = new Set(updated.map(p => p.identity))
+      const newOnly = prev.filter(p => !existingIdentities.has(p.identity))
+
+      return [...updated, ...newOnly]
     })
-
-    if (!response.ok) {
-      throw new Error('토큰 생성 실패')
-    }
-
-    const data = await response.json()
-    return data.token
   }
 
-  // 오디오 요소 생성 및 관리
-  const createAudioElement = (
-    participantIdentity: string,
-  ): HTMLAudioElement => {
-    const audioElement = document.createElement('audio')
-    audioElement.autoplay = true
-    audioElement.setAttribute('playsinline', 'true')
-
-    remoteAudioRefs.current.set(participantIdentity, audioElement)
-    document.body.appendChild(audioElement)
-
-    return audioElement
-  }
-
-  // 오디오 요소 정리
-  const removeAudioElement = (participantIdentity: string): void => {
-    const audioElement = remoteAudioRefs.current.get(participantIdentity)
-    if (audioElement) {
-      audioElement.remove()
-      remoteAudioRefs.current.delete(participantIdentity)
-    }
-  }
-
-  // Room 이벤트 리스너 설정
+  // Room 이벤트 리스너 설정 - 중복 방지
   const setupRoomEventListeners = (room: Room) => {
+    if (eventListenersSetup.current) return
+    eventListenersSetup.current = true
+
+    console.log('Setting up room event listeners')
+
     // 연결 상태 변경
     room.on(RoomEvent.ConnectionStateChanged, (state: ConnectionState) => {
+      console.log(`Connection state changed: ${state}`)
       setConnectionState(state)
+      isConnectingRef.current = false
 
       if (state === ConnectionState.Connected) {
-        setLocalParticipant(room.localParticipant)
         setError(null)
+        setLocalParticipant(room.localParticipant)
+        // 참여자 상태 동기화
+        setTimeout(syncParticipants, 100)
+      } else if (state === ConnectionState.Disconnected) {
+        setParticipants([])
+        setLocalParticipant(null)
+        setSpeakingParticipants(new Set())
       }
     })
 
-    // 연결 끊김
+    // 연결 해제
     room.on(RoomEvent.Disconnected, (reason?: DisconnectReason) => {
-      setConnectionState(ConnectionState.Disconnected)
-      setLocalParticipant(null)
-      setParticipants([])
-      setSpeakingParticipants(new Set())
-
-      if (reason && reason !== DisconnectReason.CLIENT_INITIATED) {
-        setError('예상치 못한 연결 끊김이 발생했습니다.')
+      console.log('Disconnected:', reason)
+      if (reason === DisconnectReason.ERROR) {
+        setError('연결 오류가 발생했습니다')
       }
     })
 
-    // 참여자 관리
+    // 활성 스피커 변경
     room.on(
-      RoomEvent.ParticipantConnected,
-      (participant: RemoteParticipant) => {
-        setParticipants(prev => [...prev, participant])
+      RoomEvent.ActiveSpeakersChanged,
+      (speakers: RemoteParticipant[]) => {
+        const speakingSet = new Set(speakers.map(speaker => speaker.identity))
+        setSpeakingParticipants(speakingSet)
       },
     )
 
-    room.on(
-      RoomEvent.ParticipantDisconnected,
-      (participant: RemoteParticipant) => {
-        setParticipants(prev =>
-          prev.filter(p => p.identity !== participant.identity),
-        )
-        removeAudioElement(participant.identity)
-      },
-    )
-
-    // 트랙 구독 관리
-    room.on(RoomEvent.TrackSubscribed, (track, _publication, participant) => {
+    // 트랙 구독/구독 해제
+    room.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
       if (
         track.kind === Track.Kind.Audio &&
         participant instanceof RemoteParticipant
       ) {
-        const audioElement = createAudioElement(participant.identity)
-        const remoteTrack = track as RemoteAudioTrack
-        remoteTrack.attach(audioElement)
+        const audioElement = track.attach()
+        audioElement.autoplay = true
+        audioElement.muted = false
+        remoteAudioRefs.current.set(participant.identity, audioElement)
+        document.body.appendChild(audioElement)
       }
     })
 
-    room.on(RoomEvent.TrackUnsubscribed, (track, _publication, participant) => {
-      if (track.kind === Track.Kind.Audio) {
-        const audioElement = remoteAudioRefs.current.get(participant.identity)
-        if (audioElement) {
-          track.detach(audioElement)
-          removeAudioElement(participant.identity)
+    room.on(RoomEvent.TrackUnsubscribed, (track, publication, participant) => {
+      if (
+        track.kind === Track.Kind.Audio &&
+        participant instanceof RemoteParticipant
+      ) {
+        track.detach()
+        removeAudioElement(participant.identity)
+      }
+    })
+
+    // 트랙 상태 변경 - 실시간 업데이트
+    room.on(RoomEvent.TrackMuted, (publication, participant) => {
+      if (publication.kind === Track.Kind.Audio) {
+        console.log(`🔇 TrackMuted: ${participant.identity}`)
+        if (participant === room.localParticipant) {
+          setLocalParticipant(room.localParticipant)
+        } else {
+          // 원격 참여자 상태 즉시 업데이트
+          setParticipants(prev =>
+            prev.map(p =>
+              p.identity === participant.identity
+                ? { ...p, isMicrophoneEnabled: false }
+                : p,
+            ),
+          )
         }
       }
     })
 
-    // 트랙 상태 변경
-    room.on(RoomEvent.TrackMuted, (_publication, participant) => {
-      if (participant === room.localParticipant) {
-        setLocalParticipant(room.localParticipant)
-      }
-    })
-
-    room.on(RoomEvent.TrackUnmuted, (_publication, participant) => {
-      if (participant === room.localParticipant) {
-        setLocalParticipant(room.localParticipant)
+    room.on(RoomEvent.TrackUnmuted, (publication, participant) => {
+      if (publication.kind === Track.Kind.Audio) {
+        console.log(`🔊 TrackUnmuted: ${participant.identity}`)
+        if (participant === room.localParticipant) {
+          setLocalParticipant(room.localParticipant)
+        } else {
+          // 원격 참여자 상태 즉시 업데이트
+          setParticipants(prev =>
+            prev.map(p =>
+              p.identity === participant.identity
+                ? { ...p, isMicrophoneEnabled: true }
+                : p,
+            ),
+          )
+        }
       }
     })
 
@@ -185,60 +210,86 @@ export function useLiveKit({
       setLocalParticipant(participant)
     })
 
-    // 음성 활동 감지
-    room.on(RoomEvent.ActiveSpeakersChanged, speakers => {
-      const speakingSet = new Set<string>()
-      speakers.forEach(speaker => {
-        if (speaker.identity) {
-          speakingSet.add(speaker.identity)
-        }
-      })
-      setSpeakingParticipants(speakingSet)
-    })
+    // 참여자 연결/해제 - 단순화
+    room.on(
+      RoomEvent.ParticipantConnected,
+      (participant: RemoteParticipant) => {
+        console.log(`Participant connected: ${participant.identity}`)
+        // 참여자 상태는 주기적 동기화에서 처리
+      },
+    )
+
+    room.on(
+      RoomEvent.ParticipantDisconnected,
+      (participant: RemoteParticipant) => {
+        console.log(`Participant disconnected: ${participant.identity}`)
+        // 참여자 상태는 주기적 동기화에서 처리
+      },
+    )
+  }
+
+  // 오디오 요소 제거
+  const removeAudioElement = (participantIdentity: string) => {
+    const audioElement = remoteAudioRefs.current.get(participantIdentity)
+    if (audioElement) {
+      audioElement.remove()
+      remoteAudioRefs.current.delete(participantIdentity)
+    }
   }
 
   // 연결
   const connect = async () => {
     if (isConnectingRef.current || isConnected) return
 
+    isConnectingRef.current = true
+    setConnectionState(ConnectionState.Connecting)
+    setError(null)
+
     try {
-      isConnectingRef.current = true
-      setConnectionState(ConnectionState.Connecting)
-      setError(null)
+      // 1. 마이크 권한과 토큰을 병렬로 요청
+      const [_, tokenResponse] = await Promise.all([
+        navigator.mediaDevices.getUserMedia({ audio: true }),
+        fetch('/api/livekit/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            room: roomName,
+            identity: `user_${userId}`,
+            name: userName,
+          }),
+        }),
+      ])
 
-      // 마이크 권한 요청
-      await navigator.mediaDevices.getUserMedia({ audio: true })
+      const tokenData = await tokenResponse.json()
+      const token = tokenData.token
 
-      // 토큰 생성
-      const token = await getToken(roomName, userName, userId)
-
-      // LiveKit URL 검증
-      const livekitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL
-      if (!livekitUrl) {
-        throw new Error(
-          'NEXT_PUBLIC_LIVEKIT_URL 환경변수가 설정되지 않았습니다.',
-        )
-      }
-
-      // Room 생성 및 설정
+      // 2. LiveKit Room 생성 및 연결
       const newRoom = new Room({
-        adaptiveStream: true,
-        dynacast: true,
-        audioCaptureDefaults: {
-          autoGainControl: true,
-          echoCancellation: true,
-          noiseSuppression: true,
+        publishDefaults: {
+          audioPreset: {
+            maxBitrate: 64000, // 낮은 비트레이트로 빠른 연결
+          },
         },
       })
 
-      // 이벤트 리스너 설정
+      // 3. 이벤트 리스너 설정
       setupRoomEventListeners(newRoom)
 
-      // 연결
-      await newRoom.connect(livekitUrl, token)
+      // 4. 연결 (타임아웃 포함)
+      const livekitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL
+      if (!livekitUrl) throw new Error('LiveKit URL이 설정되지 않았습니다')
 
-      // 마이크 트랙 발행
-      await newRoom.localParticipant.setMicrophoneEnabled(true)
+      const connectPromise = newRoom.connect(livekitUrl, token)
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('연결 시간 초과 (10초)')), 10000),
+      )
+
+      await Promise.race([connectPromise, timeoutPromise])
+
+      // 5. 연결 완료 후 마이크 트랙 발행
+      newRoom.localParticipant
+        .setMicrophoneEnabled(true)
+        .catch(err => console.warn('마이크 활성화 실패:', err))
 
       setRoom(newRoom)
       roomRef.current = newRoom
@@ -257,33 +308,51 @@ export function useLiveKit({
     const currentRoom = roomRef.current
     if (currentRoom) {
       await currentRoom.disconnect()
+      eventListenersSetup.current = false
 
       // 모든 오디오 요소 정리
       remoteAudioRefs.current.forEach(audioElement => {
         audioElement.remove()
       })
       remoteAudioRefs.current.clear()
-
-      setRoom(null)
-      roomRef.current = null
-      setConnectionState(ConnectionState.Disconnected)
-      setError(null)
-      setParticipants([])
-      setLocalParticipant(null)
-      setSpeakingParticipants(new Set())
     }
   }
 
-  // 마이크 토글
+  // 마이크 토글 - LiveKit 권장 방식
   const toggleMicrophone = async () => {
     const currentRoom = roomRef.current
-    if (!currentRoom || !localParticipant) return
+    if (!currentRoom || !localParticipant || isTogglingMicrophone) return
+
+    const isEnabled = localParticipant.isMicrophoneEnabled
+    const newState = !isEnabled
+
+    setIsTogglingMicrophone(true)
 
     try {
-      const isEnabled = localParticipant.isMicrophoneEnabled
-      await localParticipant.setMicrophoneEnabled(!isEnabled)
+      // 1. 즉시 UI 상태 업데이트 (낙관적 업데이트)
+      setLocalParticipant(prev =>
+        prev ? { ...prev, isMicrophoneEnabled: newState } : null,
+      )
+
+      // 2. LiveKit API 호출
+      await currentRoom.localParticipant.setMicrophoneEnabled(newState)
+
+      // 3. 성공 시 실제 상태로 동기화
+      setLocalParticipant(currentRoom.localParticipant)
+
+      console.log(`Microphone toggled: ${newState}`)
     } catch (err) {
       console.error('마이크 토글 실패:', err)
+
+      // 4. 실패 시 이전 상태로 롤백
+      setLocalParticipant(prev =>
+        prev ? { ...prev, isMicrophoneEnabled: !newState } : null,
+      )
+      onError?.(
+        `마이크 토글 실패: ${err instanceof Error ? err.message : '알 수 없는 오류'}`,
+      )
+    } finally {
+      setIsTogglingMicrophone(false)
     }
   }
 
@@ -293,23 +362,40 @@ export function useLiveKit({
       onStatusChange({
         isConnected,
         isConnecting,
-        hasError: !!error,
+        hasError,
         isDisconnected,
         isMicrophoneEnabled: localParticipant?.isMicrophoneEnabled ?? false,
         isSpeaking: speakingParticipants.has(`user_${userId}`),
-        ...(error && { error }),
+        error,
       })
     }
   }, [
     isConnected,
     isConnecting,
-    error,
+    hasError,
     isDisconnected,
     localParticipant?.isMicrophoneEnabled,
     speakingParticipants,
     userId,
     onStatusChange,
+    error,
   ])
+
+  // 자동 연결
+  useEffect(() => {
+    if (!isConnected && !isConnecting && !error) {
+      connect()
+    }
+  }, [roomName, userName, userId])
+
+  // 참여자 상태 주기적 동기화 - LiveKit 권장 방식
+  useEffect(() => {
+    if (!isConnected || !room) return
+
+    const interval = setInterval(syncParticipants, 100) // 100ms마다 동기화
+
+    return () => clearInterval(interval)
+  }, [isConnected, room, speakingParticipants])
 
   // 컴포넌트 언마운트 시 정리
   useEffect(() => {
@@ -325,16 +411,28 @@ export function useLiveKit({
     }
   }, [])
 
+  // 최종 participants 결과 로그
+  if (process.env.NODE_ENV === 'development' && participants.length > 0) {
+    console.log(
+      'Final participants for UI:',
+      participants.map(p => ({
+        identity: p.identity,
+        isMicrophoneEnabled: p.isMicrophoneEnabled,
+      })),
+    )
+  }
+
   return {
     // 상태
     room,
     isConnected,
     isConnecting,
     error,
-    participants,
+    participants, // UI용으로 변환된 참여자 데이터
     localParticipant,
     speakingParticipants,
     remoteAudioRefs,
+    isTogglingMicrophone,
 
     // 액션
     connect,

@@ -1,6 +1,6 @@
 'use client'
 
-import { Mic, MicOff, Wifi, WifiOff } from 'lucide-react'
+import { Mic, MicOff, RotateCcw, Wifi, WifiOff } from 'lucide-react'
 import type { ProjectMember } from '@/entities/project/model/types'
 import { createUserAvatarInfo } from '@/entities/user'
 import type { Participant } from '@/entities/voice-chat/model/types'
@@ -15,6 +15,7 @@ interface VoiceChatStatusProps {
   isDisconnected: boolean
   isMicrophoneEnabled: boolean
   isSpeaking: boolean
+  isTogglingMicrophone?: boolean
   participants: Participant[]
   projectMembers: ProjectMember[]
   currentUser?:
@@ -35,6 +36,7 @@ export function VoiceChatStatus({
   isDisconnected,
   isMicrophoneEnabled,
   isSpeaking,
+  isTogglingMicrophone = false,
   participants,
   projectMembers,
   currentUser,
@@ -42,10 +44,15 @@ export function VoiceChatStatus({
   onToggleMicrophone,
   className,
 }: VoiceChatStatusProps) {
-  // 상태 표시 아이콘
+  // 상태 표시 아이콘 (이상한 상태일 때만)
   const getStatusIcon = () => {
     if (isConnecting) {
-      return <Wifi className="h-4 w-4 animate-pulse text-yellow-500" />
+      return (
+        <div className="flex items-center gap-1">
+          <Wifi className="h-4 w-4 animate-pulse text-yellow-500" />
+          <span className="text-xs text-yellow-600">연결 중...</span>
+        </div>
+      )
     }
     if (hasError) {
       return <WifiOff className="h-4 w-4 text-red-500" />
@@ -53,7 +60,7 @@ export function VoiceChatStatus({
     if (isDisconnected) {
       return <Wifi className="h-4 w-4 text-gray-500" />
     }
-    return <Wifi className="h-4 w-4 text-green-500" />
+    return null // 정상 연결 시에는 아이콘 표시 안함
   }
 
   // 참가자 아바타 정보 생성
@@ -86,20 +93,21 @@ export function VoiceChatStatus({
       })
     : null
 
-  // 참가자 수 계산
-  const totalParticipants = participants.length + (currentUser ? 1 : 0)
-
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      {/* 상태 표시 */}
-      <div className="flex items-center gap-1">
-        {getStatusIcon()}
-        <span className="text-gray-600 text-xs">{totalParticipants}명</span>
-      </div>
+      {/* 상태 표시 (이상한 상태일 때만) */}
+      {getStatusIcon() && (
+        <div className="flex items-center">{getStatusIcon()}</div>
+      )}
 
       {/* 참가자들 */}
       {participants.map(participant => {
         const avatarInfo = getParticipantAvatarInfo(participant)
+        console.log(`VoiceChatStatus rendering participant:`, {
+          identity: participant.identity,
+          isMicrophoneEnabled: participant.isMicrophoneEnabled,
+          isSpeaking: participant.isSpeaking,
+        })
         return (
           <VoiceAvatar
             key={participant.identity}
@@ -112,52 +120,57 @@ export function VoiceChatStatus({
         )
       })}
 
-      {/* 현재 사용자 */}
+      {/* 현재 사용자 아바타 */}
       {currentUserAvatarInfo && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onToggleMicrophone}
-          className="h-8 w-8 p-0 hover:bg-transparent"
-          title={`마이크 ${isMicrophoneEnabled ? '끄기' : '켜기'}`}
-        >
-          <VoiceAvatar
-            user={currentUserAvatarInfo}
-            showMicrophoneStatus={true}
-            isMicrophoneEnabled={isMicrophoneEnabled}
-            showVoiceActivity={true}
-            isSpeaking={isSpeaking}
-            className="transition-transform hover:scale-105"
-          />
-        </Button>
+        <VoiceAvatar
+          user={currentUserAvatarInfo}
+          showMicrophoneStatus={true}
+          isMicrophoneEnabled={isMicrophoneEnabled}
+          showVoiceActivity={true}
+          isSpeaking={isSpeaking}
+        />
       )}
 
-      {/* 마이크 토글 버튼 (현재 사용자가 없을 때) */}
-      {!currentUser && onToggleMicrophone && (
+      {/* 마이크 토글 버튼 */}
+      {onToggleMicrophone && (
         <Button
           variant="ghost"
           size="sm"
           onClick={onToggleMicrophone}
-          className="h-8 w-8 p-0"
-          title={`마이크 ${isMicrophoneEnabled ? '끄기' : '켜기'}`}
+          disabled={isTogglingMicrophone}
+          className={cn(
+            'h-6 w-6 p-0 transition-colors',
+            isTogglingMicrophone && 'cursor-not-allowed opacity-50',
+            isMicrophoneEnabled
+              ? 'text-green-600 hover:bg-green-50'
+              : 'text-red-500 hover:bg-red-50',
+          )}
+          title={
+            isTogglingMicrophone
+              ? '처리 중...'
+              : `마이크 ${isMicrophoneEnabled ? '끄기' : '켜기'}`
+          }
         >
-          {isMicrophoneEnabled ? (
-            <Mic className="h-4 w-4" />
+          {isTogglingMicrophone ? (
+            <div className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : isMicrophoneEnabled ? (
+            <Mic className="h-3 w-3" />
           ) : (
-            <MicOff className="h-4 w-4 text-red-500" />
+            <MicOff className="h-3 w-3" />
           )}
         </Button>
       )}
 
-      {/* 에러 시 재연결 버튼 */}
-      {hasError && onReconnect && (
+      {/* 재연결 버튼 (에러 또는 연결 끊김 시) */}
+      {(hasError || isDisconnected) && onReconnect && (
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={onReconnect}
-          className="ml-2 h-6 px-2 text-xs"
+          className="h-6 w-6 p-0 text-gray-600 hover:bg-gray-100"
+          title="재연결"
         >
-          재연결
+          <RotateCcw className="h-3 w-3" />
         </Button>
       )}
     </div>

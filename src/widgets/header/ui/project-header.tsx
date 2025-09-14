@@ -25,6 +25,7 @@ interface ProjectHeaderProps {
     isDisconnected: boolean
     isMicrophoneEnabled: boolean
     isSpeaking: boolean
+    isTogglingMicrophone: boolean
   }
   participants: Participant[]
   projectMembers: ProjectMember[]
