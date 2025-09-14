@@ -190,7 +190,7 @@ export function useLiveKit({
       setLocalParticipant(participant)
     })
 
-    // 참여자 연결/해제 - 실시간 업데이트
+    // 참여자 연결/해제 - 실시간 업데이트 (순서 유지)
     room.on(
       RoomEvent.ParticipantConnected,
       (participant: RemoteParticipant) => {
@@ -203,9 +203,12 @@ export function useLiveKit({
         }
 
         setParticipants(prev => {
+          // 중복 방지
           if (prev.some(p => p.identity === participant.identity)) {
             return prev
           }
+
+          // 순서 유지: 기존 참여자들 뒤에 새 참여자 추가
           return [...prev, newParticipant]
         })
       },
@@ -214,9 +217,10 @@ export function useLiveKit({
     room.on(
       RoomEvent.ParticipantDisconnected,
       (participant: RemoteParticipant) => {
-        setParticipants(prev =>
-          prev.filter(p => p.identity !== participant.identity),
-        )
+        setParticipants(prev => {
+          // 순서 유지: 해당 참여자만 제거하고 나머지 순서 유지
+          return prev.filter(p => p.identity !== participant.identity)
+        })
       },
     )
   }
