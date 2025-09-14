@@ -30,16 +30,8 @@ export function getUserInitials(name: string): string {
     return '?'
   }
 
-  const words = trimmedName.split(/\s+/)
-  if (words.length === 1) {
-    return words[0]?.substring(0, 2).toUpperCase() || '?'
-  }
-
-  const firstWord = words[0]
-  const lastWord = words[words.length - 1]
-  if (!firstWord || !lastWord || !firstWord[0] || !lastWord[0]) return '?'
-
-  return (firstWord[0] + lastWord[0]).toUpperCase()
+  // 첫 번째 글자만 반환
+  return trimmedName[0]?.toUpperCase() || '?'
 }
 
 export function getUserColor(identifier: string): string {

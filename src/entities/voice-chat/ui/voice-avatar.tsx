@@ -23,12 +23,9 @@ export function VoiceAvatar({
   return (
     <div className={cn('relative', className)}>
       {/* 사용자 아바타 */}
-      <Avatar className="h-6 w-6">
+      <Avatar className="h-6 w-6 border-2" style={{ borderColor: user.color }}>
         <AvatarImage src={user.profileImageUrl} alt={user.name} />
-        <AvatarFallback
-          className="font-semibold text-white text-xs"
-          style={{ backgroundColor: user.color }}
-        >
+        <AvatarFallback className="bg-muted text-xs">
           {user.initials}
         </AvatarFallback>
       </Avatar>
