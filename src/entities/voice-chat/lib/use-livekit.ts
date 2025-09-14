@@ -136,7 +136,7 @@ export function useLiveKit({
     return participantVolumes[participantIdentity] ?? 100
   }
 
-  // 참여자 상태 동기화 - 백업용 (볼륨은 기존 값 유지)
+  // 참여자 상태 동기화 - 초기 연결 시에만 사용 (기존 참여자들을 위해)
   const syncParticipants = useCallback(() => {
     if (!room) return
 
@@ -208,6 +208,14 @@ export function useLiveKit({
         (speakers: import('livekit-client').Participant[]) => {
           const speakingSet = new Set(speakers.map(speaker => speaker.identity))
           setSpeakingParticipants(speakingSet)
+
+          // 참여자 상태도 실시간으로 업데이트
+          setParticipants(prev =>
+            prev.map(p => ({
+              ...p,
+              isSpeaking: speakingSet.has(p.identity),
+            })),
+          )
         },
       )
 
@@ -289,7 +297,7 @@ export function useLiveKit({
             name: participant.name || participant.identity,
             isMicrophoneEnabled: getMicrophoneEnabled(participant),
             isSpeaking: false,
-            volume: 100,
+            volume: participantVolumes[participant.identity] ?? 100, // 저장된 볼륨 사용
           }
 
           setParticipants(prev => {
@@ -307,6 +315,9 @@ export function useLiveKit({
       room.on(
         RoomEvent.ParticipantDisconnected,
         (participant: RemoteParticipant) => {
+          // 오디오 요소 정리
+          removeAudioElement(participant.identity)
+
           setParticipants(prev => {
             // 순서 유지: 해당 참여자만 제거하고 나머지 순서 유지
             return prev.filter(p => p.identity !== participant.identity)
@@ -314,7 +325,12 @@ export function useLiveKit({
         },
       )
     },
-    [syncParticipants, getMicrophoneEnabled, removeAudioElement],
+    [
+      syncParticipants,
+      getMicrophoneEnabled,
+      removeAudioElement,
+      participantVolumes,
+    ],
   )
 
   // 연결
@@ -480,17 +496,12 @@ export function useLiveKit({
     }
   }, [connect, isConnected, isConnecting, error])
 
-  // 참여자 상태 동기화 - 나중에 들어온 사람을 위한 백업
+  // 참여자 상태 동기화 - 초기 연결 시에만 실행
   useEffect(() => {
     if (!isConnected || !room) return
 
-    // 연결 직후 한 번 동기화
+    // 연결 직후 한 번만 동기화 (기존 참여자들을 위해)
     syncParticipants()
-
-    // 주기적 동기화 (간단하게)
-    const interval = setInterval(syncParticipants, 2000) // 2초마다
-
-    return () => clearInterval(interval)
   }, [isConnected, room, syncParticipants])
 
   // 컴포넌트 언마운트 시 정리
