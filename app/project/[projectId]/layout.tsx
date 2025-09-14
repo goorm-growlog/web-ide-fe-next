@@ -1,12 +1,9 @@
-'use client'
-
 import type { ReactNode } from 'react'
 
-const EditorLayout = ({ children }: { children: ReactNode }) => (
-  <div>
-    <header>Editor Layout</header>
-    <main>{children}</main>
-  </div>
-)
+interface LayoutProps {
+  children: ReactNode
+}
 
-export default EditorLayout
+export default function ProjectLayout({ children }: LayoutProps) {
+  return children
+}
