@@ -124,7 +124,7 @@ export function VoiceChatStatus({
               />
               {/* 볼륨 슬라이더 - 호버 시 하단에 말풍선 스타일로 표시 */}
               {onVolumeChange && (
-                <div className="absolute top-full z-10 mt-2 translate-y-1 transform opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                <div className="absolute top-full z-5 mt-2 translate-y-1 transform opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
                   {/* 부모 요소에 tail을 위한 공간(pt-2)과 위치 기준(relative)을 설정합니다. */}
                   <div className="relative w-fit pt-1">
                     {/* 말풍선 꼬리 (위치를 정밀하게 조정) */}
@@ -156,13 +156,15 @@ export function VoiceChatStatus({
 
       {/* 현재 사용자 아바타 - 연결 완료일 때만 표시 */}
       {isConnected && currentUserAvatarInfo && (
-        <VoiceAvatar
-          user={currentUserAvatarInfo}
-          showMicrophoneStatus={true}
-          isMicrophoneEnabled={isMicrophoneEnabled}
-          showVoiceActivity={true}
-          isSpeaking={isSpeaking}
-        />
+        <div className="relative z-20">
+          <VoiceAvatar
+            user={currentUserAvatarInfo}
+            showMicrophoneStatus={true}
+            isMicrophoneEnabled={isMicrophoneEnabled}
+            showVoiceActivity={true}
+            isSpeaking={isSpeaking}
+          />
+        </div>
       )}
 
       {/* 마이크 토글 버튼 - 연결 완료일 때만 표시 */}
