@@ -29,8 +29,9 @@ export const createStompClient = (config: StompClientConfig): Client => {
     onStompError: frame => {
       const error: WebSocketError = {
         type: 'stomp',
+        code: 'STOMP_ERROR',
         message: `STOMP error: ${frame.body || 'Unknown error'}`,
-        details: frame,
+        details: frame as unknown as Record<string, unknown>,
       }
       config.onError(error)
     },
@@ -38,8 +39,9 @@ export const createStompClient = (config: StompClientConfig): Client => {
     onWebSocketError: event => {
       const error: WebSocketError = {
         type: 'websocket',
+        code: 'WEBSOCKET_ERROR',
         message: 'WebSocket connection error',
-        details: event,
+        details: event as Record<string, unknown>,
       }
       config.onError(error)
     },
