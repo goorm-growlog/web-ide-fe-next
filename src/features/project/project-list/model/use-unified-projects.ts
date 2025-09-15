@@ -9,7 +9,7 @@ import { getEnrichedProjectsByType } from '@/entities/project/model/project-serv
  */
 export function useUnifiedProjects() {
   const { data, error, isLoading, mutate } = useSWR(
-    'projects/enriched/all',
+    '/api/projects/enriched/all',
     async () => {
       const result = await getEnrichedProjectsByType()
       return result
