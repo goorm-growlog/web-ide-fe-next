@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { Code } from 'lucide-react'
+import Image from 'next/image'
+import { Code, Users, Mic } from 'lucide-react'
 import { MainHeader } from '@/widgets/header/ui/main-header'
 
 export default function LandingPage() {
@@ -10,67 +11,86 @@ export default function LandingPage() {
       <MainHeader />
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-20 mt-20">
-        <div className="max-w-4xl mx-auto text-center space-y-12">
-          {/* Hero */}
-          <div className="space-y-6">
-            <h1 className="text-5xl font-bold">
-              Code smarter, anywhere. 
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              The modern web development platform that brings your ideas to life.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Link 
-                href="/signup"
-                className="bg-primary text-primary-foreground px-6 py-3 rounded font-medium hover:bg-primary/90"
-              >
-                Join us
-              </Link>
-              <Link 
-                href="/signin"
-                className="border border-border px-6 py-3 rounded font-medium hover:bg-muted"
-              >
-                Sign in
-              </Link>
-            </div>
-          </div>
-
-          {/* Features */}
-          <div className="grid md:grid-cols-3 gap-8 pt-16">
-            <div className="space-y-4">
-              <div className="h-12 w-12 bg-primary/10 rounded flex items-center justify-center mx-auto">
-                <Code className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold">Cloud IDE</h3>
-              <p className="text-muted-foreground">
-                Full-featured development environment in your browser.
+      <main className="flex h-screen items-center justify-center pt-[70px] pb-6">
+        <div className="container mx-auto px-6 flex items-center justify-center">
+          <div className="max-w-4xl mx-auto space-y-12">
+            {/* Hero */}
+            <div className="space-y-3 text-center">
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
+                Code smarter, anywhere
+              </h1>
+              <p className="text-base text-muted-foreground max-w-xl mx-auto">
+                Modern web development platform for seamless collaboration
               </p>
+              <div className="flex gap-2 justify-center pt-2">
+                <Link 
+                  href="/signup"
+                  className="bg-foreground text-background px-4 py-2 rounded-sm text-sm font-medium hover:bg-foreground/90 transition-all duration-200"
+                >
+                  Get Started
+                </Link>
+                <Link 
+                  href="/signin"
+                  className="border border-border px-4 py-2 rounded-sm text-sm font-medium hover:bg-muted transition-all duration-200"
+                >
+                  Sign in
+                </Link>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="h-12 w-12 bg-primary/10 rounded flex items-center justify-center mx-auto">
-                <Code className="h-6 w-6 text-primary" />
+            {/* Product Screenshot */}
+            <div className="flex justify-center">
+              <div className="relative max-w-3xl w-full">
+                <div className="rounded-lg border border-border border-t-0 border-l-0 shadow-md overflow-hidden">
+                  <Image
+                    src="/web-ide-screenshot.png"
+                    alt="Web IDE Interface"
+                    width={700}
+                    height={420}
+                    className="w-full h-auto"
+                    priority
+                  />
+                </div>
               </div>
-              <h3 className="text-lg font-semibold">Real-time Collaboration</h3>
-              <p className="text-muted-foreground">
-                Work together with your team in real-time.
-              </p>
             </div>
 
-            <div className="space-y-4">
-              <div className="h-12 w-12 bg-primary/10 rounded flex items-center justify-center mx-auto">
-                <Code className="h-6 w-6 text-primary" />
+            {/* Features */}
+            <div className="text-center">
+              <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto">
+                <div className="space-y-2">
+                  <div className="h-10 w-10 bg-muted rounded-lg flex items-center justify-center mx-auto">
+                    <Code className="h-5 w-5 text-foreground" />
+                  </div>
+                  <h3 className="text-base font-semibold text-foreground">Cloud IDE</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Browser-based development
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="h-10 w-10 bg-muted rounded-lg flex items-center justify-center mx-auto">
+                    <Users className="h-5 w-5 text-foreground" />
+                  </div>
+                  <h3 className="text-base font-semibold text-foreground">Collaboration</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Real-time team work
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="h-10 w-10 bg-muted rounded-lg flex items-center justify-center mx-auto">
+                    <Mic className="h-5 w-5 text-foreground" />
+                  </div>
+                  <h3 className="text-base font-semibold text-foreground">Voice Chat</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Audio communication
+                  </p>
+                </div>
               </div>
-              <h3 className="text-lg font-semibold">Instant Deploy</h3>
-              <p className="text-muted-foreground">
-                Deploy your applications with one click.
-              </p>
             </div>
           </div>
         </div>
       </main>
-
     </div>
   )
 }
