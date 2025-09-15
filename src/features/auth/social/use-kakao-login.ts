@@ -1,9 +1,8 @@
 'use client'
 
 import { useCallback } from 'react'
-import { toast } from 'sonner'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
-import { getErrorMessage } from '@/shared/types/error'
+import { handleAuthError } from '@/shared/lib/error-handler'
 
 /**
  * Kakao 소셜 로그인 훅
@@ -28,8 +27,7 @@ export const useKakaoLogin = () => {
       // 백엔드로 직접 리다이렉트 (NextAuth 사용하지 않음)
       window.location.href = `${baseUrl}/auth/kakao`
     } catch (error) {
-      const errorMessage = getErrorMessage(error) || 'Kakao 로그인 실패'
-      toast.error(errorMessage)
+      handleAuthError(error)
     }
   }, [])
 
