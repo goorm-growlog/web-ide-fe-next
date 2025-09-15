@@ -8,7 +8,11 @@ export default auth(req => {
   if (
     pathname === '/' ||
     pathname.startsWith('/api') ||
-    pathname.startsWith('/auth')
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/users') ||
+    pathname.startsWith('/signin') ||
+    pathname.startsWith('/signup') ||
+    pathname.startsWith('/reset-password')
   ) {
     return
   }
@@ -20,13 +24,13 @@ export default auth(req => {
     (pathname.startsWith('/signin') || pathname.startsWith('/signup')) &&
     !req.nextUrl.searchParams.has('callbackUrl')
   ) {
-    return Response.redirect(new URL('/project', req.url))
+    return Response.redirect(new URL('/projects', req.url))
   }
 
   // 미인증 사용자 → 보호된 페이지 접근 시 로그인으로 리다이렉트
   if (
     !isAuthenticated &&
-    (pathname.startsWith('/account') || pathname.startsWith('/project'))
+    (pathname.startsWith('/account') || pathname.startsWith('/projects'))
   ) {
     const signInUrl = new URL('/signin', req.url)
     signInUrl.searchParams.set('callbackUrl', pathname)
