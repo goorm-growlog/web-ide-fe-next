@@ -59,6 +59,7 @@ export function useLiveKit({
   const [participants, setParticipants] = useState<VoiceChatParticipant[]>([])
   const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const [isAudioUnlocked, setIsAudioUnlocked] = useState(false)
 
   // 개선된 오디오 관리 - 볼륨 및 상태 동기화 최적화
   const audioElementsRef = useRef<Map<string, HTMLAudioElement>>(new Map())
@@ -136,6 +137,7 @@ export function useLiveKit({
   const connect = useCallback(async () => {
     if (room || isConnecting) return
 
+    toast.info('Connecting to voice chat...')
     setIsConnecting(true)
     setError(null)
 
@@ -363,6 +365,7 @@ export function useLiveKit({
   // Room 연결 해제 (개선된 정리)
   const disconnect = useCallback(() => {
     if (room) {
+      room.removeAllListeners()
       // 모든 오디오 요소 정리
       audioElementsRef.current.forEach(audioElement => {
         audioElement.remove()
@@ -454,17 +457,35 @@ export function useLiveKit({
     [room, projectId],
   )
 
-  // 자동 연결
+  // 오디오 잠금 및 자동 연결 로직
   useEffect(() => {
-    if (!room && roomName && userName && userId) {
+    const unlockAudio = () => {
+      setIsAudioUnlocked(true)
+      window.removeEventListener('click', unlockAudio)
+      window.removeEventListener('keydown', unlockAudio)
+    }
+
+    window.addEventListener('click', unlockAudio)
+    window.addEventListener('keydown', unlockAudio)
+
+    return () => {
+      window.removeEventListener('click', unlockAudio)
+      window.removeEventListener('keydown', unlockAudio)
+    }
+  }, [])
+
+  // 자동 연결 (오디오 잠금 해제 후)
+  useEffect(() => {
+    if (isAudioUnlocked && !room && roomName && userName && userId) {
       connect()
     }
-  }, [room, roomName, userName, userId, connect])
+  }, [isAudioUnlocked, room, roomName, userName, userId, connect])
 
   // 컴포넌트 언마운트 시 정리 (개선된 버전)
   useEffect(() => {
     return () => {
       if (room) {
+        room.removeAllListeners()
         // 모든 오디오 요소 정리
         audioElementsRef.current.forEach(audioElement => {
           audioElement.remove()
