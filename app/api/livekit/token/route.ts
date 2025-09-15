@@ -3,11 +3,11 @@ import { AccessToken } from 'livekit-server-sdk'
 
 export async function POST(request: NextRequest) {
   try {
-    const { room, identity, name } = await request.json()
+    const { roomName, participantIdentity, participantName } = await request.json()
 
-    if (!room || !identity || !name) {
+    if (!roomName || !participantIdentity || !participantName) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing required fields: roomName, participantIdentity, participantName' },
         { status: 400 }
       )
     }
@@ -24,12 +24,12 @@ export async function POST(request: NextRequest) {
     }
 
     const token = new AccessToken(apiKey, apiSecret, {
-      identity,
-      name,
+      identity: participantIdentity,
+      name: participantName,
     })
 
     token.addGrant({
-      room,
+      room: roomName,
       roomJoin: true,
       canPublish: true,
       canSubscribe: true,
