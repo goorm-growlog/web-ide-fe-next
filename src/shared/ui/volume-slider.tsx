@@ -29,7 +29,7 @@ export function VolumeSlider({
         step={1}
         className="flex-1"
       />
-      <span className="w-4 flex-shrink-0 pr-4+ text-center font-medium text-foreground text-sm">
+      <span className="w-4 flex-shrink-0 pr-4 text-center font-medium text-foreground text-sm">
         {value}
       </span>
     </div>
