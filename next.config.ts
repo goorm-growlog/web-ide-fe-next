@@ -6,17 +6,18 @@ const API_TARGET =
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
-      // 백엔드 API 프록시
+      // 백엔드 API 프록시 - API 접두사 사용
+      // auth는 NextAuth와 충돌 방지를 위해 /api/ 프리픽스 없이 사용
       {
         source: '/auth/:path*',
         destination: `${API_TARGET}/auth/:path*`,
       },
       {
-        source: '/projects/:path*',
+        source: '/api/projects/:path*',
         destination: `${API_TARGET}/projects/:path*`,
       },
       {
-        source: '/users/:path*',
+        source: '/api/users/:path*',
         destination: `${API_TARGET}/users/:path*`,
       },
       // NextAuth의 /api/auth/* 는 로컬에서 처리 (프록시 안함)
