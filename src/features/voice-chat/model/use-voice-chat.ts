@@ -42,7 +42,7 @@ export function useVoiceChat({
     roomName,
     userName,
     userId,
-    projectId,
+    ...(projectId && { projectId }),
   })
 
   return {

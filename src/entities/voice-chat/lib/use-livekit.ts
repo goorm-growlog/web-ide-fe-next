@@ -27,9 +27,10 @@ const getStoredVolumes = (projectId?: string): Record<string, number> => {
 }
 
 const saveStoredVolumes = (
-  projectId: string,
   volumes: Record<string, number>,
+  projectId?: string,
 ) => {
+  if (!projectId) return
   try {
     const stored = localStorage.getItem(VOLUME_STORAGE_KEY)
     const allVolumes = stored ? JSON.parse(stored) : {}
@@ -431,7 +432,7 @@ export function useLiveKit({
       if (projectId) {
         const storedVolumes = getStoredVolumes(projectId)
         storedVolumes[participantIdentity] = volume
-        saveStoredVolumes(projectId, storedVolumes)
+        saveStoredVolumes(storedVolumes, projectId)
       }
     },
     [room, projectId],
