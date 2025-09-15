@@ -108,6 +108,8 @@ export function useLiveKit({ roomName, userName, userId }: UseLiveKitProps) {
         reconnectPolicy: {
           nextRetryDelayInMs: () => 1000, // 재연결 빠르게
         },
+        // 🎯 더 민감한 음성 감지를 위한 설정
+        adaptiveStream: true, // 적응형 스트림으로 더 빠른 반응
       })
 
       // 토큰 요청
@@ -202,7 +204,7 @@ export function useLiveKit({ roomName, userName, userId }: UseLiveKitProps) {
         updateLocalParticipant(newRoom)
       })
 
-      // Speaking 상태 변경 - 실시간 업데이트 (더 빠른 반응)
+      // Speaking 상태 변경 - 실시간 업데이트 (최적화된 반응)
       newRoom.on(RoomEvent.ActiveSpeakersChanged, speakers => {
         const speakingIdentities = new Set(speakers.map(s => s.identity))
 
