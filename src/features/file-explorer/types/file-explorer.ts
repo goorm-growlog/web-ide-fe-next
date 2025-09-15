@@ -13,10 +13,18 @@ export interface FileItemProps {
 }
 
 export interface FileItemWithContextMenuProps {
-  readonly item: ItemInstance<FileNode> | null
+  readonly item: ItemInstance<FileNode>
   readonly iconSize: number
   readonly onAction: (
     action: FileActionType,
     item: ItemInstance<FileNode> | null,
+  ) => void
+}
+
+export interface RootItemWithContextMenuProps {
+  readonly item: ItemInstance<FileNode>
+  readonly onAction: (
+    action: FileActionType,
+    item: ItemInstance<FileNode>,
   ) => void
 }
