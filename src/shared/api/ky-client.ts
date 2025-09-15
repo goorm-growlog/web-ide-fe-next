@@ -94,7 +94,7 @@ export const authApi = ky.create({
             } else {
               // 새로운 토큰 갱신 시작 - 항상 프록시를 통해 백엔드로 직접 호출
               refreshPromise = ky
-                .post('/auth/refresh', {
+                .post('auth/refresh', {
                   credentials: 'include', // 쿠키 포함
                 })
                 .json<{ data: { accessToken: string } }>()

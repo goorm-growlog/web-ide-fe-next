@@ -26,7 +26,7 @@ export const useAuthProvider = () => {
     isLoading: userLoading,
     mutate: refreshUser,
   } = useSWR(
-    status === 'authenticated' ? 'users/me' : null,
+    status === 'authenticated' ? '/api/users/me' : null,
     // fetcher는 전역 설정에서 자동으로 사용됨 (authApi 사용)
   )
 
