@@ -27,8 +27,8 @@ const MessageItem = memo(
     )
 
     const isOwnMessage = useMemo(
-      () => currentUserId.toString() === message.userId,
-      [currentUserId, message.userId],
+      () => currentUserId.toString() === message.user.id,
+      [currentUserId, message.user.id],
     )
 
     /**
@@ -43,9 +43,9 @@ const MessageItem = memo(
 
         if (!prevMessage || prevMessage.type !== 'TALK') return true
 
-        return prevMessage.userId !== message.userId
+        return prevMessage.user.id !== message.user.id
       },
-      [index, messages, message.type, message.userId],
+      [index, messages, message.type, message.user.id],
     )
 
     const isFirstInGroup = useMemo(
