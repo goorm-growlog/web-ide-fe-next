@@ -7,6 +7,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
 import { mutate } from 'swr'
 import { loginApi } from '@/entities/auth/api/auth'
+import type { LoginRequest } from '@/entities/auth/model/types'
 import type { LoginFormData } from '@/features/auth/lib/validation'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
 import { getErrorMessage } from '@/shared/types/error'
@@ -26,7 +27,13 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
   const handleCredentialsLogin = useCallback(
     async (data: LoginFormData) => {
       try {
-        const loginData = await loginApi(data)
+        // Feature layer의 폼 데이터를 Entity layer의 요청 형식으로 변환
+        const loginRequest: LoginRequest = {
+          email: data.email,
+          password: data.password,
+        }
+
+        const loginData = await loginApi(loginRequest)
 
         const userWithTokens = {
           id: loginData.userId,
