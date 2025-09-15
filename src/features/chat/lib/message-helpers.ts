@@ -26,14 +26,14 @@ export const shouldShowDateHeader = (
 
 export const getSystemMessageText = ({
   type,
-  userName,
+  user,
   content,
 }: ChatMessage): string => {
   if (type === 'ENTER') {
-    return `${userName} joined this chatroom.`
+    return `${user.name} joined this chatroom.`
   }
   if (type === 'LEAVE') {
-    return `${userName} left this chatroom.`
+    return `${user.name} left this chatroom.`
   }
   return content || 'System message'
 }
