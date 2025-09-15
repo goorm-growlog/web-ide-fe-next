@@ -1,29 +1,16 @@
 import type {
-  LoginFormData,
-  SignupFormData,
-} from '@/features/auth/lib/validation'
-import type { PasswordResetData } from '@/features/verification/password-reset/model/schema'
+  LoginData,
+  LoginRequest,
+  SignupRequest,
+} from '@/entities/auth/model/types'
 import { api, authApi } from '@/shared/api/ky-client'
 import { apiHelpers } from '@/shared/lib/api-helpers'
 import type { ApiResponse } from '@/shared/types/api'
 
-// Auth 관련 API 응답 타입들
-export interface LoginData {
-  userId: number
-  name: string
-  accessToken: string
-}
-
-export interface SignupData {
-  userId: number
-  email: string
-  name: string
-}
-
 /**
  * 로그인 API
  */
-export const loginApi = async (data: LoginFormData): Promise<LoginData> => {
+export const loginApi = async (data: LoginRequest): Promise<LoginData> => {
   const response = await api
     .post('/auth/login', {
       json: {
@@ -39,34 +26,16 @@ export const loginApi = async (data: LoginFormData): Promise<LoginData> => {
 /**
  * 회원가입 API
  */
-export const signupApi = async (data: SignupFormData): Promise<SignupData> => {
+export const signupApi = async (data: SignupRequest): Promise<void> => {
   const response = await api
-    .post('users/signup', {
+    .post('/users/signup', {
       json: {
         email: data.email,
         password: data.password,
-        name: data.name,
+        username: data.name, // API 문서에서는 username 필드 사용
       },
     })
-    .json<ApiResponse<SignupData>>()
-
-  return apiHelpers.extractData(response)
-}
-
-/**
- * 비밀번호 재설정 요청 API
- */
-export const resetPasswordApi = async (
-  data: PasswordResetData,
-): Promise<void> => {
-  const response = await api
-    .post('/auth/reset-password', {
-      json: {
-        name: data.name,
-        email: data.email,
-      },
-    })
-    .json<ApiResponse<void>>()
+    .json<ApiResponse<Record<string, boolean>>>()
 
   apiHelpers.checkSuccess(response)
 }
