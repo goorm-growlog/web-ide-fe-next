@@ -16,7 +16,10 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: () => (
     <div className="flex border">
-      <ChatPanel projectId="test-project" />
+      <ChatPanel
+        projectId="test-project"
+        chatData={{ messages: [], isLoading: false }}
+      />
     </div>
   ),
 }
