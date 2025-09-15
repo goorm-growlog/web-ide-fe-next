@@ -7,8 +7,8 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
+import type { FileTreeNodeType } from '@/entities/file-tree/api/types'
 import { FILE_EXPLORER_UI_TEXTS } from '@/features/file-explorer/constants/ui-constants'
-import type { FileTreeNodeType } from '@/features/file-explorer/types/api'
 import { Button } from '@/shared/ui/shadcn/button'
 import {
   Dialog,
