@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/providers/auth-provider'
 import { useProjectVoiceChat } from '@/features/voice-chat/model/use-project-voice-chat'
 import { useVoiceChat } from '@/features/voice-chat/model/use-voice-chat'
@@ -20,6 +21,7 @@ interface ProjectWorkspaceProps {
  */
 export function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
   const { user } = useAuth()
+  const router = useRouter()
   const { projectMembers, roomName } = useProjectVoiceChat({ projectId })
 
   const voiceChat = useVoiceChat({
@@ -31,6 +33,15 @@ export function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
   const currentUser = projectMembers.find(
     (member: { userId: number }) => member.userId === Number(user?.id),
   )
+
+  const handleToggleChat = () => {
+    // TODO: 채팅 패널 토글 로직 구현
+    console.log('Toggle chat panel')
+  }
+
+  const handleExitProject = () => {
+    router.push('/project')
+  }
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-background">
@@ -52,6 +63,8 @@ export function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
         onReconnect={voiceChat.connect}
         onToggleMicrophone={voiceChat.toggleMicrophone}
         onSetParticipantVolume={voiceChat.setParticipantVolume}
+        onToggleChat={handleToggleChat}
+        onExitProject={handleExitProject}
       />
 
       {/* 에디터 레이아웃 (헤더 아래 나머지 전체 영역) */}

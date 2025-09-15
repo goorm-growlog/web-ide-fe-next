@@ -1,13 +1,15 @@
 'use client'
 
-import { ChevronDown, LogOut, UserRoundPen } from 'lucide-react'
+import { ChevronDown, LogOut, MessageCircle, UserRoundPen } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/providers/auth-provider'
 import type { ProjectMember } from '@/entities/project/model/types'
 import type { Participant } from '@/entities/voice-chat/model/types'
 import { useLogout } from '@/features/auth/logout/use-logout'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
+import { Button } from '@/shared/ui/shadcn/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,6 +42,8 @@ interface ProjectHeaderProps {
   onToggleMicrophone?: () => void
   onSetParticipantVolume?: (participantIdentity: string, volume: number) => void
   onSetCurrentUserVolume?: (volume: number) => void
+  onToggleChat?: () => void
+  onExitProject?: () => void
 }
 
 export function ProjectHeader({
@@ -50,13 +54,24 @@ export function ProjectHeader({
   onReconnect,
   onToggleMicrophone,
   onSetParticipantVolume,
+  onToggleChat,
+  onExitProject,
 }: ProjectHeaderProps) {
   const { logout } = useLogout()
   const { user, isLoading } = useAuth()
+  const router = useRouter()
 
   const getInitial = (name?: string) => {
     if (!name) return 'U'
     return name.charAt(0).toUpperCase()
+  }
+
+  const handleExitProject = () => {
+    if (onExitProject) {
+      onExitProject()
+    } else {
+      router.push('/project')
+    }
   }
 
   return (
@@ -65,7 +80,7 @@ export function ProjectHeader({
         <Image src="/logo.svg" alt="GrowLog" width={80} height={20} />
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1">
         {/* 음성채팅 상태 */}
         <VoiceChatStatus
           {...voiceChatStatus}
@@ -76,6 +91,26 @@ export function ProjectHeader({
           onToggleMicrophone={onToggleMicrophone}
           onVolumeChange={onSetParticipantVolume}
         />
+
+        {/* 채팅 아이콘 */}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0"
+          onClick={onToggleChat}
+        >
+          <MessageCircle className="h-4 w-4" />
+        </Button>
+
+        {/* 나가기 아이콘 */}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="mr-2 h-6 w-6"
+          onClick={handleExitProject}
+        >
+          <LogOut className="h-4 w-4" />
+        </Button>
 
         {/* 사용자 메뉴 */}
         {!isLoading && user && (

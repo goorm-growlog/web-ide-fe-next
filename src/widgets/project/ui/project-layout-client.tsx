@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/providers/auth-provider'
 import { useProjectVoiceChat } from '@/features/voice-chat/model/use-project-voice-chat'
 import { useVoiceChat } from '@/features/voice-chat/model/use-voice-chat'
@@ -12,6 +13,7 @@ interface ProjectLayoutClientProps {
 
 export function ProjectLayoutClient({ projectId }: ProjectLayoutClientProps) {
   const { user } = useAuth()
+  const router = useRouter()
   const { projectMembers, roomName } = useProjectVoiceChat({ projectId })
 
   // 사용자 정보가 없으면 음성채팅 초기화하지 않음
@@ -24,6 +26,15 @@ export function ProjectLayoutClient({ projectId }: ProjectLayoutClientProps) {
   const currentUser = projectMembers.find(
     (member: { userId: number }) => member.userId === Number(user?.id),
   )
+
+  const handleToggleChat = () => {
+    // TODO: 채팅 패널 토글 로직 구현
+    console.log('Toggle chat panel')
+  }
+
+  const handleExitProject = () => {
+    router.push('/project')
+  }
 
   // 사용자 정보 로딩 중이면 로딩 표시
   if (!user) {
@@ -56,6 +67,8 @@ export function ProjectLayoutClient({ projectId }: ProjectLayoutClientProps) {
         onReconnect={voiceChat.connect}
         onToggleMicrophone={voiceChat.toggleMicrophone}
         onSetParticipantVolume={voiceChat.setParticipantVolume}
+        onToggleChat={handleToggleChat}
+        onExitProject={handleExitProject}
       />
 
       <div className="h-screen pt-[70px]">
