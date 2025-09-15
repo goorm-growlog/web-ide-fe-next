@@ -1,9 +1,5 @@
 /**
- * 사용자 엔티티 타입 정의
+ * 사용자 엔티티 타입 정의 (통합됨)
+ * shared/types/user.ts의 User 타입을 재사용
  */
-export interface User {
-  id: string
-  email: string
-  name?: string
-  profileImage?: string
-}
+export type { User, UserInfoData } from '@/shared/types/user'

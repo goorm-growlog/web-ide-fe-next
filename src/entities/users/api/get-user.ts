@@ -17,7 +17,7 @@ interface UserApiData {
 export const getUser = async (): Promise<User> => {
   // 백엔드 API: GET /users/me (인증 필요)
   const response = await authApi
-    .get('users/me')
+    .get('/api/users/me')
     .json<ApiResponse<UserApiData>>()
 
   const userData = apiHelpers.extractData(response)
@@ -35,7 +35,7 @@ export const getUser = async (): Promise<User> => {
  * 사용자 이름을 업데이트합니다.
  */
 export const updateUserName = async (name: string): Promise<void> => {
-  await authApi.patch('users/me/name', { json: { name } })
+  await authApi.patch('/api/users/me/name', { json: { name } })
 }
 
 /**
@@ -45,7 +45,7 @@ export const updatePassword = async (
   currentPassword: string,
   newPassword: string,
 ): Promise<void> => {
-  await authApi.patch('users/me/password', {
+  await authApi.patch('/api/users/me/password', {
     json: { currentPassword, newPassword },
   })
 }
@@ -58,7 +58,7 @@ export const uploadProfileImage = async (file: File): Promise<string> => {
   formData.append('profileImage', file)
 
   const response = await authApi
-    .patch('users/profile-image', { body: formData })
+    .patch('/api/users/profile-image', { body: formData })
     .json<ApiResponse<{ profileImageUrl: string }>>()
 
   if (!response.data?.profileImageUrl) {
@@ -72,7 +72,7 @@ export const uploadProfileImage = async (file: File): Promise<string> => {
  * 계정을 삭제합니다.
  */
 export const deleteAccount = async (password: string): Promise<void> => {
-  await authApi.delete('users/me', {
+  await authApi.delete('/api/users/me', {
     json: { password },
   })
 }
