@@ -13,6 +13,7 @@ interface VoiceChatStatusProps {
   isConnected: boolean
   isConnecting: boolean
   hasError: boolean
+  error?: string | null
   isDisconnected: boolean
   isMicrophoneEnabled: boolean
   isSpeaking: boolean

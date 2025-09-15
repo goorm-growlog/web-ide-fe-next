@@ -28,6 +28,7 @@ export function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
     roomName,
     userName: user?.name || 'Unknown User',
     userId: user?.id || 'guest',
+    projectId,
   })
 
   const currentUser = projectMembers.find(

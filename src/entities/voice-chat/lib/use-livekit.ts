@@ -2,12 +2,42 @@
 
 import { ConnectionState, Room, RoomEvent, Track } from 'livekit-client'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import type { Participant as VoiceChatParticipant } from '../model/types'
 
 interface UseLiveKitProps {
   roomName: string
   userName: string
   userId: string
+  projectId?: string // 프로젝트별 볼륨 분리를 위한 추가
+}
+
+// 로컬스토리지 볼륨 관리 유틸리티
+const VOLUME_STORAGE_KEY = 'voice-chat-volumes'
+
+const getStoredVolumes = (projectId?: string): Record<string, number> => {
+  if (!projectId) return {}
+  try {
+    const stored = localStorage.getItem(VOLUME_STORAGE_KEY)
+    const allVolumes = stored ? JSON.parse(stored) : {}
+    return allVolumes[projectId] || {}
+  } catch {
+    return {}
+  }
+}
+
+const saveStoredVolumes = (
+  projectId: string,
+  volumes: Record<string, number>,
+) => {
+  try {
+    const stored = localStorage.getItem(VOLUME_STORAGE_KEY)
+    const allVolumes = stored ? JSON.parse(stored) : {}
+    allVolumes[projectId] = volumes
+    localStorage.setItem(VOLUME_STORAGE_KEY, JSON.stringify(allVolumes))
+  } catch (_error) {
+    // 저장 실패 시 무시
+  }
 }
 
 /**
@@ -16,7 +46,12 @@ interface UseLiveKitProps {
  * - 향상된 참가자 관리 및 실시간 상태 동기화
  * - 개선된 오디오 볼륨 제어 및 빠른 반응성
  */
-export function useLiveKit({ roomName, userName, userId }: UseLiveKitProps) {
+export function useLiveKit({
+  roomName,
+  userName,
+  userId,
+  projectId,
+}: UseLiveKitProps) {
   const [room, setRoom] = useState<Room | null>(null)
   const [isConnecting, setIsConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -28,39 +63,49 @@ export function useLiveKit({ roomName, userName, userId }: UseLiveKitProps) {
   const audioElementsRef = useRef<Map<string, HTMLAudioElement>>(new Map())
   const participantVolumesRef = useRef<Map<string, number>>(new Map())
 
-  const setupAudioHandling = useCallback((room: Room) => {
-    // 참가자 추가시 오디오 자동 재생
-    room.on(RoomEvent.TrackSubscribed, (track, _publication, participant) => {
-      if (track.kind === Track.Kind.Audio) {
-        const audioElement = track.attach()
-        audioElement.autoplay = true
+  const setupAudioHandling = useCallback(
+    (room: Room) => {
+      // 참가자 추가시 오디오 자동 재생
+      room.on(RoomEvent.TrackSubscribed, (track, _publication, participant) => {
+        if (track.kind === Track.Kind.Audio) {
+          const audioElement = track.attach()
+          audioElement.autoplay = true
 
-        // 저장된 볼륨 적용 (기본값 100 = 1.0)
-        const savedVolume =
-          participantVolumesRef.current.get(participant.identity) || 1.0
-        audioElement.volume = savedVolume
+          // 저장된 볼륨 적용 (로컬스토리지에서 로드, 기본값 100 = 1.0)
+          const storedVolumes = getStoredVolumes(projectId)
+          const storedVolume = storedVolumes[participant.identity]
+          const savedVolume = storedVolume ? storedVolume / 100 : 1.0 // 0-100을 0-1로 변환
+          participantVolumesRef.current.set(participant.identity, savedVolume)
+          audioElement.volume = savedVolume
 
-        // 고유 ID로 오디오 요소 관리
-        audioElement.id = `audio-${participant.identity}`
-        audioElementsRef.current.set(participant.identity, audioElement)
-        document.body.appendChild(audioElement)
-      }
-    })
-
-    // 참가자 제거시 오디오 정리
-    room.on(RoomEvent.TrackUnsubscribed, (track, _publication, participant) => {
-      if (track.kind === Track.Kind.Audio) {
-        const audioElement = audioElementsRef.current.get(participant.identity)
-        if (audioElement) {
-          audioElement.remove()
-          audioElementsRef.current.delete(participant.identity)
+          // 고유 ID로 오디오 요소 관리
+          audioElement.id = `audio-${participant.identity}`
+          audioElementsRef.current.set(participant.identity, audioElement)
+          document.body.appendChild(audioElement)
         }
-        track.detach().forEach(element => {
-          element.remove()
-        })
-      }
-    })
-  }, []) // ref는 의존성에 포함하지 않음 (안정적)
+      })
+
+      // 참가자 제거시 오디오 정리
+      room.on(
+        RoomEvent.TrackUnsubscribed,
+        (track, _publication, participant) => {
+          if (track.kind === Track.Kind.Audio) {
+            const audioElement = audioElementsRef.current.get(
+              participant.identity,
+            )
+            if (audioElement) {
+              audioElement.remove()
+              audioElementsRef.current.delete(participant.identity)
+            }
+            track.detach().forEach(element => {
+              element.remove()
+            })
+          }
+        },
+      )
+    },
+    [projectId],
+  ) // ref는 의존성에 포함하지 않음 (안정적)
 
   // 참가자 업데이트 (간소화)
   const updateParticipants = useCallback((room: Room) => {
@@ -143,9 +188,12 @@ export function useLiveKit({ roomName, userName, userId }: UseLiveKitProps) {
 
       // 개선된 이벤트 리스너 - 즉각적인 상태 업데이트
       newRoom.on(RoomEvent.ParticipantConnected, participant => {
-        // 새 참가자의 기본 볼륨 설정 (100% = 1.0)
+        // 새 참가자의 볼륨 설정 (저장된 값 또는 기본값 100% = 1.0)
         if (!participantVolumesRef.current.has(participant.identity)) {
-          participantVolumesRef.current.set(participant.identity, 1.0)
+          const storedVolumes = getStoredVolumes(projectId)
+          const storedVolume = storedVolumes[participant.identity]
+          const savedVolume = storedVolume ? storedVolume / 100 : 1.0 // 0-100을 0-1로 변환
+          participantVolumesRef.current.set(participant.identity, savedVolume)
         }
         updateParticipants(newRoom)
       })
@@ -262,13 +310,16 @@ export function useLiveKit({ roomName, userName, userId }: UseLiveKitProps) {
         }
       })
 
-      // 초기 상태 설정 및 기존 참가자 볼륨 초기화
+      // 초기 상태 설정 및 기존 참가자 볼륨 로드
       const existingParticipants = Array.from(
         newRoom.remoteParticipants.values(),
       )
+      const storedVolumes = getStoredVolumes(projectId)
       existingParticipants.forEach(participant => {
         if (!participantVolumesRef.current.has(participant.identity)) {
-          participantVolumesRef.current.set(participant.identity, 1.0)
+          const storedVolume = storedVolumes[participant.identity]
+          const savedVolume = storedVolume ? storedVolume / 100 : 1.0 // 0-100을 0-1로 변환
+          participantVolumesRef.current.set(participant.identity, savedVolume)
         }
       })
 
@@ -286,6 +337,7 @@ export function useLiveKit({ roomName, userName, userId }: UseLiveKitProps) {
     roomName,
     userName,
     userId,
+    projectId,
     setupAudioHandling,
     updateParticipants,
     updateLocalParticipant,
@@ -329,7 +381,16 @@ export function useLiveKit({ roomName, userName, userId }: UseLiveKitProps) {
     } catch (err) {
       console.error('Failed to toggle microphone:', err)
 
-      // 4. 실패 시 원래 상태로 롤백
+      // 4. 마이크 권한 거부 에러 체크
+      if (err instanceof Error && err.name === 'NotAllowedError') {
+        // Toast message for microphone permission denial
+        toast.error('Please allow mic access in your browser settings.')
+      } else {
+        // Other errors
+        toast.error('Failed to toggle microphone. Please try again.')
+      }
+
+      // 5. 실패 시 원래 상태로 롤백
       setIsMicrophoneEnabled(currentState)
       updateLocalParticipant(room)
     }
@@ -365,8 +426,15 @@ export function useLiveKit({ roomName, userName, userId }: UseLiveKitProps) {
             : p,
         ),
       )
+
+      // 4. 로컬스토리지에 볼륨 설정 저장
+      if (projectId) {
+        const storedVolumes = getStoredVolumes(projectId)
+        storedVolumes[participantIdentity] = volume
+        saveStoredVolumes(projectId, storedVolumes)
+      }
     },
-    [room],
+    [room, projectId],
   )
 
   // 자동 연결

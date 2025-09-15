@@ -21,6 +21,7 @@ export function ProjectLayoutClient({ projectId }: ProjectLayoutClientProps) {
     roomName,
     userName: user?.name || 'Unknown User',
     userId: user?.id || 'guest',
+    projectId,
   })
 
   const currentUser = projectMembers.find(

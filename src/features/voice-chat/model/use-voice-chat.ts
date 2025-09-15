@@ -8,6 +8,7 @@ interface UseVoiceChatProps {
   roomName: string
   userName: string
   userId: string
+  projectId?: string
   onError?: (error: string) => void
 }
 
@@ -35,11 +36,13 @@ export function useVoiceChat({
   roomName,
   userName,
   userId,
+  projectId,
 }: UseVoiceChatProps): UseVoiceChatReturn {
   const voiceChat = useLiveKit({
     roomName,
     userName,
     userId,
+    projectId,
   })
 
   return {
