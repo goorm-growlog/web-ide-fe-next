@@ -3,8 +3,8 @@
  * WebSocket connection and STOMP destination settings
  */
 export const FILE_EXPLORER_WEBSOCKET_CONFIG = {
-  WS_URL: process.env.NEXT_PUBLIC_URL
-    ? `${process.env.NEXT_PUBLIC_URL}/ws`
+  WS_URL: process.env.NEXT_PUBLIC_API_BASE_URL
+    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/ws`
     : 'https://growlog-web-ide.duckdns.org/ws',
 
   // STOMP Destinations
