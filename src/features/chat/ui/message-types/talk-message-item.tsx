@@ -57,7 +57,7 @@ const TalkMessageItem = memo(
                     'font-medium text-muted-foreground text-sm',
                   )}
                 >
-                  {message.userName || 'Unknown User'}
+                  {message.user.name || 'Unknown User'}
                 </span>
               )}
               <TalkMessageContent
