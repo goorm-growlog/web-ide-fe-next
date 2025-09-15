@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createProject as createProjectApi } from '@/entities/project/api/project'
 import type { CreateProjectData } from '@/entities/project/model/types'
+import { handleProjectError } from '@/shared/lib/error-handler'
 
 export function useCreateProject() {
   const [isLoading, setIsLoading] = useState(false)
@@ -22,10 +23,8 @@ export function useCreateProject() {
         project,
       }
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to create project'
-      setError(errorMessage)
-      return { success: false, error: errorMessage }
+      handleProjectError(err)
+      return { success: false, error: 'Failed to create project' }
     } finally {
       setIsLoading(false)
     }
