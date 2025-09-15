@@ -20,6 +20,23 @@ export interface SignupData {
 }
 
 /**
+ * 회원가입 API
+ */
+export const signupApi = async (data: SignupFormData): Promise<SignupData> => {
+  const response = await api
+    .post('/api/users/signup', {
+      json: {
+        email: data.email,
+        password: data.password,
+        name: data.name,
+      },
+    })
+    .json<ApiResponse<SignupData>>()
+
+  return apiHelpers.extractData(response)
+}
+
+/**
  * 로그인 API
  */
 export const loginApi = async (data: LoginFormData): Promise<LoginData> => {
@@ -31,23 +48,6 @@ export const loginApi = async (data: LoginFormData): Promise<LoginData> => {
       },
     })
     .json<ApiResponse<LoginData>>()
-
-  return apiHelpers.extractData(response)
-}
-
-/**
- * 회원가입 API
- */
-export const signupApi = async (data: SignupFormData): Promise<SignupData> => {
-  const response = await api
-    .post('users/signup', {
-      json: {
-        email: data.email,
-        password: data.password,
-        name: data.name,
-      },
-    })
-    .json<ApiResponse<SignupData>>()
 
   return apiHelpers.extractData(response)
 }
