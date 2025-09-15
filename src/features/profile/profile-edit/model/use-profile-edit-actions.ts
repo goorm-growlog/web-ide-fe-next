@@ -60,7 +60,7 @@ export const useProfileEditActions = () => {
       await Promise.all(promises)
 
       // SWR 캐시 갱신 (사용자 정보 다시 가져오기)
-      await mutate('users/me')
+      await mutate('/api/users/me')
 
       toast.success('Profile updated successfully!')
     } catch (err) {
@@ -80,9 +80,7 @@ export const useProfileEditActions = () => {
       await deleteAccount(password)
 
       // 계정 삭제 후 캐시 정리
-      await mutate('users/me', null, { revalidate: false })
-
-      toast.success('Account deleted successfully')
+      await mutate('/api/users/me', null, { revalidate: false })
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to delete account'

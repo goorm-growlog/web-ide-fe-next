@@ -4,24 +4,15 @@ import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { useCallback } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import { toast } from 'sonner'
 import { mutate } from 'swr'
 import { loginApi } from '@/entities/auth/api/auth'
 import type { LoginFormData } from '@/features/auth/lib/validation'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
-import { getErrorMessage } from '@/shared/types/error'
+import { handleAuthError } from '@/shared/lib/error-handler'
 
 export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
   const { isLoading, withLoading } = useLoadingState()
   const router = useRouter()
-
-  const showError = useCallback(
-    (message: string) => {
-      form?.setError('root', { type: 'server', message })
-      toast.error(message)
-    },
-    [form],
-  )
 
   const handleCredentialsLogin = useCallback(
     async (data: LoginFormData) => {
@@ -41,19 +32,17 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
         })
 
         if (result?.ok) {
-          toast.success('Login successful!')
           form?.clearErrors('root')
-          mutate('users/me')
-          router.push('/project')
+          mutate('/api/users/me')
+          router.push('/projects')
         } else {
           throw new Error(result?.error || 'Failed to create session')
         }
       } catch (error) {
-        const errorMessage = getErrorMessage(error) || 'Login failed'
-        showError(errorMessage)
+        handleAuthError(error)
       }
     },
-    [router, form, showError],
+    [router, form],
   )
 
   const onSubmit = useCallback(
