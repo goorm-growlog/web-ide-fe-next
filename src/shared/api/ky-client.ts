@@ -16,7 +16,7 @@ let sessionCache: { session: SessionData | null; timestamp: number } | null =
 let sessionPromise: Promise<SessionData | null> | null = null // Promise 캐시 추가
 const SESSION_CACHE_TTL = 5000 // 5초 (짧게 설정)
 
-async function getCachedSession(): Promise<SessionData | null> {
+export async function getCachedSession(): Promise<SessionData | null> {
   const now = Date.now()
 
   // 1단계: 캐시된 세션 체크 (가장 빠른 경로)
