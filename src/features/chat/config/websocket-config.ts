@@ -11,5 +11,7 @@ export const CHAT_WEBSOCKET_CONFIG = {
   DESTINATIONS: {
     SUBSCRIBE: (projectId: string) => `/topic/projects/${projectId}/chat`,
     PUBLISH_TALK: (projectId: string) => `/app/projects/${projectId}/chat/talk`,
+    PUBLISH_ENTER: (projectId: string) =>
+      `/app/projects/${projectId}/chat/enter`,
   },
 } as const
