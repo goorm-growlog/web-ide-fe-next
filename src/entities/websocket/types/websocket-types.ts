@@ -17,7 +17,6 @@ export type ConnectionStatus =
 // 🎯 연결 파라미터
 export interface ConnectionParams {
   url: string
-  token: string
 }
 
 // 🎯 WebSocket 에러 (통합됨)
@@ -28,7 +27,6 @@ export type WebSocketError = BaseWebSocketError & {
 // 🎯 STOMP 클라이언트 설정
 export interface StompClientConfig {
   url: string
-  token: string
   beforeConnect: () => void
   onConnect: () => void
   onDisconnect: () => void
