@@ -2,9 +2,8 @@
 
 import { signIn } from 'next-auth/react'
 import { useCallback } from 'react'
-import { toast } from 'sonner'
 import { useLoadingState } from '@/shared/hooks/use-loading-state'
-import { getErrorMessage } from '@/shared/types/error'
+import { handleAuthError } from '@/shared/lib/error-handler'
 
 /**
  * GitHub 소셜 로그인 훅
@@ -17,12 +16,11 @@ export const useGitHubLogin = () => {
   const loginWithGitHub = useCallback(async () => {
     try {
       await signIn('github', {
-        callbackUrl: '/project',
+        callbackUrl: '/projects',
         redirect: true,
       })
     } catch (error) {
-      const errorMessage = getErrorMessage(error) || 'GitHub 로그인 실패'
-      toast.error(errorMessage)
+      handleAuthError(error)
     }
   }, [])
 
