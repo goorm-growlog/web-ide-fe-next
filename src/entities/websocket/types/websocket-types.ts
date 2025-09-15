@@ -4,6 +4,7 @@ import type {
   messageCallbackType,
   StompSubscription,
 } from '@stomp/stompjs'
+import type { WebSocketError as BaseWebSocketError } from '@/shared/types/error'
 
 // 🎯 연결 상태 타입
 export type ConnectionStatus =
@@ -19,11 +20,9 @@ export interface ConnectionParams {
   token: string
 }
 
-// 🎯 WebSocket 에러
-export interface WebSocketError {
+// 🎯 WebSocket 에러 (통합됨)
+export type WebSocketError = BaseWebSocketError & {
   type: 'stomp' | 'websocket'
-  message: string
-  details?: unknown
 }
 
 // 🎯 STOMP 클라이언트 설정
