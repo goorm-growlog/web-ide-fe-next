@@ -1,14 +1,16 @@
-export type FileTreeNodeType = 'file' | 'folder'
+/**
+ * 파일 트리 API 타입 정의 (통합됨)
+ * entities/file-tree/api/types.ts의 타입을 재사용
+ */
+import type { FileTreeNodeType } from '@/entities/file-tree/api/types'
 
 /**
  * 서버에서 받는 파일 트리 노드 데이터 구조
- * @param id 노드의 고유 식별자
  * @param path 파일/폴더의 경로
  * @param type 노드 타입 (파일 또는 폴더)
  * @param children 자식 노드들 (폴더인 경우)
  */
 export interface FileTreeNodeDto {
-  id: number
   path: string
   type: FileTreeNodeType
   children?: FileTreeNodeDto[] | null
