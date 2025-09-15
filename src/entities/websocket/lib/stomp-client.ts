@@ -11,7 +11,9 @@ const STOMP_CONSTANTS = {
   HEARTBEAT_OUTGOING_MS: 20000,
 } as const
 
-export const createStompClient = (config: StompClientConfig): Client => {
+export const createStompClient = (
+  config: StompClientConfig & { token: string },
+): Client => {
   return new Client({
     webSocketFactory: () => new SockJS(config.url),
     debug: (str: string) => logger.debug(`🔧 [STOMP Debug]`, str),
