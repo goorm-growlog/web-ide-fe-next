@@ -88,7 +88,7 @@ const EditorLayout = memo(({ children, projectId }: EditorLayoutProps) => {
   )
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-background text-foreground">
+    <div className="h-full w-full overflow-hidden bg-background text-foreground">
       <ResizablePanelGroup
         direction="horizontal"
         className="h-full w-full"

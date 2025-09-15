@@ -1,7 +1,8 @@
 'use client'
 
 import type { SWRConfiguration } from 'swr'
-import { apiHelpers, authApi } from '@/shared/api/ky-client'
+import { authApi } from '@/shared/api/ky-client'
+import { apiHelpers } from '@/shared/lib/api-helpers'
 import type { ApiResponse } from '@/shared/types/api'
 
 /**

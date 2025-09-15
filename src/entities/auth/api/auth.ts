@@ -3,7 +3,8 @@ import type {
   SignupFormData,
 } from '@/features/auth/lib/validation'
 import type { PasswordResetData } from '@/features/verification/password-reset/model/schema'
-import { api, apiHelpers, authApi } from '@/shared/api/ky-client'
+import { api, authApi } from '@/shared/api/ky-client'
+import { apiHelpers } from '@/shared/lib/api-helpers'
 import type { ApiResponse } from '@/shared/types/api'
 
 // Auth 관련 API 응답 타입들
