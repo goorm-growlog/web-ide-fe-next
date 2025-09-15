@@ -311,6 +311,19 @@ export function useLiveKit({
         }
       })
 
+      // 네트워크 연결 상태 이벤트 리스너
+      newRoom.on(RoomEvent.Disconnected, () => {
+        toast.error('voice connection has been disconnected.')
+      })
+
+      newRoom.on(RoomEvent.Reconnecting, () => {
+        toast.info('voice connection is reconnecting...')
+      })
+
+      newRoom.on(RoomEvent.Reconnected, () => {
+        toast.success('voice connection has been restored.')
+      })
+
       // 초기 상태 설정 및 기존 참가자 볼륨 로드
       const existingParticipants = Array.from(
         newRoom.remoteParticipants.values(),
@@ -329,6 +342,9 @@ export function useLiveKit({
     } catch (err) {
       console.error('Failed to connect to room:', err)
       setError(err instanceof Error ? err.message : 'Connection failed')
+
+      // WebRTC 연결 실패 토스트 메시지
+      toast.error('Failed to connect to voice server.')
     } finally {
       setIsConnecting(false)
     }
