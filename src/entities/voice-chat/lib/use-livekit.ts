@@ -183,6 +183,11 @@ export function useLiveKit({
         throw new Error('NEXT_PUBLIC_LIVEKIT_URL is not configured')
       }
 
+      // 이벤트 리스너를 연결 전에 설정
+      newRoom.on(RoomEvent.Connected, () => {
+        toast.success('Voice chat connected successfully!')
+      })
+
       await newRoom.connect(url, token)
       setRoom(newRoom)
 
@@ -314,6 +319,10 @@ export function useLiveKit({
       })
 
       // 네트워크 연결 상태 이벤트 리스너
+      newRoom.on(RoomEvent.Connected, () => {
+        toast.success('Voice chat connected successfully!')
+      })
+
       newRoom.on(RoomEvent.Disconnected, () => {
         toast.error('voice connection has been disconnected.')
       })
