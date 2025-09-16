@@ -119,4 +119,24 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* 아바타 선택 상태 방지 */
+  [data-radix-avatar-root],
+  .avatar-no-select {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+
+  [data-radix-avatar-root]:focus,
+  .avatar-no-select:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  [data-radix-avatar-root]:active,
+  .avatar-no-select:active {
+    background-color: transparent;
+  }
 }
