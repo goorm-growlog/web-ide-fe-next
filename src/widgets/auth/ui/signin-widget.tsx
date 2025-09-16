@@ -1,6 +1,6 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import AuthLayout from '@/shared/ui/auth-layout'
+import LogoLink from '@/shared/ui/logo-link'
 import SigninForm from '@/widgets/auth/ui/signin-form'
 
 // 서버 컴포넌트
@@ -9,14 +9,7 @@ const SigninWidget = () => {
     <AuthLayout>
       {/* 로고 */}
       <div className="mb-12 text-center">
-        <div className="relative mx-auto h-10 w-40">
-          <Image
-            src="/logo.svg"
-            alt="GrowLog"
-            fill
-            className="object-contain"
-          />
-        </div>
+        <LogoLink width={160} height={32} />
       </div>
       <SigninForm />
       <div className="mt-8 text-center text-muted-foreground text-sm">
