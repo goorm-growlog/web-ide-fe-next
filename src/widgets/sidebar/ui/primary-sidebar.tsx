@@ -1,4 +1,6 @@
 import { memo, useCallback } from 'react'
+import type { ChatReturn } from '@/features/chat/types/client'
+import type { FileTreeReturn } from '@/features/file-explorer/types/client'
 import { cn } from '@/shared/lib/utils'
 import { TAB_DEFINITIONS } from '@/widgets/sidebar/constants/config'
 import type { TabKey } from '@/widgets/sidebar/model/types'
@@ -10,6 +12,10 @@ interface PrimarySidebarProps {
   activeTab: TabKey | null
   toggleTab: (tab: TabKey) => void
   className?: string
+  projectId?: string
+  fileTreeData?: FileTreeReturn
+  chatData?: ChatReturn
+  onFileOpen?: (filePath: string) => void
 }
 
 const PANELS_LAYOUT_STYLES =
@@ -23,6 +29,10 @@ const PrimarySidebar = memo(
     activeTab,
     toggleTab,
     className,
+    fileTreeData,
+    chatData,
+    projectId,
+    onFileOpen,
   }: PrimarySidebarProps) => {
     const isVisible = activeTab !== null
 
@@ -43,7 +53,13 @@ const PrimarySidebar = memo(
 
     const togglePanels = (
       <div className={PANELS_LAYOUT_STYLES}>
-        <TogglePanels activeTabKey={activeTab} />
+        <TogglePanels
+          activeTabKey={activeTab}
+          fileTreeData={fileTreeData}
+          chatData={chatData}
+          projectId={projectId}
+          onFileOpen={onFileOpen}
+        />
       </div>
     )
 

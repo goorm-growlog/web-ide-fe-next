@@ -4,8 +4,10 @@ import type {
   SidebarState,
   Tab,
 } from 'src/widgets/sidebar/model/types'
-import FileExplorerPanel from '@/features/file-explorer/ui/file-explorer-panel'
-import InvitePanel from '@/features/invite/ui/invite-panel'
+import {
+  createFileExplorerPanel,
+  createInvitePanel,
+} from '@/widgets/sidebar/factories/panel-factories'
 
 export const DEFAULT_SIDEBAR_CONFIG: SidebarConfig = {
   primaryMinSize: 2.5,
@@ -20,7 +22,7 @@ export const TAB_DEFINITIONS: Tab[] = [
       {
         key: 'files',
         title: 'Files',
-        content: FileExplorerPanel,
+        render: createFileExplorerPanel,
       },
     ],
     icon: FilesIcon,
@@ -32,7 +34,7 @@ export const TAB_DEFINITIONS: Tab[] = [
       {
         key: 'invite',
         title: 'Invite',
-        content: InvitePanel,
+        render: createInvitePanel,
       },
     ],
     icon: Share2Icon,

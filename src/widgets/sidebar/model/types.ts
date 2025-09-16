@@ -1,19 +1,30 @@
 import type { LucideIcon } from 'lucide-react'
-import type { ComponentType } from 'react'
+import type { ReactNode } from 'react'
+import type { ChatReturn } from '@/features/chat/types/client'
+import type { FileTreeReturn } from '@/features/file-explorer/types/client'
 
 export type TabKey = 'files' | 'search' | 'invite' | 'settings'
 export type PanelKey = 'files' | 'chats' | 'search' | 'invite' | 'settings'
 export type PositionType = 'left' | 'right'
 
-export interface Panel {
+// 패널 렌더링에 필요한 공통 props
+export interface PanelRenderProps {
+  fileTreeData?: FileTreeReturn | undefined
+  chatData?: ChatReturn | undefined
+  projectId?: string | undefined
+  onFileOpen?: ((filePath: string) => void) | undefined
+}
+
+// 슬롯 기반 패널 정의
+export interface PanelSlot {
   key: PanelKey
   title: string
-  content: ComponentType
+  render: (props: PanelRenderProps) => ReactNode
 }
 
 export interface Tab {
   key: TabKey
-  panels: readonly Panel[]
+  panels: readonly PanelSlot[]
   icon: LucideIcon
   position: 'top' | 'bottom'
 }

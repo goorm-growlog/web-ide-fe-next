@@ -1,7 +1,10 @@
 'use client'
 
 import { useCallback, useMemo } from 'react'
+import type { ChatReturn } from '@/features/chat/types/client'
+import type { FileTreeReturn } from '@/features/file-explorer/types/client'
 import { cn } from '@/shared/lib/utils'
+import PanelLayout from '@/shared/ui/panel-layout'
 import {
   Accordion,
   AccordionContent,
@@ -10,7 +13,11 @@ import {
 } from '@/shared/ui/shadcn/accordion'
 import { TAB_DEFINITIONS } from '@/widgets/sidebar/constants/config'
 import { useOpenPanels } from '@/widgets/sidebar/model/hooks'
-import type { PanelKey, TabKey } from '@/widgets/sidebar/model/types'
+import type {
+  PanelKey,
+  PanelRenderProps,
+  TabKey,
+} from '@/widgets/sidebar/model/types'
 
 const PANEL_CONFIG = {
   HEADER_HEIGHT: 40, // h-10 = 2.5rem = 40px
@@ -18,6 +25,10 @@ const PANEL_CONFIG = {
 
 interface TogglePanelsProps {
   activeTabKey: TabKey | null
+  fileTreeData?: FileTreeReturn | undefined
+  chatData?: ChatReturn | undefined
+  projectId?: string | undefined
+  onFileOpen?: ((filePath: string) => void) | undefined
 }
 
 const TRIGGER_CLASSES = cn(
@@ -42,7 +53,13 @@ const CONTENT_CLASSES = cn(
   'transition-all duration-300 ease-out',
 )
 
-const TogglePanels = ({ activeTabKey }: TogglePanelsProps) => {
+const TogglePanels = ({
+  activeTabKey,
+  fileTreeData,
+  chatData,
+  projectId,
+  onFileOpen,
+}: TogglePanelsProps) => {
   const { openPanels, togglePanel } = useOpenPanels()
 
   const { panels, contentHeight } = useMemo(() => {
@@ -66,6 +83,17 @@ const TogglePanels = ({ activeTabKey }: TogglePanelsProps) => {
     [togglePanel],
   )
 
+  // 패널 렌더링에 필요한 props 준비
+  const panelRenderProps: PanelRenderProps = useMemo(
+    () => ({
+      fileTreeData,
+      chatData,
+      projectId,
+      onFileOpen,
+    }),
+    [fileTreeData, chatData, projectId, onFileOpen],
+  )
+
   return (
     <div className="h-dvh bg-background">
       <Accordion
@@ -75,7 +103,6 @@ const TogglePanels = ({ activeTabKey }: TogglePanelsProps) => {
       >
         {panels.map(panelDef => {
           const isOpen = openPanels.includes(panelDef.key)
-          const Component = panelDef.content
           const itemHeight = isOpen
             ? `calc(${PANEL_CONFIG.HEADER_HEIGHT}px + ${contentHeight})`
             : `${PANEL_CONFIG.HEADER_HEIGHT}px`
@@ -105,7 +132,7 @@ const TogglePanels = ({ activeTabKey }: TogglePanelsProps) => {
                   opacity: isOpen ? 1 : 0,
                 }}
               >
-                <Component />
+                <PanelLayout>{panelDef.render(panelRenderProps)}</PanelLayout>
               </AccordionContent>
             </AccordionItem>
           )
