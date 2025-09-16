@@ -2,12 +2,11 @@
 
 import { memo, useMemo } from 'react'
 import type { ChatMessage } from '@/features/chat/types/client'
-import { EmptyMessageList } from '@/features/chat/ui/message-list/empty-message-list'
 import { MessageItem } from '@/features/chat/ui/message-list/message-item'
 
 interface MessageListProps {
   messages: ChatMessage[]
-  currentUserId: number
+  isLoadingMore?: boolean
 }
 
 /**
@@ -17,34 +16,38 @@ interface MessageListProps {
  * 각 메시지를 개별 아이템으로 렌더링합니다.
  *
  * @param messages - 렌더링할 채팅 메시지 배열
- * @param currentUserId - 현재 로그인한 사용자의 ID
  */
-const MessageList = memo(({ messages, currentUserId }: MessageListProps) => {
+const MessageList = memo(({ messages, isLoadingMore }: MessageListProps) => {
   const messageKeys = useMemo(
     () =>
       messages.map(
-        (message, index) =>
-          `${message.userId}-${message.timestamp.getTime()}-${index}`,
+        (message, index) => `${message.timestamp.getTime()}-${index}`,
       ),
     [messages],
   )
 
-  if (messages.length === 0) return <EmptyMessageList />
-
   return (
-    <ul className="m-0 list-none overflow-x-hidden p-0">
-      <li className="sr-only" id="message-list-description">
-        {messages.length}개의 메시지가 있습니다
-      </li>
+    <ul className="m-0 h-full overflow-y-auto p-0">
+      {isLoadingMore && (
+        <li className="flex items-center justify-center py-4 text-muted-foreground text-sm">
+          <div className="flex items-center gap-2">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
+            더 많은 메시지 로딩 중...
+          </div>
+        </li>
+      )}
+
       {messages.map((message, index) => (
         <MessageItem
           key={messageKeys[index]}
           message={message}
           index={index}
           messages={messages}
-          currentUserId={currentUserId}
         />
       ))}
+
+      {/* 마지막 메시지 하단 여백을 위한 빈 요소 */}
+      <li className="h-4" aria-hidden="true" />
     </ul>
   )
 })
@@ -52,4 +55,3 @@ const MessageList = memo(({ messages, currentUserId }: MessageListProps) => {
 MessageList.displayName = 'MessageList'
 
 export default MessageList
-export { MessageList }

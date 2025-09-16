@@ -4,23 +4,19 @@
 export type ChatMessageType = 'ENTER' | 'TALK' | 'LEAVE'
 
 /**
- * 서버에서 받는 채팅 메시지 데이터 구조
- * @param id 메시지의 고유 식별자
+ * 서버에서 받는 채팅 메시지 데이터 구조 (API 스펙에 맞게 수정)
+ * @param messageType 메시지 타입 (ENTER, TALK, LEAVE)
+ * @param projectId 프로젝트 ID
+ * @param username 사용자 이름
  * @param content 메시지 내용
- * @param type 메시지 타입 (ENTER, TALK, LEAVE)
- * @param userId 사용자 ID
- * @param userName 사용자 이름
- * @param userAvatar 사용자 아바타 URL
- * @param timestamp 메시지 생성 시간
+ * @param sentAt 메시지 생성 시간
  */
 export interface ChatMessageDto {
-  id: string
+  messageType: ChatMessageType
+  projectId: number
+  username: string
   content: string
-  type: ChatMessageType
-  userId: string
-  userName: string
-  userAvatar?: string
-  timestamp: string
+  sentAt: string
 }
 
 /**
@@ -41,11 +37,13 @@ export type ChatMessageTypeEnum =
   (typeof CHAT_MESSAGE_TYPES)[keyof typeof CHAT_MESSAGE_TYPES]
 
 /**
- * 서버에서 받는 채팅 메시지 형태
- * @param type 메시지 타입
- * @param payload 메시지 데이터
+ * 서버에서 받는 채팅 메시지 형태 (API 스펙에 맞게 수정)
+ * 서버에서 직접 받는 메시지 구조
  */
 export interface ChatServerMessage {
-  type: ChatMessageTypeEnum
-  payload: ChatMessageDto
+  messageType: ChatMessageType
+  projectId: number
+  username: string
+  content: string
+  sentAt: string
 }

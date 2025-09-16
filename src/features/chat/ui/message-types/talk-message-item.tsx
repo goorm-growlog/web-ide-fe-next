@@ -10,6 +10,7 @@ interface TalkMessageItemProps {
   message: ChatMessage
   isOwnMessage?: boolean
   isFirstInGroup: boolean
+  isLastMessage: boolean
   showAvatar?: boolean
   showUsername?: boolean
 }
@@ -23,6 +24,7 @@ const TalkMessageItem = memo(
     message,
     isOwnMessage = false,
     isFirstInGroup,
+    isLastMessage,
     showAvatar,
     showUsername,
   }: TalkMessageItemProps) => {
@@ -36,8 +38,10 @@ const TalkMessageItem = memo(
     return (
       <div
         className={cn(
-          'mb-4 flex gap-3 px-4',
+          'flex gap-3 px-4',
           isOwnMessage ? 'justify-end' : 'justify-start',
+          // 마지막 메시지가 아닌 경우에만 하단 마진 추가
+          !isLastMessage && 'mb-4',
         )}
       >
         {!isOwnMessage ? (

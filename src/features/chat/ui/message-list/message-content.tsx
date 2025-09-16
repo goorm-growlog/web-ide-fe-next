@@ -7,6 +7,7 @@ interface MessageContentProps {
   message: ChatMessage
   isOwnMessage: boolean
   isFirstInGroup: boolean
+  isLastMessage: boolean
 }
 
 /**
@@ -17,7 +18,12 @@ interface MessageContentProps {
  * @param isFirstInGroup - 그룹 내 첫 번째 메시지인지 여부
  */
 export const MessageContent = memo(
-  ({ message, isOwnMessage, isFirstInGroup }: MessageContentProps) => {
+  ({
+    message,
+    isOwnMessage,
+    isFirstInGroup,
+    isLastMessage,
+  }: MessageContentProps) => {
     if (message.type !== 'TALK') {
       return <SystemMessageItem message={message} />
     }
@@ -27,6 +33,7 @@ export const MessageContent = memo(
         message={message}
         isOwnMessage={isOwnMessage}
         isFirstInGroup={isFirstInGroup}
+        isLastMessage={isLastMessage}
       />
     )
   },

@@ -1,13 +1,11 @@
 'use client'
 
 import { memo, useCallback } from 'react'
-import { DEFAULT_USER_CONFIG } from '@/features/chat/constants/chat-config'
 import { CHAT_UI_TEXTS } from '@/features/chat/constants/ui-constants'
-import { useChatScroll } from '@/features/chat/hooks/use-auto-scroll'
-import useChat from '@/features/chat/hooks/use-chat'
-import { ChatEmptyState } from '@/features/chat/ui/chat-empty-state'
+import { useAutoScroll } from '@/features/chat/hooks/use-auto-scroll'
+import type { ChatReturn } from '@/features/chat/types/client'
 import { ChatSkeleton } from '@/features/chat/ui/chat-skeleton'
-import { MessageList } from '@/features/chat/ui/message-list/message-list'
+import MessageList from '@/features/chat/ui/message-list/message-list'
 import {
   COMMON_UI_TEXTS,
   SCROLLABLE_PANEL_CONTENT_STYLES,
@@ -19,19 +17,22 @@ import { ScrollArea } from '@/shared/ui/shadcn/scroll-area'
 import { TextInput } from '@/shared/ui/text-input'
 
 interface ChatPanelProps {
-  projectId: string
-  currentUserId?: number
+  chatData: ChatReturn
 }
 
 /**
  * @todo 전역 상태 관리 스토어(Zustand/Redux)로 사용자 정보 관리
  * @todo 인증 시스템과 연동하여 실제 사용자 ID 가져오기
  */
-const ChatPanel = memo(({ projectId, currentUserId }: ChatPanelProps) => {
-  const { messages, sendMessage, isLoading } = useChat(projectId)
-  const { scrollAreaRef } = useChatScroll(messages)
-
-  const userId = currentUserId ?? DEFAULT_USER_CONFIG.MOCK_CURRENT_USER_ID
+const ChatPanel = memo(({ chatData }: ChatPanelProps) => {
+  const { messages, sendMessage, isLoading, hasMore, loadMore, isLoadingMore } =
+    chatData
+  const { scrollAreaRef } = useAutoScroll(
+    messages,
+    loadMore,
+    hasMore,
+    isLoadingMore,
+  )
 
   const handleSendMessage = useCallback(
     (message: string) => {
@@ -52,18 +53,22 @@ const ChatPanel = memo(({ projectId, currentUserId }: ChatPanelProps) => {
     )
   }
 
-  if (messages.length === 0) return <ChatEmptyState />
-
   return (
     <PanelLayout>
       <ScrollArea
         className={cn(
           SCROLLABLE_PANEL_CONTENT_STYLES,
-          'border-border not-last:border-b',
+          'flex-1 border-border not-last:border-b',
         )}
         ref={scrollAreaRef}
+        onScroll={e => {
+          const target = e.currentTarget
+          if (target instanceof HTMLElement) {
+            // 스크롤 이벤트 처리
+          }
+        }}
       >
-        <MessageList messages={messages} currentUserId={userId} />
+        <MessageList messages={messages} isLoadingMore={isLoadingMore} />
       </ScrollArea>
 
       <TextInput

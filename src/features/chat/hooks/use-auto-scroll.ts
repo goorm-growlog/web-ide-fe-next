@@ -1,52 +1,54 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { ChatMessage } from '@/features/chat/types/client'
-import { requestScrollToBottom } from '@/shared/lib/scroll-utils'
-
-// Radix UI ScrollArea 컴포넌트와 함께 사용하도록 설계
-const SCROLL_AREA_VIEWPORT_SELECTOR = '[data-slot="scroll-area-viewport"]'
 
 /**
- * 채팅 메시지 자동 스크롤 훅
- *
- * @description 새로운 메시지가 추가될 때마다 채팅 영역을 자동으로 맨 아래로 스크롤
- * requestAnimationFrame cleanup을 활용하여 메모리 누수를 방지
- *
- * @param messages - 채팅 메시지 배열
- * @returns ScrollArea 컴포넌트에 전달할 ref 객체
- *
- * @example
- * ```tsx
- * function ChatComponent() {
- *   const [messages, setMessages] = useState<ChatMessage[]>([])
- *   const { scrollAreaRef } = useChatScroll(messages)
- *
- *   return (
- *     <ScrollArea ref={scrollAreaRef}>
- *       {messages.map(message => <MessageItem key={message.id} {...message} />)}
- *     </ScrollArea>
- *   )
- * }
- * ```
+ * 단순화된 채팅 자동 스크롤 훅
+ * 기본적인 스크롤 기능만 제공
  */
-export const useChatScroll = (messages: ChatMessage[]) => {
+export const useAutoScroll = (
+  messages: ChatMessage[],
+  loadMore?: () => void,
+  hasMore?: boolean,
+  isLoadingMore?: boolean,
+) => {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
-  const lastMessageCount = useRef(0)
 
-  useEffect(() => {
-    if (messages.length > lastMessageCount.current) {
-      const scrollElement = scrollAreaRef.current?.querySelector(
-        SCROLL_AREA_VIEWPORT_SELECTOR,
-      )
+  const getViewport = useCallback(() => {
+    const scrollArea = scrollAreaRef.current
+    return scrollArea?.querySelector(
+      '[data-radix-scroll-area-viewport]',
+    ) as HTMLElement | null
+  }, [])
 
-      if (scrollElement instanceof HTMLElement) {
-        const cleanup = requestScrollToBottom(scrollElement)
-        lastMessageCount.current = messages.length
-        return cleanup
-      }
-
-      lastMessageCount.current = messages.length
+  const scrollToBottom = useCallback(() => {
+    const viewport = getViewport()
+    if (viewport) {
+      viewport.scrollTop = viewport.scrollHeight
     }
-  }, [messages.length])
+  }, [getViewport])
+
+  // 무한 스크롤 처리
+  useEffect(() => {
+    const viewport = getViewport()
+    if (!viewport || !loadMore || !hasMore || isLoadingMore) return
+
+    const handleScroll = () => {
+      const isAtTop = viewport.scrollTop <= 10
+      if (isAtTop) {
+        loadMore()
+      }
+    }
+
+    viewport.addEventListener('scroll', handleScroll, { passive: true })
+    return () => viewport.removeEventListener('scroll', handleScroll)
+  }, [getViewport, loadMore, hasMore, isLoadingMore])
+
+  // 새 메시지 자동 스크롤
+  useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(scrollToBottom, 100)
+    }
+  }, [messages.length, scrollToBottom])
 
   return {
     scrollAreaRef,

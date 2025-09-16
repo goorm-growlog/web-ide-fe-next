@@ -1,6 +1,7 @@
 import type React from 'react'
-import type { ChatMessageDto } from '@/features/chat/types/api'
+import type { ChatServerMessage } from '@/features/chat/types/api'
 import type { ChatMessage } from '@/features/chat/types/client'
+import { insertMessageInOrder } from './message-sorting-utils'
 
 /**
  * 채팅 메시지 핸들러에 필요한 의존성
@@ -16,9 +17,9 @@ export interface ChatMessageDependencies {
  * 각 핸들러는 특정 유형의 채팅 메시지를 처리
  */
 export interface ChatMessageHandlers {
-  handleEnterMessage: (payload: ChatMessageDto) => void
-  handleTalkMessage: (payload: ChatMessageDto) => void
-  handleLeaveMessage: (payload: ChatMessageDto) => void
+  handleEnterMessage: (payload: ChatServerMessage) => void
+  handleTalkMessage: (payload: ChatServerMessage) => void
+  handleLeaveMessage: (payload: ChatServerMessage) => void
 }
 
 /**
@@ -34,48 +35,45 @@ export const createChatMessageHandlers = (
   const { setMessages, setIsLoading } = deps
 
   /**
-   * 서버 DTO를 클라이언트 메시지로 변환하는 헬퍼 함수
+   * 서버 메시지를 클라이언트 메시지로 변환하는 헬퍼 함수 (API 스펙에 맞게 수정)
    */
-  const convertToClientMessage = (dto: ChatMessageDto): ChatMessage => {
-    const message: ChatMessage = {
-      id: dto.id,
-      content: dto.content,
-      type: dto.type,
-      userId: dto.userId,
-      userName: dto.userName,
-      timestamp: new Date(dto.timestamp),
+  const convertToClientMessage = (
+    serverMessage: ChatServerMessage,
+  ): ChatMessage => {
+    return {
+      id: `${serverMessage.projectId}-${serverMessage.sentAt}`, // ID 생성 로직
+      content: serverMessage.content,
+      type: serverMessage.messageType,
+      user: {
+        name: serverMessage.username,
+      },
+      timestamp: new Date(serverMessage.sentAt),
     }
-
-    if (dto.userAvatar !== undefined) {
-      message.userAvatar = dto.userAvatar
-    }
-
-    return message
   }
 
   /**
    * 사용자 입장 메시지 처리
    */
-  const handleEnterMessage = (payload: ChatMessageDto) => {
+  const handleEnterMessage = (payload: ChatServerMessage) => {
     const message = convertToClientMessage(payload)
-    setMessages(prev => [...prev, message])
+    setMessages(prev => insertMessageInOrder(prev, message))
     setIsLoading(false)
   }
 
   /**
    * 일반 채팅 메시지 처리
    */
-  const handleTalkMessage = (payload: ChatMessageDto) => {
+  const handleTalkMessage = (payload: ChatServerMessage) => {
     const message = convertToClientMessage(payload)
-    setMessages(prev => [...prev, message])
+    setMessages(prev => insertMessageInOrder(prev, message))
   }
 
   /**
    * 사용자 퇴장 메시지 처리
    */
-  const handleLeaveMessage = (payload: ChatMessageDto) => {
+  const handleLeaveMessage = (payload: ChatServerMessage) => {
     const message = convertToClientMessage(payload)
-    setMessages(prev => [...prev, message])
+    setMessages(prev => insertMessageInOrder(prev, message))
   }
 
   return {
