@@ -59,7 +59,6 @@ const SignupWidget = () => {
       })
 
       if (signInResponse?.error) {
-        toast.error(`Login failed after signup: ${signInResponse.error}`)
         router.push('/signin')
         return
       }
