@@ -1,20 +1,36 @@
+'use client'
+
 import ky from 'ky'
 import { getSession, signOut } from 'next-auth/react'
 import { handleApiError } from '@/shared/lib/api-error'
-import type { ApiResponse } from '@/shared/types/api'
+
+// NextAuth 세션 강제 업데이트 함수
+let updateSession: ((data?: unknown) => Promise<unknown>) | null = null
+
+// 세션 업데이트 함수 등록 (React 컴포넌트에서 호출)
+export const setSessionUpdater = (
+  updater: (data?: unknown) => Promise<unknown>,
+) => {
+  updateSession = updater
+}
 
 // 토큰 갱신 동시성 처리를 위한 Promise 캐시
 let refreshPromise: Promise<string> | null = null
 
-// 간단한 세션 캐시 (짧은 TTL) + Promise 기반 중복 방지
+// 세션 캐시 (짧은 TTL) + Promise 기반 중복 방지
 interface SessionData {
   accessToken?: string
 }
 
 let sessionCache: { session: SessionData | null; timestamp: number } | null =
   null
-let sessionPromise: Promise<SessionData | null> | null = null // Promise 캐시 추가
-const SESSION_CACHE_TTL = 5000 // 5초 (짧게 설정)
+let sessionPromise: Promise<SessionData | null> | null = null
+const SESSION_CACHE_TTL = 5000 // 5초
+
+export const clearKySessionCache = () => {
+  sessionCache = null
+  sessionPromise = null
+}
 
 export async function getCachedSession(): Promise<SessionData | null> {
   const now = Date.now()
@@ -80,7 +96,7 @@ export const authApi = ky.create({
     ],
     afterResponse: [
       async (request, _options, response) => {
-        // 401 또는 403이면 토큰 갱신 시도 (한 줄 수정)
+        // 401 또는 403이면 토큰 갱신 시도
         if (
           (response.status === 401 || response.status === 403) &&
           typeof window !== 'undefined'
@@ -88,36 +104,60 @@ export const authApi = ky.create({
           try {
             let newAccessToken: string
 
-            // 이미 갱신 중인 요청이 있다면 기다리기
             if (refreshPromise) {
               newAccessToken = await refreshPromise
             } else {
-              // 새로운 토큰 갱신 시작 - 항상 프록시를 통해 백엔드로 직접 호출
-              refreshPromise = ky
-                .post('auth/refresh', {
-                  credentials: 'include', // 쿠키 포함
+              // 새로운 토큰 갱신 시작
+              refreshPromise = (async () => {
+                const refreshResponse = await fetch('/auth/refresh', {
+                  method: 'POST',
+                  credentials: 'include',
                 })
-                .json<{ data: { accessToken: string } }>()
-                .then(({ data }) => {
-                  const accessToken = data.accessToken
-                  // NextAuth 세션에 새 토큰 반영
-                  window.dispatchEvent(
-                    new CustomEvent('session-token-refresh', {
-                      detail: { accessToken },
-                    }),
+
+                if (!refreshResponse.ok) {
+                  throw new Error(
+                    `Token refresh failed with status: ${refreshResponse.status}`,
                   )
-                  return accessToken
-                })
-                .catch(() => {
-                  throw new Error('Refresh failed')
+                }
+
+                const data: { data: { accessToken: string } } =
+                  await refreshResponse.json()
+                const accessToken = data.data.accessToken
+
+                // NextAuth 세션에 새 토큰 반영 (이중 갱신)
+                window.dispatchEvent(
+                  new CustomEvent('session-token-refresh', {
+                    detail: { accessToken },
+                  }),
+                )
+
+                if (updateSession) {
+                  updateSession({ accessToken }).catch(err => {
+                    console.warn('Failed to update NextAuth session:', err)
+                  })
+                }
+
+                // 세션 캐시 즉시 갱신
+                sessionCache = {
+                  session: { accessToken },
+                  timestamp: Date.now(),
+                }
+
+                return accessToken
+              })()
+                .catch(err => {
+                  console.error('Token refresh process failed:', err)
+                  throw new Error('Token refresh failed')
                 })
                 .finally(() => {
-                  // 갱신 완료 후 Promise 초기화
                   refreshPromise = null
                 })
 
               newAccessToken = await refreshPromise
             }
+
+            // 브라우저 쿠키 처리 시간 확보
+            await new Promise(resolve => setTimeout(resolve, 100))
 
             // 새 토큰으로 원래 요청 재시도
             const originalRequest = request.clone()
@@ -126,8 +166,9 @@ export const authApi = ky.create({
               `Bearer ${newAccessToken}`,
             )
             return ky(originalRequest)
-          } catch {
+          } catch (err) {
             // 토큰 갱신 실패 시 로그아웃
+            console.error('Signing out due to refresh failure:', err)
             refreshPromise = null
             await signOut({ callbackUrl: '/signin?error=SessionExpired' })
             return response
@@ -146,19 +187,19 @@ export const authApi = ky.create({
 /**
  * API 응답 헬퍼
  */
-export const apiHelpers = {
-  extractData: <T>(response: ApiResponse<T>): T => {
-    if (!response.success || !response.data) {
-      throw new Error(response.error || 'API request failed')
-    }
-    return response.data
-  },
-  checkSuccess: (response: {
-    success: boolean
-    error?: string | null
-  }): void => {
-    if (!response.success) {
-      throw new Error(response.error || 'API request failed')
-    }
-  },
-}
+// export const apiHelpers = {
+//   extractData: <T>(response: ApiResponse<T>): T => {
+//     if (!response.success || !response.data) {
+//       throw new Error(response.error || 'API request failed')
+//     }
+//     return response.data
+//   },
+//   checkSuccess: (response: {
+//     success: boolean
+//     error?: string | null
+//   }): void => {
+//     if (!response.success) {
+//       throw new Error(response.error || 'API request failed')
+//     }
+//   },
+// }

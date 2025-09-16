@@ -81,6 +81,8 @@ export const useProfileEditActions = () => {
 
       // 계정 삭제 후 캐시 정리
       await mutate('/api/users/me', null, { revalidate: false })
+
+      toast.success('Account deleted successfully')
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to delete account'

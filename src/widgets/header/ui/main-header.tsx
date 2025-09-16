@@ -1,10 +1,10 @@
 'use client'
 
 import { ChevronDown, LogOut, UserRoundPen } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useAuth } from '@/app/providers/auth-provider'
 import { useLogout } from '@/features/auth/logout/use-logout'
+import LogoLink from '@/shared/ui/logo-link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/shadcn/avatar'
 import {
   DropdownMenu,
@@ -25,7 +25,7 @@ export function MainHeader() {
   return (
     <header className="fixed top-0 z-50 flex h-[70px] w-full items-center justify-between bg-background px-10">
       <div className="flex items-center">
-        <Image src="/logo.svg" alt="GrowLog" width={103} height={26} />
+        <LogoLink />
       </div>
 
       {!isLoading && user && (

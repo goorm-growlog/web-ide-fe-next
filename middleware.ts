@@ -4,6 +4,11 @@ export default auth(req => {
   const { pathname } = req.nextUrl
   const isAuthenticated = !!req.auth
 
+  // 로그인한 사용자가 랜딩페이지 접근 시 프로젝트 리스트로 리다이렉트
+  if (isAuthenticated && pathname === '/') {
+    return Response.redirect(new URL('/project', req.url))
+  }
+
   // 공개 페이지는 통과
   if (
     pathname === '/' ||

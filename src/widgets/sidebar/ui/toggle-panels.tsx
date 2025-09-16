@@ -37,7 +37,6 @@ const TRIGGER_CLASSES = cn(
   'hover:bg-accent/50 hover:text-foreground hover:no-underline',
   'focus:bg-accent/50',
   'duration-200 ease-out',
-  'border-b',
   '[&[data-state=open]>svg]:rotate-0',
   '[&[data-state=closed]>svg]:-rotate-90',
 )
@@ -99,10 +98,9 @@ const TogglePanels = ({
               className={cn(ITEM_CLASSES, 'flex flex-col')}
             >
               <AccordionTrigger
-                className={TRIGGER_CLASSES}
+                className={cn(TRIGGER_CLASSES, !isOpen && 'border-b')}
                 style={{
                   height: `${PANEL_CONFIG.HEADER_HEIGHT}px`,
-                  borderBottomColor: isOpen ? 'transparent' : '',
                 }}
                 onClick={() => handlePanelToggle(panelDef.key)}
               >

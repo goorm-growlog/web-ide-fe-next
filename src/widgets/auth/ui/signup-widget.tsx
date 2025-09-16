@@ -18,6 +18,8 @@ import {
 import EmailVerificationForm from '@/features/verification/email-verification/ui/email-verification-form'
 import AuthLayout from '@/shared/ui/auth-layout'
 
+import BackButton from '@/shared/ui/back-button'
+
 /**
  * 회원가입 위젯
  * Widget layer의 역할: 여러 feature를 조합하여 비즈니스 시나리오 구현
@@ -59,7 +61,6 @@ const SignupWidget = () => {
       })
 
       if (signInResponse?.error) {
-        toast.error(`Login failed after signup: ${signInResponse.error}`)
         router.push('/signin')
         return
       }
@@ -83,7 +84,11 @@ const SignupWidget = () => {
 
   return (
     <AuthLayout>
-      <div className="mb-8 text-left">
+      <div className="mb-4 flex justify-start">
+        <BackButton fallbackUrl="/" />
+      </div>
+
+      <div className="mb-4 text-left">
         <h1 className="font-semibold text-2xl text-foreground">Sign up</h1>
         <p className="mt-2 text-muted-foreground text-sm">
           Enter your information to sign up!
@@ -91,9 +96,9 @@ const SignupWidget = () => {
       </div>
 
       {/* Divider */}
-      <div className="mb-6 border-border border-t"></div>
+      <div className="mb-6 border-border/80 border-t"></div>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Profile Avatar */}
         <div className="flex justify-center">
           <div className="scale-90">

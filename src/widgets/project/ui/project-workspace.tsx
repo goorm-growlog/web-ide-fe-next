@@ -5,19 +5,25 @@ import { useAuth } from '@/app/providers/auth-provider'
 import { useProjectVoiceChat } from '@/features/voice-chat/model/use-project-voice-chat'
 import { useVoiceChat } from '@/features/voice-chat/model/use-voice-chat'
 import { ProjectHeader } from '@/widgets/header/ui/project-header'
-
 import EditorLayout from '@/widgets/sidebar/ui/editor-layout'
 
-interface ProjectLayoutClientProps {
+interface ProjectWorkspaceProps {
   projectId: string
 }
 
-export function ProjectLayoutClient({ projectId }: ProjectLayoutClientProps) {
+/**
+ * Project Workspace Widget
+ *
+ * 책임:
+ * - 프로젝트 작업 공간 전체 레이아웃
+ * - 음성채팅 기능 통합
+ * - 프로젝트 헤더 + 에디터 레이아웃 조합
+ */
+export function ProjectWorkspace({ projectId }: ProjectWorkspaceProps) {
   const { user } = useAuth()
   const router = useRouter()
   const { projectMembers, roomName } = useProjectVoiceChat({ projectId })
 
-  // 사용자 정보가 없으면 음성채팅 초기화하지 않음
   const voiceChat = useVoiceChat({
     roomName,
     userName: user?.name || 'Unknown User',
@@ -38,20 +44,9 @@ export function ProjectLayoutClient({ projectId }: ProjectLayoutClientProps) {
     router.push('/project')
   }
 
-  // 사용자 정보 로딩 중이면 로딩 표시
-  if (!user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-gray-900 border-b-2"></div>
-          <p className="mt-2 text-gray-600 text-sm">사용자 정보 로딩 중...</p>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen w-screen overflow-hidden bg-background">
+      {/* 프로젝트 헤더 (fixed positioning) */}
       <ProjectHeader
         projectId={projectId}
         voiceChatStatus={{
@@ -73,7 +68,8 @@ export function ProjectLayoutClient({ projectId }: ProjectLayoutClientProps) {
         onExitProject={handleExitProject}
       />
 
-      <div className="h-screen pt-[70px]">
+      {/* 에디터 레이아웃 (헤더 아래 나머지 전체 영역) */}
+      <div className="absolute inset-0 top-[40px]">
         <EditorLayout projectId={projectId}>
           <div className="flex h-full items-center justify-center">
             <div className="space-y-4 text-center">
