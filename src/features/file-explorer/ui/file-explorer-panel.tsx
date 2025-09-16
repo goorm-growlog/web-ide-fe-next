@@ -1,91 +1,65 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-import { memo, useMemo, useRef } from 'react'
-import { FILE_TREE_CONSTANTS } from '@/features/file-explorer/constants/file-tree-constants'
-import { FILE_EXPLORER_UI_TEXTS } from '@/features/file-explorer/constants/ui-constants'
+import { memo, useRef } from 'react'
+import { FILE_TREE_API_CONSTANTS } from '@/entities/file-tree/api/constants'
 import { useFileActions } from '@/features/file-explorer/hooks/use-file-actions'
-import useFileTree from '@/features/file-explorer/hooks/use-file-tree'
+import type { FileTreeReturn } from '@/features/file-explorer/types/client'
 import FileCreateDialog, {
   type FileCreateDialogRef,
 } from '@/features/file-explorer/ui/file-create-dialog'
 import FileItemWithContextMenu from '@/features/file-explorer/ui/file-item-with-context-menu'
 import { FileTreeSkeleton } from '@/features/file-explorer/ui/file-tree-skeleton'
-import {
-  COMMON_UI_TEXTS,
-  ICON_SIZE_PX,
-  SCROLLABLE_PANEL_CONTENT_STYLES,
-} from '@/shared/constants/ui'
-import { cn } from '@/shared/lib/utils'
-import PanelLayout from '@/shared/ui/panel-layout'
+import RootItemContextMenu from '@/features/file-explorer/ui/root-item-context-menu'
+import { ICON_SIZE_PX } from '@/shared/constants/ui'
 
-const FileExplorerPanel = memo(() => {
-  const params = useParams()
-  const projectId = params.projectId
+interface FileExplorerPanelProps {
+  fileTreeData: FileTreeReturn
+  projectId: string
+  onFileOpen?: ((filePath: string) => void) | undefined
+}
 
-  const dialogRef = useRef<FileCreateDialogRef>(null)
-  const { contextMenuAction, dialogActions } = useFileActions(
-    FILE_TREE_CONSTANTS.ROOT_PATH,
-    dialogRef,
-  )
+const FileExplorerPanel = memo(
+  ({ fileTreeData, projectId, onFileOpen }: FileExplorerPanelProps) => {
+    const dialogRef = useRef<FileCreateDialogRef>(null)
+    const { tree, isLoading } = fileTreeData
 
-  const { tree, isLoading } = useFileTree(String(projectId || ''))
-
-  const containerProps = useMemo(() => {
-    const { className: treeClassName, ...restContainerProps } =
-      tree?.getContainerProps() ?? {}
-    return { treeClassName, restContainerProps }
-  }, [tree])
-
-  const EmptyState = () => (
-    <PanelLayout className={cn(SCROLLABLE_PANEL_CONTENT_STYLES)}>
-      <div className="flex h-full flex-col items-center justify-center space-y-4 text-muted-foreground">
-        <div className="text-center">
-          <h3 className="mb-2 font-medium text-lg">
-            {COMMON_UI_TEXTS.NO_ITEMS_AVAILABLE}
-          </h3>
-          <p className="text-sm">{FILE_EXPLORER_UI_TEXTS.START_PROJECT}</p>
-        </div>
-      </div>
-    </PanelLayout>
-  )
-
-  if (isLoading) {
-    return (
-      <PanelLayout className={cn(SCROLLABLE_PANEL_CONTENT_STYLES)}>
-        <FileTreeSkeleton />
-      </PanelLayout>
+    const { contextMenu, dialogActions } = useFileActions(
+      FILE_TREE_API_CONSTANTS.ROOT_PATH,
+      projectId,
+      dialogRef,
     )
-  }
 
-  if (!tree) return <EmptyState />
+    if (isLoading) return <FileTreeSkeleton />
 
-  return (
-    <PanelLayout
-      className={cn(
-        SCROLLABLE_PANEL_CONTENT_STYLES,
-        containerProps.treeClassName,
-      )}
-      {...containerProps.restContainerProps}
-    >
-      {tree.getItems().map(item => (
-        <FileItemWithContextMenu
-          key={item.getId()}
-          item={item}
-          iconSize={ICON_SIZE_PX}
-          onAction={contextMenuAction}
-        />
-      ))}
-      <div className="relative flex-1">
-        <FileItemWithContextMenu
-          item={null}
-          iconSize={ICON_SIZE_PX}
-          onAction={contextMenuAction}
-        />
-      </div>
-      <FileCreateDialog ref={dialogRef} {...dialogActions} />
-    </PanelLayout>
-  )
-})
+    return (
+      <>
+        {/*
+        @headless-tree/core의 hotkeysCoreFeature가 키보드 이벤트를 처리하려면
+        트리 컨테이너가 포커스 가능해야 합니다.
+
+        참고: @headless-tree/core 공식 문서의 예제와 동일한 구조
+        https://headless-tree.lukasbach.com/getstarted
+      */}
+        <div {...tree.getContainerProps()} className="flex h-full flex-col">
+          {tree.getItems().map(item => (
+            <FileItemWithContextMenu
+              key={item.getId()}
+              item={item}
+              iconSize={ICON_SIZE_PX}
+              onAction={contextMenu}
+              onFileOpen={onFileOpen}
+            />
+          ))}
+
+          <RootItemContextMenu
+            onAction={contextMenu}
+            item={tree.getRootItem()}
+          />
+        </div>
+        <FileCreateDialog ref={dialogRef} {...dialogActions} />
+      </>
+    )
+  },
+)
 
 export default FileExplorerPanel

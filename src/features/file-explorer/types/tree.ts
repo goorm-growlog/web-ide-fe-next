@@ -1,5 +1,5 @@
 import type { ItemInstance } from '@headless-tree/core'
-import type { FileNode } from '@/features/file-explorer/types/client'
+import type { FileNode } from '@/entities/file-tree/model/types'
 
 /**
  * 트리 핸들러 인터페이스

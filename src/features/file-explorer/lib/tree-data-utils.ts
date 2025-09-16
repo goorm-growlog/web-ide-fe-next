@@ -1,4 +1,5 @@
-import type { FileNode } from '@/features/file-explorer/types/client'
+import type { FileNode } from '@/entities/file-tree/model/types'
+import { sortFileTreeChildren } from '@/features/file-explorer/lib/sorting-utils'
 import { logger } from '@/shared/lib/logger'
 
 /**
@@ -11,18 +12,6 @@ export const getParentPath = (path: string): string => {
 
   const segments = path.split('/').filter(Boolean)
   return segments.length > 1 ? `/${segments.slice(0, -1).join('/')}` : '/'
-}
-
-/**
- * 파일 경로에서 파일명을 추출하는 유틸리티 함수
- * @param path - 파일 경로
- * @returns 파일명
- */
-export const getFileName = (path: string): string => {
-  if (!path) return ''
-
-  const segments = path.split('/').filter(Boolean)
-  return segments[segments.length - 1] || ''
 }
 
 /**
@@ -125,7 +114,6 @@ export const updateSubtreePaths = (
           ...nodes[oldPathKey],
           id: newPathKey,
           path: newPathKey,
-          name: getFileName(newPathKey),
         }
         delete nodes[oldPathKey]
       }
@@ -153,8 +141,7 @@ export const removeChildFromParent = (
     (child: string) => child !== childPath,
   )
 
-  // 참조만 변경하고 객체는 재사용
-  parentNode.children = remainingChildren
+  parentNode.children = sortFileTreeChildren(remainingChildren, nodes)
 }
 
 /**
@@ -173,6 +160,7 @@ export const addChildToParent = (
 
   const currentChildren = parentNode.children ?? []
   if (!currentChildren.includes(childPath)) {
-    parentNode.children = [...currentChildren, childPath]
+    const newChildren = [...currentChildren, childPath]
+    parentNode.children = sortFileTreeChildren(newChildren, nodes)
   }
 }

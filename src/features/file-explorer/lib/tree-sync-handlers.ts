@@ -1,8 +1,9 @@
 import type React from 'react'
-import { convertTreeDto } from '@/features/file-explorer/lib/tree-converter'
+import { FILE_TREE_API_CONSTANTS } from '@/entities/file-tree/api/constants'
+import type { FileNode } from '@/entities/file-tree/model/types'
+import { sortFileTreeChildren } from '@/features/file-explorer/lib/sorting-utils'
 import {
   addChildToParent,
-  getFileName,
   getParentPath,
   removeChildFromParent,
   removeSubtree,
@@ -14,8 +15,68 @@ import type {
   FileTreeNodeDto,
   FileTreeRemovePayload,
 } from '@/features/file-explorer/types/api'
-import type { FileNode } from '@/features/file-explorer/types/client'
 import { logger } from '@/shared/lib/logger'
+
+type FileTree = Record<string, FileNode>
+
+// Path processing utility functions
+const normalizePath = (path: string, isRoot = false): string => {
+  if (isRoot && path === '') return FILE_TREE_API_CONSTANTS.PATH_SEPARATOR
+  return path.startsWith(FILE_TREE_API_CONSTANTS.PATH_SEPARATOR)
+    ? path
+    : `${FILE_TREE_API_CONSTANTS.PATH_SEPARATOR}${path}`
+}
+
+/**
+ * TreeNodeDto[]를 headless-tree에서 사용할 flat 구조로 변환
+ * 서버에서 받은 계층 구조를 클라이언트에서 사용할 수 있는 평면 구조로 변환합니다.
+ */
+const convertTreeDto = (nodes: FileTreeNodeDto[]): FileTree => {
+  if (!nodes || nodes.length === 0) return {}
+
+  const tree: FileTree = {}
+
+  const convertNode = (node: FileTreeNodeDto, isRoot = false) => {
+    const normalizedPath = normalizePath(node.path, isRoot)
+
+    const childrenArray =
+      node.type === 'folder'
+        ? node.children?.map(child => normalizePath(child.path)) || []
+        : undefined
+
+    const fileNode: FileNode = {
+      id: normalizedPath, // path를 id로 사용
+      path: normalizedPath,
+      type: node.type,
+      ...(node.type === 'folder' &&
+        childrenArray && {
+          children: childrenArray,
+        }),
+    }
+
+    tree[normalizedPath] = fileNode
+
+    if (node.children) {
+      node.children.forEach(child => {
+        convertNode(child)
+      })
+    }
+  }
+
+  nodes.forEach(node => {
+    convertNode(node, false)
+  })
+
+  // 모든 노드의 children을 정렬
+  Object.keys(tree).forEach(nodeId => {
+    const node = tree[nodeId]
+    if (node?.children && node.children.length > 0) {
+      node.children = sortFileTreeChildren(node.children, tree)
+    }
+  })
+
+  return tree
+}
 
 /**
  * 트리 메시지 핸들러에 필요한 의존성
@@ -84,14 +145,11 @@ export const createTreeMessageHandlers = ({
       if (!prev) return prev
 
       // 성능 최적화: shallow copy 대신 직접 수정
-      const fileName = getFileName(payload.path)
       const parentPath = getParentPath(payload.path)
-
       const newNode: FileNode = {
         id: payload.path,
-        name: fileName,
         path: payload.path,
-        isFolder: payload.type === 'folder',
+        type: payload.type,
         ...(payload.type === 'folder' && { children: [] }),
       }
 
@@ -100,11 +158,13 @@ export const createTreeMessageHandlers = ({
       // 부모 노드 업데이트
       if (prev[parentPath]) {
         const parentNode = prev[parentPath]
+        const newChildren = !parentNode.children?.includes(payload.path)
+          ? [...(parentNode.children ?? []), payload.path]
+          : (parentNode.children ?? [])
+
         updatedNodes[parentPath] = {
           ...parentNode,
-          children: !parentNode.children?.includes(payload.path)
-            ? [...(parentNode.children ?? []), payload.path]
-            : (parentNode.children ?? []),
+          children: sortFileTreeChildren(newChildren, updatedNodes),
         }
       }
 
@@ -132,7 +192,7 @@ export const createTreeMessageHandlers = ({
         // 재귀적으로 하위 노드들 삭제
         removeSubtree(updatedNodes, payload.path)
 
-        // 부모 노드에서 삭제된 노드의 참조 제거
+        // 부모 노드에서 삭제된 노드의 참조 제거 (정렬 포함)
         const parentPath = getParentPath(payload.path)
         removeChildFromParent(updatedNodes, parentPath, payload.path)
 
@@ -186,21 +246,18 @@ export const createTreeMessageHandlers = ({
         updateSubtreePaths(updatedNodes, payload.fromPath, payload.toPath)
 
         // 이동된 노드의 메타데이터 업데이트
-        const newFileName = getFileName(payload.toPath)
-
         updatedNodes[payload.toPath] = {
           ...nodeToMove,
           id: payload.toPath,
           path: payload.toPath,
-          name: newFileName,
-          isFolder: nodeToMove?.isFolder ?? false,
+          type: nodeToMove?.type ?? 'file',
         }
 
-        // 이전 부모에서 참조 제거
+        // 이전 부모에서 참조 제거 (정렬 포함)
         const oldParentPath = getParentPath(payload.fromPath)
         removeChildFromParent(updatedNodes, oldParentPath, payload.fromPath)
 
-        // 새로운 부모에 참조 추가
+        // 새로운 부모에 참조 추가 (정렬 포함)
         const newParentPath = getParentPath(payload.toPath)
         addChildToParent(updatedNodes, newParentPath, payload.toPath)
 

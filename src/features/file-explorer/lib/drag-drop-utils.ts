@@ -1,5 +1,5 @@
 import type { ItemInstance } from '@headless-tree/core'
-import type { FileNode } from '@/features/file-explorer/types/client'
+import type { FileNode } from '@/entities/file-tree/model/types'
 
 /**
  * 주어진 파일이 드롭 영역인지 판단
@@ -14,10 +14,10 @@ import type { FileNode } from '@/features/file-explorer/types/client'
 export const isDropTarget = (itemInstance: ItemInstance<FileNode>): boolean => {
   const isDragTarget = itemInstance.isDragTarget()
   const isSelected = itemInstance.isSelected()
-
   const dragTarget = itemInstance.getTree().getDragTarget()
-
   const dragTargetId = dragTarget?.item?.getId()
+
+  // 드래그 타겟의 하위 항목인지 확인하는 코드
   const isDescendantOfDragTarget =
     dragTargetId != null && itemInstance.isDescendentOf(dragTargetId)
 
