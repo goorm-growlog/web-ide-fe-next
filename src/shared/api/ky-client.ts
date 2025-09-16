@@ -3,6 +3,7 @@
 import ky from 'ky'
 import { getSession, signOut } from 'next-auth/react'
 import { handleApiError } from '@/shared/lib/api-error'
+import type { ApiResponse } from '@/shared/types/api'
 
 // NextAuth 세션 강제 업데이트 함수
 let updateSession: ((data?: unknown) => Promise<unknown>) | null = null
@@ -187,19 +188,19 @@ export const authApi = ky.create({
 /**
  * API 응답 헬퍼
  */
-// export const apiHelpers = {
-//   extractData: <T>(response: ApiResponse<T>): T => {
-//     if (!response.success || !response.data) {
-//       throw new Error(response.error || 'API request failed')
-//     }
-//     return response.data
-//   },
-//   checkSuccess: (response: {
-//     success: boolean
-//     error?: string | null
-//   }): void => {
-//     if (!response.success) {
-//       throw new Error(response.error || 'API request failed')
-//     }
-//   },
-// }
+export const apiHelpers = {
+  extractData: <T>(response: ApiResponse<T>): T => {
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'API request failed')
+    }
+    return response.data
+  },
+  checkSuccess: (response: {
+    success: boolean
+    error?: string | null
+  }): void => {
+    if (!response.success) {
+      throw new Error(response.error || 'API request failed')
+    }
+  },
+}
