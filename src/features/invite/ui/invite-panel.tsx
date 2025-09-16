@@ -62,14 +62,16 @@ export default function InvitePanel() {
   return (
     <div className="flex h-full flex-col">
       {/* Invitations Section - No Header */}
-      <div className="border-b p-2 pb-20">
+      <div className="p-2 pb-20">
         <InvitationForm onSubmit={handleInviteMember} />
       </div>
 
       {/* Members Panel - Toggleable */}
       <div className="flex min-h-0 flex-1 flex-col">
         <button
-          className="flex w-full cursor-pointer items-center justify-between gap-1.5 border-[var(--color-border)] border-t bg-transparent px-3 py-3 font-medium text-[var(--color-foreground)] text-sm hover:bg-[var(--color-muted)]"
+          className={`flex w-full cursor-pointer items-center justify-between gap-1.5 border-[var(--color-border)] border-t bg-transparent px-3 py-3 font-medium text-[var(--color-foreground)] text-sm hover:bg-[var(--color-muted)] ${
+            !membersExpanded ? 'border-b border-b-[var(--color-border)]' : ''
+          }`}
           onClick={() => setMembersExpanded(!membersExpanded)}
           type="button"
         >

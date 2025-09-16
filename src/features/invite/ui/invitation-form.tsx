@@ -77,7 +77,7 @@ export function InvitationForm({ onSubmit }: InvitationFormProps) {
   const EmailList = () => (
     <>
       {pendingEmails.length === 0 ? (
-        <div className="text-[var(--color-muted-foreground)] text-sm normal-case">
+        <div className="text-center text-[var(--color-muted-foreground)] text-sm normal-case">
           Add emails to invite
         </div>
       ) : (
