@@ -55,6 +55,7 @@ const MainEditorArea = memo(
     handleTabCloseOthers,
     handleTabCloseToRight,
     handleTabCloseAll,
+    handleTabReorder,
   }: {
     fileSystem: ReturnType<typeof useFileSystemIntegration>
     tabs: FileTab[]
@@ -64,6 +65,7 @@ const MainEditorArea = memo(
     handleTabCloseOthers: (tabId: string) => void
     handleTabCloseToRight: (tabId: string) => void
     handleTabCloseAll: () => void
+    handleTabReorder: (dragIndex: number, dropIndex: number) => void
   }) => {
     const activeFile = fileSystem.getActiveFile()
 
@@ -124,6 +126,7 @@ const MainEditorArea = memo(
           onTabCloseOthers={handleTabCloseOthers}
           onTabCloseToRight={handleTabCloseToRight}
           onTabCloseAll={handleTabCloseAll}
+          onTabReorder={handleTabReorder}
         />
 
         <div className="flex-1">
@@ -239,6 +242,13 @@ const EditorLayout = memo((props: EditorLayoutProps) => {
       fileSystem.closeFile(id)
     })
   }, [fileSystem])
+
+  const handleTabReorder = useCallback(
+    (dragIndex: number, dropIndex: number) => {
+      fileSystem.reorderTabs(dragIndex, dropIndex)
+    },
+    [fileSystem],
+  )
 
   // 레이아웃 변화 시 패널 크기 추적 및 저장 (Zustand store 사용)
   const handleLayoutChange = useCallback(
@@ -383,6 +393,7 @@ const EditorLayout = memo((props: EditorLayoutProps) => {
                   handleTabCloseOthers={handleTabCloseOthers}
                   handleTabCloseToRight={handleTabCloseToRight}
                   handleTabCloseAll={handleTabCloseAll}
+                  handleTabReorder={handleTabReorder}
                 />
               ) : (
                 <div className="flex h-full items-center justify-center p-8">
