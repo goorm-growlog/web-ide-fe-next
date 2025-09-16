@@ -16,6 +16,42 @@ export const createSubscriptionManager: StateCreator<
 > = (set, get) => {
   const errorHandler = createErrorHandler(LOG_PREFIX.SUBSCRIPTION)
 
+  // 중복 구독 체크 및 정리 헬퍼 함수
+  const handleDuplicateSubscriptions = (
+    destination: string,
+    handler: messageCallbackType,
+    subscriptions: Map<string, SubscriptionInfo>,
+  ): string | null => {
+    // 중복 구독 방지 (destination과 handler 모두 체크)
+    const existing = Array.from(subscriptions.values()).find(
+      sub => sub.destination === destination && sub.handler === handler,
+    )
+
+    if (existing) {
+      errorHandler.debug(`Already subscribed with same handler: ${destination}`)
+      return existing.id
+    }
+
+    // 같은 destination에 다른 handler가 있는 경우 기존 구독 해제
+    const conflictingSub = Array.from(subscriptions.values()).find(
+      sub => sub.destination === destination && sub.handler !== handler,
+    )
+
+    if (conflictingSub) {
+      errorHandler.debug(`Replacing existing subscription for: ${destination}`)
+      try {
+        conflictingSub.subscription.unsubscribe()
+        const newSubscriptions = new Map(subscriptions)
+        newSubscriptions.delete(conflictingSub.id)
+        set({ subscriptions: newSubscriptions })
+      } catch (error) {
+        errorHandler.handleUnsubscribeError(conflictingSub.id, error)
+      }
+    }
+
+    return null
+  }
+
   return {
     // 초기 상태
     subscriptions: new Map(),
@@ -41,14 +77,14 @@ export const createSubscriptionManager: StateCreator<
         return null
       }
 
-      // 중복 구독 방지
-      const existing = Array.from(subscriptions.values()).find(
-        sub => sub.destination === destination,
+      // 중복 구독 처리
+      const existingId = handleDuplicateSubscriptions(
+        destination,
+        handler,
+        subscriptions,
       )
-
-      if (existing) {
-        errorHandler.debug(`Already subscribed: ${destination}`)
-        return existing.id
+      if (existingId) {
+        return existingId
       }
 
       // 🎯 단순 구독

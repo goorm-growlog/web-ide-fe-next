@@ -9,6 +9,7 @@ import type {
   ConnectionStatus,
   WebSocketError,
 } from '@/entities/websocket/types/websocket-types'
+import { getCachedSession } from '@/shared/api/ky-client'
 
 export const createConnectionManager: StateCreator<
   ConnectionManager,
@@ -34,11 +35,8 @@ export const createConnectionManager: StateCreator<
   }
 
   // 🎯 간단한 유효성 검사
-  const validateConnectionParams = ({
-    url,
-    token,
-  }: ConnectionParams): boolean => {
-    if (!url || !token) {
+  const validateConnectionParams = ({ url }: ConnectionParams): boolean => {
+    if (!url) {
       errorHandler.warn(
         'Invalid connection parameters: url and token are required',
       )
@@ -48,12 +46,19 @@ export const createConnectionManager: StateCreator<
   }
 
   // 🎯 클라이언트 초기화
-  const initializeClient = ({ url, token }: ConnectionParams) => {
+  const initializeClient = async ({ url }: ConnectionParams) => {
     errorHandler.debug(`Initializing client for ${url}`)
+
+    const session = await getCachedSession()
+    if (!session?.accessToken) {
+      errorHandler.warn('No access token available for WebSocket connection')
+      updateConnectionStatus('error', 'Authentication required')
+      return
+    }
 
     const client = createStompClient({
       url,
-      token,
+      token: session.accessToken,
       beforeConnect: () => {
         errorHandler.debug('Connecting...')
         updateConnectionStatus('connecting')
@@ -92,7 +97,7 @@ export const createConnectionManager: StateCreator<
       }
 
       if (!client) {
-        initializeClient(params)
+        await initializeClient(params)
         return
       }
 

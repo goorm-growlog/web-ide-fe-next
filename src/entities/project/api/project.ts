@@ -170,3 +170,14 @@ export async function inactivateProject(projectId: number): Promise<string> {
 
   return apiHelpers.extractData(response)
 }
+
+/**
+ * 프로젝트를 활성화합니다.
+ */
+export async function openProject(projectId: number): Promise<string> {
+  const response = await authApi
+    .post(`/api/projects/${projectId}/open`)
+    .json<ProjectDeleteResponse>()
+
+  return apiHelpers.extractData(response)
+}
