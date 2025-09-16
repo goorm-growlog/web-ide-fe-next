@@ -95,7 +95,7 @@ const TogglePanels = ({
             <AccordionItem
               key={panelDef.key}
               value={panelDef.key}
-              className={cn(ITEM_CLASSES, 'flex flex-col')}
+              className={ITEM_CLASSES}
             >
               <AccordionTrigger
                 className={cn(TRIGGER_CLASSES, !isOpen && 'border-b')}
@@ -106,7 +106,7 @@ const TogglePanels = ({
               >
                 {panelDef.title}
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="flex h-full flex-col">
                 {panelDef.render(panelRenderProps)}
               </AccordionContent>
             </AccordionItem>

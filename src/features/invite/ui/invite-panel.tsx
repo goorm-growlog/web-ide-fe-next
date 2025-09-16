@@ -2,7 +2,8 @@
 
 import { ChevronRight } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useSidebarStore } from '@/widgets/sidebar/model/store'
 import { useInviteUser, useMembers } from '../hooks/use-invitations'
 import type { ProjectRole } from '../types/invite-types'
 import { InvitationForm } from './invitation-form'
@@ -11,7 +12,11 @@ import { MemberList } from './member-list'
 export default function InvitePanel() {
   const params = useParams()
   const projectId = Number(params.projectId)
-  const [membersExpanded, setMembersExpanded] = useState(true)
+
+  // 사이드바 스토어에서 독립적인 토글 상태 사용
+  const { panelInnerStates, togglePanelInner } = useSidebarStore()
+  const inviteExpanded = panelInnerStates.invite?.invite ?? true
+  const membersExpanded = panelInnerStates.invite?.members ?? true
 
   const {
     members,
@@ -61,18 +66,40 @@ export default function InvitePanel() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* Invitations Section - No Header */}
-      <div className="p-2 pb-20">
-        <InvitationForm onSubmit={handleInviteMember} />
+      {/* Invite Section - Toggleable */}
+      <div className="flex min-h-0 flex-shrink-0 flex-col">
+        <button
+          className={`flex w-full cursor-pointer items-center justify-between gap-1.5 border-[var(--color-border)] border-t bg-transparent px-3 py-3 font-medium text-[var(--color-foreground)] text-sm hover:bg-[var(--color-muted)] ${
+            !inviteExpanded ? 'border-b border-b-[var(--color-border)]' : ''
+          }`}
+          onClick={() => togglePanelInner('invite', 'invite')}
+          type="button"
+        >
+          <div className="flex min-w-0 flex-1 items-center gap-1.5">
+            <ChevronRight
+              className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ${
+                inviteExpanded ? 'rotate-90' : ''
+              }`}
+            />
+            <span className="truncate text-left text-muted-foreground text-xs uppercase tracking-wider">
+              invite
+            </span>
+          </div>
+        </button>
+        {inviteExpanded && (
+          <div className="p-2">
+            <InvitationForm onSubmit={handleInviteMember} />
+          </div>
+        )}
       </div>
 
-      {/* Members Panel - Toggleable */}
+      {/* Members Section - Toggleable */}
       <div className="flex min-h-0 flex-1 flex-col">
         <button
           className={`flex w-full cursor-pointer items-center justify-between gap-1.5 border-[var(--color-border)] border-t bg-transparent px-3 py-3 font-medium text-[var(--color-foreground)] text-sm hover:bg-[var(--color-muted)] ${
             !membersExpanded ? 'border-b border-b-[var(--color-border)]' : ''
           }`}
-          onClick={() => setMembersExpanded(!membersExpanded)}
+          onClick={() => togglePanelInner('invite', 'members')}
           type="button"
         >
           <div className="flex min-w-0 flex-1 items-center gap-1.5">

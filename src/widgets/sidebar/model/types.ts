@@ -4,7 +4,13 @@ import type { ChatReturn } from '@/features/chat/types/client'
 import type { FileTreeReturn } from '@/features/file-explorer/types/client'
 
 export type TabKey = 'files' | 'search' | 'invite' | 'settings'
-export type PanelKey = 'files' | 'chats' | 'search' | 'invite' | 'settings'
+export type PanelKey =
+  | 'files'
+  | 'chats'
+  | 'search'
+  | 'invite'
+  | 'members'
+  | 'settings'
 export type PositionType = 'left' | 'right'
 
 // 패널 렌더링에 필요한 공통 props
@@ -47,6 +53,8 @@ export interface SidebarState {
   position: PositionType
   primarySize: number
   secondarySize: number
+  // 각 패널의 내부 토글 상태를 독립적으로 관리
+  panelInnerStates: Record<PanelKey, Record<string, boolean>>
 }
 
 export interface SidebarStore extends SidebarState {
@@ -55,4 +63,6 @@ export interface SidebarStore extends SidebarState {
   togglePosition: () => void
   setPrimarySize: (size: number) => void
   setSecondarySize: (size: number) => void
+  // 패널 내부 토글 상태를 독립적으로 관리하는 함수
+  togglePanelInner: (panelKey: PanelKey, innerKey: string) => void
 }
