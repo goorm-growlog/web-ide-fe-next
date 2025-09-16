@@ -64,6 +64,7 @@ export interface TabListProps {
   onTabCloseOthers: (tabId: string) => void
   onTabCloseToRight: (tabId: string) => void
   onTabCloseAll: () => void
+  onTabReorder: (dragIndex: number, dropIndex: number) => void
 }
 
 export interface TabItemProps {
@@ -74,4 +75,9 @@ export interface TabItemProps {
   onTabCloseOthers: (tabId: string) => void
   onTabCloseToRight: (tabId: string) => void
   onTabCloseAll: () => void
+  onTabDragStart: (tabId: string, index: number) => void
+  onTabDragOver: (e: React.DragEvent, index: number) => void
+  onTabDrop: (e: React.DragEvent, index: number) => void
+  onTabDragEnd: () => void
+  index: number
 }

@@ -16,11 +16,10 @@ export const useFileSystemIntegration = (projectId: string) => {
 
   const openFileFromTree = useCallback(
     async (filePath: string) => {
-      // 이미 열린 파일이면 즉시 활성화
-      if (fileEditor.files[filePath]) {
-        fileEditor.setActiveFileId(filePath)
-        return
-      }
+      logger.info(`Opening file from tree: ${filePath}`)
+
+      // 로딩 상태 설정
+      fileEditor.setLoading(true)
 
       // 즉시 빈 탭 생성 (사용자가 즉시 탭을 볼 수 있음)
       const fileName = filePath.split('/').pop() || ''
@@ -32,8 +31,9 @@ export const useFileSystemIntegration = (projectId: string) => {
         language: getLanguageFromPath(filePath),
       }
 
-      // 탭을 즉시 열고 활성화
+      // 새 탭을 열고 활성화 (표준 IDE 동작)
       fileEditor.openFile(tempFile)
+      logger.info(`New tab created for: ${filePath}`)
 
       // 백그라운드에서 파일 내용 로드
       try {
@@ -49,10 +49,14 @@ export const useFileSystemIntegration = (projectId: string) => {
 
         // 파일 내용 업데이트
         fileEditor.updateFileContent(filePath, response.data.content)
+        logger.info(`File content loaded: ${filePath}`)
       } catch (error) {
         logger.error('Failed to load file content:', error)
         fileEditor.closeFile(filePath)
         toast.error(`Failed to open file: ${filePath}`)
+      } finally {
+        // 로딩 상태 해제
+        fileEditor.setLoading(false)
       }
     },
     [fileEditor, projectId],

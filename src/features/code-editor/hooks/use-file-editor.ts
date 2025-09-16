@@ -12,12 +12,21 @@ export const useFileEditor = () => {
     isLoading: false,
   })
 
+  // 탭 순서를 관리하는 상태
+  const [tabOrder, setTabOrder] = useState<string[]>([])
+
   const openFile = useCallback((file: EditorFile) => {
     setState(prev => ({
       ...prev,
       files: { ...prev.files, [file.id]: file },
       activeFileId: file.id,
     }))
+
+    // 새로 열린 파일을 탭 순서에 추가 (이미 있으면 맨 뒤로 이동)
+    setTabOrder(prev => {
+      const filtered = prev.filter(id => id !== file.id)
+      return [...filtered, file.id]
+    })
   }, [])
 
   const updateFileContent = useCallback((fileId: string, content: string) => {
@@ -51,6 +60,9 @@ export const useFileEditor = () => {
         activeFileId: newActiveFileId,
       }
     })
+
+    // 닫힌 파일을 탭 순서에서 제거
+    setTabOrder(prev => prev.filter(id => id !== fileId))
   }, [])
 
   const setActiveFileId = useCallback((fileId: string) => {
@@ -69,15 +81,31 @@ export const useFileEditor = () => {
     setState(prev => ({ ...prev, isLoading: loading }))
   }, [])
 
+  // 탭 순서 변경 함수
+  const reorderTabs = useCallback((dragIndex: number, dropIndex: number) => {
+    setTabOrder(prev => {
+      const newOrder = [...prev]
+      const draggedItem = newOrder.splice(dragIndex, 1)[0]
+      if (draggedItem) {
+        newOrder.splice(dropIndex, 0, draggedItem)
+      }
+      return newOrder
+    })
+  }, [])
+
   // 탭 관련 기능
   const tabs = useMemo((): FileTab[] => {
-    return Object.values(state.files).map(file => ({
-      id: file.id,
-      name: file.name,
-      path: file.path,
-      isActive: file.id === state.activeFileId,
-    }))
-  }, [state.files, state.activeFileId])
+    // tabOrder에 따라 순서대로 탭 생성
+    return tabOrder
+      .map(fileId => state.files[fileId])
+      .filter((file): file is EditorFile => file !== undefined)
+      .map(file => ({
+        id: file.id,
+        name: file.name,
+        path: file.path,
+        isActive: file.id === state.activeFileId,
+      }))
+  }, [state.files, state.activeFileId, tabOrder])
 
   const handleTabClick = useCallback(
     (tabId: string) => {
@@ -105,5 +133,6 @@ export const useFileEditor = () => {
     tabs,
     handleTabClick,
     handleTabClose,
+    reorderTabs,
   }
 }
