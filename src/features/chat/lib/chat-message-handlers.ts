@@ -53,10 +53,9 @@ export const createChatMessageHandlers = (
 
   /**
    * 사용자 입장 메시지 처리
+   * 입장 메시지는 UI에 표시하지 않고 로딩 상태만 업데이트
    */
-  const handleEnterMessage = (payload: ChatServerMessage) => {
-    const message = convertToClientMessage(payload)
-    setMessages(prev => insertMessageInOrder(prev, message))
+  const handleEnterMessage = (_payload: ChatServerMessage) => {
     setIsLoading(false)
   }
 
@@ -70,10 +69,10 @@ export const createChatMessageHandlers = (
 
   /**
    * 사용자 퇴장 메시지 처리
+   * 퇴장 메시지는 UI에 표시하지 않음
    */
-  const handleLeaveMessage = (payload: ChatServerMessage) => {
-    const message = convertToClientMessage(payload)
-    setMessages(prev => insertMessageInOrder(prev, message))
+  const handleLeaveMessage = (_payload: ChatServerMessage) => {
+    // 퇴장 메시지는 UI에 표시하지 않음
   }
 
   return {

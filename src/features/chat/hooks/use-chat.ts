@@ -34,20 +34,23 @@ const useChat = ({ projectId, isConnected }: UseChatProps): ChatReturn => {
 
   /**
    * 서버 히스토리를 클라이언트 메시지로 변환
+   * 입장/퇴장 메시지는 필터링하여 제외
    */
   const transformHistoryToMessages = useCallback(
     (historyItems: ChatHistoryMessage[]) => {
       return sortMessagesByTimestamp(
-        historyItems.map(msg => ({
-          id: `${msg.projectId}-${msg.sentAt}`,
-          content: msg.content,
-          type: msg.messageType,
-          user: {
-            id: msg.username,
-            name: msg.username,
-          },
-          timestamp: new Date(msg.sentAt),
-        })),
+        historyItems
+          .filter(msg => msg.messageType === CHAT_MESSAGE_TYPES.TALK)
+          .map(msg => ({
+            id: `${msg.projectId}-${msg.sentAt}`,
+            content: msg.content,
+            type: msg.messageType,
+            user: {
+              id: msg.username,
+              name: msg.username,
+            },
+            timestamp: new Date(msg.sentAt),
+          })),
       )
     },
     [],
