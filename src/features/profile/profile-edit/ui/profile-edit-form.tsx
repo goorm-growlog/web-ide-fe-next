@@ -54,13 +54,15 @@ const ProfileEditForm = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {/* Profile Avatar */}
       <div className="flex justify-center">
-        <ProfileAvatar
-          src={user?.profileImage}
-          onImageSelect={handleImageSelect}
-        />
+        <div className="scale-90">
+          <ProfileAvatar
+            src={user?.profileImage}
+            onImageSelect={handleImageSelect}
+          />
+        </div>
       </div>
 
       <Form {...form}>
