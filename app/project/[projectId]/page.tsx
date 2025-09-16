@@ -39,7 +39,7 @@ export default function ProjectDetailPage() {
         // 이미 활성화된 프로젝트
       } else if (isProjectInactive(project)) {
         // 비활성화된 프로젝트 활성화
-        await authApi.post(`/projects/${projectId}/open`).json()
+        await authApi.post(`/api/projects/${projectId}/open`).json()
         toast.success('Project has been activated')
         refetch()
       } else {

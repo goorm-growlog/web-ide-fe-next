@@ -14,7 +14,7 @@ export const useProfileImageUpload = () => {
         try {
           const formData = new FormData()
           formData.append('profileImage', file)
-          await authApi.patch('users/profile-image', { body: formData })
+          await authApi.patch('/api/users/profile-image', { body: formData })
           toast.success('Profile image updated!')
         } catch (error) {
           console.error('Profile image upload failed:', error)
