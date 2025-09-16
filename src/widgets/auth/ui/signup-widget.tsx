@@ -103,24 +103,16 @@ const SignupWidget = () => {
         {/* Feature 1: 이메일 인증 */}
         <EmailVerificationForm
           onSendCode={async emailValue => {
-            try {
-              await sendEmailVerificationCodeApi(emailValue)
-              setEmail(emailValue)
-            } catch (error) {
-              throw error
-            }
+            await sendEmailVerificationCodeApi(emailValue)
+            setEmail(emailValue)
           }}
           onVerifyCode={async code => {
-            try {
-              const isVerified = await verifyEmailCodeApi(email, code)
-              if (isVerified) {
-                handleEmailVerified(email)
-                return true
-              } else {
-                return false
-              }
-            } catch (error) {
-              throw error
+            const isVerified = await verifyEmailCodeApi(email, code)
+            if (isVerified) {
+              handleEmailVerified(email)
+              return true
+            } else {
+              return false
             }
           }}
         />

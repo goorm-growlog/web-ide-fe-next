@@ -50,7 +50,7 @@ export const useLoginActions = (form?: UseFormReturn<LoginFormData>) => {
         if (result?.ok) {
           toast.success('Login successful!')
           form?.clearErrors('root')
-          mutate('users/me')
+          mutate('/api/users/me')
           router.push('/project')
         } else {
           throw new Error(result?.error || 'Failed to create session')

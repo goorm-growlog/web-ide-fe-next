@@ -79,7 +79,7 @@ export async function getProjects(type?: 'own' | 'joined'): Promise<Project[]> {
   const searchParams = type ? { type } : {}
 
   const response = await authApi
-    .get('/projects', { searchParams })
+    .get('/api/projects', { searchParams })
     .json<ProjectListResponse>()
 
   const projectResponses = apiHelpers.extractData(response)
@@ -91,7 +91,7 @@ export async function getProjects(type?: 'own' | 'joined'): Promise<Project[]> {
  */
 export async function getProject(projectId: number): Promise<Project> {
   const response = await authApi
-    .get(`/projects/${projectId}`)
+    .get(`/api/projects/${projectId}`)
     .json<ProjectDetailResponse>()
 
   const projectResponse = apiHelpers.extractData(response)
@@ -109,7 +109,7 @@ export async function createProject(data: CreateProjectData): Promise<Project> {
   }
 
   const response = await authApi
-    .post('/projects', { json: requestData })
+    .post('/api/projects', { json: requestData })
     .json<ProjectActionResponse>()
 
   const projectResponse = apiHelpers.extractData(response)
@@ -123,7 +123,7 @@ export async function getProjectMembers(
   projectId: number,
 ): Promise<ProjectMember[]> {
   const response = await authApi
-    .get(`/projects/${projectId}/members`)
+    .get(`/api/projects/${projectId}/members`)
     .json<ProjectMembersResponse>()
 
   const memberDtos = apiHelpers.extractData(response)
@@ -143,7 +143,7 @@ export async function updateProject(
   }
 
   const response = await authApi
-    .patch(`/projects/${projectId}`, { json: requestData })
+    .patch(`/api/projects/${projectId}`, { json: requestData })
     .json<ProjectActionResponse>()
 
   const projectResponse = apiHelpers.extractData(response)
@@ -155,7 +155,7 @@ export async function updateProject(
  */
 export async function deleteProject(projectId: number): Promise<string> {
   const response = await authApi
-    .delete(`/projects/${projectId}`)
+    .delete(`/api/projects/${projectId}`)
     .json<ProjectDeleteResponse>()
 
   return apiHelpers.extractData(response)
@@ -166,7 +166,7 @@ export async function deleteProject(projectId: number): Promise<string> {
  */
 export async function inactivateProject(projectId: number): Promise<string> {
   const response = await authApi
-    .patch(`/projects/${projectId}/inactivate`)
+    .patch(`/api/projects/${projectId}/inactivate`)
     .json<ProjectDeleteResponse>()
 
   return apiHelpers.extractData(response)

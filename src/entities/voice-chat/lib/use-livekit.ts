@@ -183,7 +183,28 @@ export function useLiveKit({
         throw new Error('NEXT_PUBLIC_LIVEKIT_URL is not configured')
       }
 
+      // 연결 성공 토스트를 한 번만 표시하기 위한 플래그
+      let connectionToastShown = false
+
+      // 이벤트 리스너를 연결 전에 설정
+      newRoom.on(RoomEvent.Connected, () => {
+        if (!connectionToastShown) {
+          toast.success('Voice chat connected successfully!')
+          connectionToastShown = true
+        }
+      })
+
       await newRoom.connect(url, token)
+
+      // 연결 후 상태 확인 (이벤트를 놓친 경우를 위한 fallback)
+      if (
+        newRoom.state === ConnectionState.Connected &&
+        !connectionToastShown
+      ) {
+        toast.success('Voice chat connected successfully!')
+        connectionToastShown = true
+      }
+
       setRoom(newRoom)
 
       // 오디오 자동 관리 설정
@@ -314,6 +335,10 @@ export function useLiveKit({
       })
 
       // 네트워크 연결 상태 이벤트 리스너
+      newRoom.on(RoomEvent.Connected, () => {
+        toast.success('Voice chat connected successfully!')
+      })
+
       newRoom.on(RoomEvent.Disconnected, () => {
         toast.error('voice connection has been disconnected.')
       })

@@ -28,7 +28,7 @@ export const loginApi = async (data: LoginRequest): Promise<LoginData> => {
  */
 export const signupApi = async (data: SignupRequest): Promise<void> => {
   const response = await api
-    .post('/users/signup', {
+    .post('/api/users/signup', {
       json: {
         email: data.email,
         password: data.password,

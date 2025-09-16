@@ -12,11 +12,11 @@ const nextConfig: NextConfig = {
         destination: `${API_TARGET}/auth/:path*`,
       },
       {
-        source: '/projects/:path*',
+        source: '/api/projects/:path*',
         destination: `${API_TARGET}/projects/:path*`,
       },
       {
-        source: '/users/:path*',
+        source: '/api/users/:path*',
         destination: `${API_TARGET}/users/:path*`,
       },
       // NextAuth의 /api/auth/* 는 로컬에서 처리 (프록시 안함)
