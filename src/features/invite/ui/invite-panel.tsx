@@ -69,7 +69,7 @@ export default function InvitePanel() {
       {/* Members Panel - Toggleable */}
       <div className="flex min-h-0 flex-1 flex-col">
         <button
-          className="flex w-full cursor-pointer items-center justify-between gap-1.5 border-[var(--color-border)] border-y bg-transparent px-3 py-2 font-medium text-[var(--color-foreground)] text-sm hover:bg-[var(--color-muted)]"
+          className="flex w-full cursor-pointer items-center justify-between gap-1.5 border-[var(--color-border)] border-t bg-transparent px-3 py-3 font-medium text-[var(--color-foreground)] text-sm hover:bg-[var(--color-muted)]"
           onClick={() => setMembersExpanded(!membersExpanded)}
           type="button"
         >
@@ -79,8 +79,9 @@ export default function InvitePanel() {
                 membersExpanded ? 'rotate-90' : ''
               }`}
             />
-            <UsersIcon className="h-4 w-4" />
-            <span className="truncate text-left uppercase">members</span>
+            <span className="truncate text-left text-muted-foreground text-xs uppercase tracking-wider">
+              members
+            </span>
             {members.length > 0 && (
               <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--color-primary)] px-1.5 text-[var(--color-primary-foreground)] text-xs">
                 {members.length}
