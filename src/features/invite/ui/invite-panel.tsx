@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronRight, UsersIcon } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useInviteUser, useMembers } from '../hooks/use-invitations'
@@ -62,7 +62,7 @@ export default function InvitePanel() {
   return (
     <div className="flex h-full flex-col">
       {/* Invitations Section - No Header */}
-      <div className="border-b p-2">
+      <div className="border-b p-2 pb-20">
         <InvitationForm onSubmit={handleInviteMember} />
       </div>
 
@@ -75,7 +75,7 @@ export default function InvitePanel() {
         >
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
             <ChevronRight
-              className={`h-4 w-4 transition-transform duration-300 ${
+              className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ${
                 membersExpanded ? 'rotate-90' : ''
               }`}
             />
