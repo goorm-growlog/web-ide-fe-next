@@ -51,26 +51,131 @@ const SERVER_ERROR_MAPPING = {
 } as const
 
 /**
+ * 컨텍스트별 기본 에러 메시지 매핑
+ */
+const DEFAULT_ERROR_MESSAGES: Record<ErrorContext, string> = {
+  'file-operation': ERROR_MESSAGES[ERROR_CODES.FILE_OPERATION_FAILED],
+  auth: ERROR_MESSAGES[ERROR_CODES.VALIDATION_ERROR],
+  project: ERROR_MESSAGES[ERROR_CODES.PROJECT_NOT_FOUND],
+  chat: ERROR_MESSAGES[ERROR_CODES.MESSAGE_SEND_FAILED],
+  websocket: ERROR_MESSAGES[ERROR_CODES.CONNECTION_FAILED],
+  api: ERROR_MESSAGES[ERROR_CODES.NETWORK_ERROR],
+  general: ERROR_MESSAGES[ERROR_CODES.NETWORK_ERROR],
+} as const
+
+/**
+ * 표준 Error 객체에서 메시지 추출
+ */
+const extractFromErrorObject = (
+  error: Record<string, unknown>,
+): string | null => {
+  if ('message' in error && typeof error.message === 'string') {
+    return error.message
+  }
+  return null
+}
+
+/**
+ * 커스텀 에러 객체에서 메시지 추출
+ */
+const extractFromCustomError = (
+  error: Record<string, unknown>,
+): string | null => {
+  if ('error' in error && typeof error.error === 'string') {
+    return error.error
+  }
+  return null
+}
+
+/**
+ * 응답 에러 객체에서 메시지 추출
+ */
+const extractFromResponseError = (
+  error: Record<string, unknown>,
+): string | null => {
+  if (
+    'response' in error &&
+    error.response &&
+    typeof error.response === 'object'
+  ) {
+    const response = error.response as Record<string, unknown>
+    if (
+      'data' in response &&
+      response.data &&
+      typeof response.data === 'object'
+    ) {
+      const data = response.data as Record<string, unknown>
+      if ('message' in data && typeof data.message === 'string') {
+        return data.message
+      }
+    }
+  }
+  return null
+}
+
+/**
+ * 에러 메시지 추출 헬퍼 함수
+ */
+const extractErrorMessage = (error: unknown): string | null => {
+  if (typeof error === 'string') {
+    return error
+  }
+
+  if (error && typeof error === 'object') {
+    const errorObj = error as Record<string, unknown>
+
+    // 표준 Error 객체
+    const standardMessage = extractFromErrorObject(errorObj)
+    if (standardMessage) return standardMessage
+
+    // 커스텀 에러 객체
+    const customMessage = extractFromCustomError(errorObj)
+    if (customMessage) return customMessage
+
+    // 응답 에러 객체
+    const responseMessage = extractFromResponseError(errorObj)
+    if (responseMessage) return responseMessage
+  }
+
+  return null
+}
+
+/**
+ * 서버 에러 코드 매핑 함수
+ */
+const mapServerErrorCode = (errorMessage: string): string | null => {
+  for (const [serverCode, frontendCode] of Object.entries(
+    SERVER_ERROR_MAPPING,
+  )) {
+    if (errorMessage.includes(serverCode)) {
+      return ERROR_MESSAGES[frontendCode]
+    }
+  }
+  return null
+}
+
+/**
  * 중앙 에러 처리 함수
  */
 export const handleError = (
   error: unknown,
   context: ErrorContext = 'general',
 ): void => {
-  let errorMessage = ERROR_MESSAGES[ERROR_CODES.FILE_OPERATION_FAILED]
+  // 기본 에러 메시지 설정
+  let errorMessage = DEFAULT_ERROR_MESSAGES[context]
 
   // 에러 메시지 추출 및 매핑
-  if (error && typeof error === 'object' && 'message' in error) {
-    const errorMsg = (error as { message: string }).message
-
-    // 서버 에러 코드 매핑
-    for (const [serverCode, frontendCode] of Object.entries(
-      SERVER_ERROR_MAPPING,
-    )) {
-      if (errorMsg.includes(serverCode)) {
-        errorMessage = ERROR_MESSAGES[frontendCode]
-        break
-      }
+  const extractedMessage = extractErrorMessage(error)
+  if (extractedMessage) {
+    const mappedMessage = mapServerErrorCode(extractedMessage)
+    if (mappedMessage) {
+      errorMessage = mappedMessage
+    } else {
+      // 매핑되지 않은 에러는 원본 메시지 사용 (너무 길면 기본 메시지 사용)
+      errorMessage =
+        extractedMessage.length > 100
+          ? DEFAULT_ERROR_MESSAGES[context]
+          : extractedMessage
     }
   }
 
