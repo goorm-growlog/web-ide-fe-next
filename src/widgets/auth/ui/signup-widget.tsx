@@ -97,7 +97,7 @@ const SignupWidget = () => {
       {/* Divider */}
       <div className="mb-6 border-border/80 border-t"></div>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Profile Avatar */}
         <div className="flex justify-center">
           <div className="scale-90">

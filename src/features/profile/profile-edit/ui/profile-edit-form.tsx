@@ -54,7 +54,7 @@ const ProfileEditForm = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {/* Profile Avatar */}
       <div className="flex justify-center">
         <div className="scale-90">

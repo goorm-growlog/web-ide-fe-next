@@ -19,7 +19,7 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-card p-6 space-y-4">
+      <div className="w-full max-w-md bg-card p-6 space-y-4 pb-20">
         <div className="mb-4 flex justify-start">
           <BackButton fallbackUrl="/project" />
         </div>

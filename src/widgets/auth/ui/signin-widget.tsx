@@ -8,7 +8,7 @@ const SigninWidget = () => {
   return (
     <AuthLayout>
       {/* 로고 */}
-      <div className="mb-12 text-center">
+      <div className="mt-8 mb-12 text-center">
         <LogoLink width={160} height={32} />
       </div>
       <SigninForm />
