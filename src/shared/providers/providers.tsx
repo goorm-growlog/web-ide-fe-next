@@ -4,6 +4,7 @@ import { CssBaseline } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { SessionProvider } from 'next-auth/react'
 import type { ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { SWRConfig } from 'swr'
 import { AuthProvider } from '@/app/providers/auth-provider'
 import { swrConfig } from '@/shared/config/swr'
@@ -19,6 +20,21 @@ const muiTheme = createTheme({
   },
 })
 
+// 클라이언트 전용 CssBaseline 컴포넌트
+const ClientOnlyCssBaseline = () => {
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) {
+    return null
+  }
+
+  return <CssBaseline />
+}
+
 export const Providers = ({ children }: ProvidersProps) => (
   <SessionProvider
     // 메인 브랜치 방식: 기본 설정 사용 (단순함)
@@ -28,7 +44,7 @@ export const Providers = ({ children }: ProvidersProps) => (
   >
     <SWRConfig value={swrConfig}>
       <ThemeProvider theme={muiTheme}>
-        <CssBaseline />
+        <ClientOnlyCssBaseline />
         <AuthProvider>{children}</AuthProvider>
       </ThemeProvider>
     </SWRConfig>

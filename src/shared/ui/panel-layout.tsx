@@ -15,7 +15,7 @@ export const PanelLayout = ({
 }: PanelLayoutProps) => (
   <aside
     className={cn(
-      'flex h-full w-full flex-1 flex-col',
+      'flex h-full min-h-full w-full flex-1 flex-col',
       SCROLLABLE_PANEL_CONTENT_STYLES,
       className,
     )}

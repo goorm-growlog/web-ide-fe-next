@@ -18,7 +18,7 @@ function AccordionItem({
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
-      className={cn('border-b last:border-b-0', className)}
+      className={cn('flex flex-1 flex-col border-b last:border-b-0', className)}
       {...props}
     />
   )
@@ -54,10 +54,12 @@ function AccordionContent({
   return (
     <AccordionPrimitive.Content
       data-slot="accordion-content"
-      className="overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+      className="flex flex-1 flex-col overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
       {...props}
     >
-      <div className={cn('p-0', className)}>{children}</div>
+      <div className={cn('flex h-full flex-1 flex-col p-0', className)}>
+        {children}
+      </div>
     </AccordionPrimitive.Content>
   )
 }
