@@ -20,10 +20,13 @@ const RootItemContextMenu = ({
 }: RootItemWithContextMenuProps) => {
   return (
     <ContextMenu>
-      <ContextMenuTrigger className="flex-1">
+      <ContextMenuTrigger>
         <div
-          className={cn('h-full w-full', isDropTarget(item) && 'bg-blue-50')}
-        />
+          className={cn(
+            'h-full min-h-0 flex-1',
+            isDropTarget(item) && 'bg-blue-50',
+          )}
+        ></div>
       </ContextMenuTrigger>
 
       <ContextMenuContent>

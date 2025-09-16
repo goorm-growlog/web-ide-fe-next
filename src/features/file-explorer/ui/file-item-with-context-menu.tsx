@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 import { FILE_EXPLORER_UI_TEXTS } from '@/features/file-explorer/constants/ui-constants'
 import { isDropTarget } from '@/features/file-explorer/lib/drag-drop-utils'
 import type { FileItemWithContextMenuProps } from '@/features/file-explorer/types/file-explorer'
@@ -21,43 +20,12 @@ const FileItemWithContextMenu = ({
   onAction,
   onFileOpen,
 }: FileItemWithContextMenuProps) => {
-  const isRenamingRef = useRef(false)
-
-  const handleOpenChange = (open: boolean) => {
-    if (!open && item && isRenamingRef.current) {
-      // Context Menu가 닫힐 때 포커스 복원
-      setTimeout(() => {
-        item.getTree().updateDomFocus()
-      }, 0)
-    }
-  }
-
   const handleRenameAction = () => {
-    if (item) {
-      isRenamingRef.current = true
-      onAction('rename', item)
-    }
+    item.startRenaming()
   }
-
-  useEffect(() => {
-    if (item?.isRenaming() && isRenamingRef.current) {
-      // 이름 변경 모드가 활성화되면 포커스 설정
-      setTimeout(() => {
-        const element = item.getElement()
-        if (element) {
-          const input = element.querySelector('input')
-          if (input) {
-            input.focus()
-            input.select()
-          }
-        }
-        isRenamingRef.current = false
-      }, 100)
-    }
-  }, [item])
 
   return (
-    <ContextMenu onOpenChange={handleOpenChange}>
+    <ContextMenu>
       <ContextMenuTrigger
         onContextMenu={() => {
           if (item) item.setFocused()

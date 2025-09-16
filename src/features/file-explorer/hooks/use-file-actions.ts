@@ -110,7 +110,6 @@ export const useFileActions = (
           if (isItemFolder && !item.isExpanded()) {
             item.expand()
           }
-
           item.startRenaming()
           break
       }

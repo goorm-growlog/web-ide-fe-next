@@ -21,6 +21,9 @@ const FileItem = ({ item, iconSize, onFileOpen }: FileItemProps) => {
   }, [isFolder, isExpanded, item])
 
   const handleClick = useCallback(() => {
+    // 클릭 시 포커스 설정
+    item.setFocused()
+
     if (isFolder) {
       // 폴더인 경우: 확장/축소
       if (isExpanded) {
@@ -107,6 +110,7 @@ const FileItem = ({ item, iconSize, onFileOpen }: FileItemProps) => {
         isSelected && 'bg-sidebar-accent text-sidebar-accent-foreground',
         !isSelected &&
           isFocused &&
+          !item.isRenaming() &&
           'rounded ring-2 ring-sidebar-ring ring-inset',
         !isSelected && 'hover:bg-sidebar-accent/30',
       )}
@@ -118,7 +122,11 @@ const FileItem = ({ item, iconSize, onFileOpen }: FileItemProps) => {
         {item.isRenaming() ? (
           <input
             {...item.getRenameInputProps()}
-            onFocus={e => e.target.select()}
+            onFocus={e => {
+              console.log('focus')
+              item.setFocused()
+              e.target.select()
+            }}
           />
         ) : (
           item.getItemName()

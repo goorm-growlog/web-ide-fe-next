@@ -41,20 +41,23 @@ const FileExplorerPanel = memo(
         https://headless-tree.lukasbach.com/getstarted
       */}
         <div {...tree.getContainerProps()} className="flex h-full flex-col">
-          {tree.getItems().map(item => (
-            <FileItemWithContextMenu
-              key={item.getId()}
-              item={item}
-              iconSize={ICON_SIZE_PX}
+          <div className="flex-none">
+            {tree.getItems().map(item => (
+              <FileItemWithContextMenu
+                key={item.getId()}
+                item={item}
+                iconSize={ICON_SIZE_PX}
+                onAction={contextMenu}
+                onFileOpen={onFileOpen}
+              />
+            ))}
+          </div>
+          <div className="min-h-0 flex-1">
+            <RootItemContextMenu
               onAction={contextMenu}
-              onFileOpen={onFileOpen}
+              item={tree.getRootItem()}
             />
-          ))}
-
-          <RootItemContextMenu
-            onAction={contextMenu}
-            item={tree.getRootItem()}
-          />
+          </div>
         </div>
         <FileCreateDialog ref={dialogRef} {...dialogActions} />
       </>
