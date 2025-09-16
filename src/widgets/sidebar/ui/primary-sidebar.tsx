@@ -19,7 +19,7 @@ interface PrimarySidebarProps {
 }
 
 const PANELS_LAYOUT_STYLES =
-  'flex min-h-0 flex-1 flex-col h-full w-full overflow-hidden'
+  'flex flex-1 flex-col h-full w-full overflow-hidden'
 const SIDEBAR_LAYOUT_STYLES =
   'flex h-full w-full min-h-0 flex-row overflow-hidden bg-background'
 

@@ -8,7 +8,7 @@ export const useSidebarStore = create<SidebarStore>()(
     (set, get) => ({
       ...INITIAL_STATE,
 
-      toggleTab: (tab: TabKey) => {
+      toggleTab: (tab: TabKey | null) => {
         const { activeTab } = get()
         set({ activeTab: activeTab === tab ? null : tab })
       },
@@ -33,18 +33,18 @@ export const useSidebarStore = create<SidebarStore>()(
       togglePosition: () => {
         const { position } = get()
         const newPosition = position === 'left' ? 'right' : 'left'
+
         set({
           position: newPosition,
-          layoutIndices: {
-            primary: newPosition === 'left' ? 0 : 2,
-            secondary: newPosition === 'left' ? 2 : 0,
-            main: 1,
-          },
         })
       },
 
-      setLayout: layout => {
-        set({ layout: [...layout] })
+      setPrimarySize: (size: number) => {
+        set({ primarySize: size })
+      },
+
+      setSecondarySize: (size: number) => {
+        set({ secondarySize: size })
       },
     }),
     {
@@ -53,9 +53,18 @@ export const useSidebarStore = create<SidebarStore>()(
         activeTab: state.activeTab,
         openPanelsByTab: state.openPanelsByTab,
         position: state.position,
-        layout: state.layout,
-        layoutIndices: state.layoutIndices,
+        primarySize: state.primarySize,
+        secondarySize: state.secondarySize,
       }),
+      // 저장된 상태 복원 및 초기값 보장
+      onRehydrateStorage: () => state => {
+        if (state) {
+          // activeTab이 없으면 기본값 설정
+          if (!state.activeTab) {
+            state.activeTab = INITIAL_STATE.activeTab
+          }
+        }
+      },
     },
   ),
 )

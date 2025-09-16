@@ -42,8 +42,6 @@ export const TAB_DEFINITIONS: Tab[] = [
   },
 ] as const
 
-const DEFAULT_LAYOUT = [25, 50, 25]
-
 export const INITIAL_STATE: SidebarState = {
   activeTab: 'files',
   openPanelsByTab: {
@@ -53,6 +51,6 @@ export const INITIAL_STATE: SidebarState = {
     settings: [],
   },
   position: 'left',
-  layout: DEFAULT_LAYOUT,
-  layoutIndices: { primary: 0, secondary: 2, main: 1 },
+  primarySize: 25,
+  secondarySize: 25,
 }

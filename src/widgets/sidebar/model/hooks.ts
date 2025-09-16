@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useSidebarStore } from '@/widgets/sidebar/model/store'
 
 /**
@@ -8,18 +9,16 @@ export const useSidebar = () => {
   const activeTab = useSidebarStore(state => state.activeTab)
   const toggleTab = useSidebarStore(state => state.toggleTab)
 
-  const openPanels = useSidebarStore(state =>
-    activeTab ? state.openPanelsByTab[activeTab] || [] : [],
+  // useMemo를 사용하여 무한 루프 방지
+  const openPanelsByTab = useSidebarStore(state => state.openPanelsByTab)
+  const openPanels = useMemo(
+    () => (activeTab ? openPanelsByTab[activeTab] || [] : []),
+    [activeTab, openPanelsByTab],
   )
   const togglePanel = useSidebarStore(state => state.togglePanel)
 
   const position = useSidebarStore(state => state.position)
   const togglePosition = useSidebarStore(state => state.togglePosition)
-
-  const layout = useSidebarStore(state => state.layout)
-  const setLayout = useSidebarStore(state => state.setLayout)
-
-  const layoutIndices = useSidebarStore(state => state.layoutIndices)
 
   return {
     // 탭 관련
@@ -33,11 +32,6 @@ export const useSidebar = () => {
     // 위치 관련
     position,
     togglePosition,
-
-    // 레이아웃 관련
-    layout,
-    setLayout,
-    layoutIndices,
   }
 }
 
@@ -57,12 +51,4 @@ export const usePosition = () => {
   return { position, togglePosition }
 }
 
-export const useLayout = () => {
-  const { layout, setLayout } = useSidebar()
-  return { layout, setLayout }
-}
-
-export const useLayoutIndices = () => {
-  const { layoutIndices } = useSidebar()
-  return layoutIndices
-}
+// 레이아웃 관련 훅들은 autoSaveId로 자동 관리되므로 제거됨

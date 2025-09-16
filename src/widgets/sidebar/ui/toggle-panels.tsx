@@ -4,7 +4,6 @@ import { useCallback, useMemo } from 'react'
 import type { ChatReturn } from '@/features/chat/types/client'
 import type { FileTreeReturn } from '@/features/file-explorer/types/client'
 import { cn } from '@/shared/lib/utils'
-import PanelLayout from '@/shared/ui/panel-layout'
 import {
   Accordion,
   AccordionContent,
@@ -48,11 +47,6 @@ const ITEM_CLASSES = cn(
   'transition-all duration-300 ease-out',
 )
 
-const CONTENT_CLASSES = cn(
-  'relative h-full flex-shrink-0',
-  'transition-all duration-300 ease-out',
-)
-
 const TogglePanels = ({
   activeTabKey,
   fileTreeData,
@@ -62,19 +56,13 @@ const TogglePanels = ({
 }: TogglePanelsProps) => {
   const { openPanels, togglePanel } = useOpenPanels()
 
-  const { panels, contentHeight } = useMemo(() => {
+  const { panels } = useMemo(() => {
     const panels =
       TAB_DEFINITIONS.find(tab => tab.key === activeTabKey)?.panels || []
-    const totalHeaders = panels.length * PANEL_CONFIG.HEADER_HEIGHT
-    const contentHeight =
-      openPanels.length > 0
-        ? `calc(calc(100vh - ${totalHeaders}px) / ${openPanels.length})`
-        : '0px'
     return {
       panels,
-      contentHeight,
     }
-  }, [activeTabKey, openPanels.length])
+  }, [activeTabKey])
 
   const handlePanelToggle = useCallback(
     (panelKey: PanelKey) => {
@@ -103,16 +91,12 @@ const TogglePanels = ({
       >
         {panels.map(panelDef => {
           const isOpen = openPanels.includes(panelDef.key)
-          const itemHeight = isOpen
-            ? `calc(${PANEL_CONFIG.HEADER_HEIGHT}px + ${contentHeight})`
-            : `${PANEL_CONFIG.HEADER_HEIGHT}px`
 
           return (
             <AccordionItem
               key={panelDef.key}
               value={panelDef.key}
-              className={ITEM_CLASSES}
-              style={{ height: itemHeight }}
+              className={cn(ITEM_CLASSES, 'flex flex-col')}
             >
               <AccordionTrigger
                 className={TRIGGER_CLASSES}
@@ -124,15 +108,8 @@ const TogglePanels = ({
               >
                 {panelDef.title}
               </AccordionTrigger>
-              <AccordionContent
-                className={CONTENT_CLASSES}
-                style={{
-                  height: isOpen ? contentHeight : '0px',
-                  overflowY: isOpen ? 'auto' : 'hidden',
-                  opacity: isOpen ? 1 : 0,
-                }}
-              >
-                <PanelLayout>{panelDef.render(panelRenderProps)}</PanelLayout>
+              <AccordionContent>
+                {panelDef.render(panelRenderProps)}
               </AccordionContent>
             </AccordionItem>
           )

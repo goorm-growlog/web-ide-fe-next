@@ -45,13 +45,14 @@ export interface SidebarState {
   activeTab: TabKey | null
   openPanelsByTab: Record<TabKey, PanelKey[]>
   position: PositionType
-  layout: number[]
-  layoutIndices: LayoutIndices
+  primarySize: number
+  secondarySize: number
 }
 
 export interface SidebarStore extends SidebarState {
-  toggleTab: (tab: TabKey) => void
+  toggleTab: (tab: TabKey | null) => void
   togglePanel: (panel: PanelKey) => void
   togglePosition: () => void
-  setLayout: (layout: number[]) => void
+  setPrimarySize: (size: number) => void
+  setSecondarySize: (size: number) => void
 }

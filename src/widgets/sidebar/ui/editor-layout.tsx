@@ -2,7 +2,11 @@
 
 import type { editor } from 'monaco-editor'
 import { useParams } from 'next/navigation'
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import type {
+  ImperativePanelGroupHandle,
+  ImperativePanelHandle,
+} from 'react-resizable-panels'
 import type { ChatReturn } from '@/features/chat/types/client'
 import { ChatPanel } from '@/features/chat/ui/chat-panel'
 import { useFileSystemIntegration } from '@/features/code-editor/hooks/use-file-system-integration'
@@ -11,26 +15,33 @@ import { MonacoEditor } from '@/features/code-editor/ui/monaco-editor'
 import { TabList } from '@/features/code-editor/ui/tab-list'
 import type { FileTreeReturn } from '@/features/file-explorer/types/client'
 import { copyToClipboard } from '@/shared/lib/clipboard-utils'
-import { cn } from '@/shared/lib/utils'
 import PanelLayout from '@/shared/ui/panel-layout'
 import { ResizableGrowHandle } from '@/shared/ui/resizable-grow-handle'
 import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/shared/ui/shadcn/resizable'
-import { DEFAULT_SIDEBAR_CONFIG } from '@/widgets/sidebar/constants/config'
 import {
-  useActiveTab,
-  useLayout,
-  useLayoutIndices,
-  usePosition,
-} from '@/widgets/sidebar/model/hooks'
-import PrimarySidebar from '@/widgets/sidebar/ui/primary-sidebar'
+  DEFAULT_SIDEBAR_CONFIG,
+  TAB_DEFINITIONS,
+} from '@/widgets/sidebar/constants/config'
+import { useActiveTab, usePosition } from '@/widgets/sidebar/model/hooks'
+import { useSidebarStore } from '@/widgets/sidebar/model/store'
+import TabSwitcher from '@/widgets/sidebar/ui/tab-switcher'
+import TogglePanels from '@/widgets/sidebar/ui/toggle-panels'
+
+// 패널 기본 사이즈 상수
+const DEFAULT_PANEL_SIZE = 25
+const MAIN_PANEL_SIZE = 50
 
 interface EditorLayoutProps {
   projectId?: string
   fileTreeData: FileTreeReturn
   chatData: ChatReturn
+  secondaryPanel: {
+    isVisible: boolean
+    onToggle: () => void
+  }
 }
 
 // 메인 에디터 영역 컴포넌트
@@ -69,7 +80,6 @@ const MainEditorArea = memo(
         })
 
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Tab, () => {
-          // 다음 탭으로 이동
           const tabIds = Object.keys(fileSystem.files)
           const currentIndex = tabIds.indexOf(activeFile?.id || '')
           const nextIndex = (currentIndex + 1) % tabIds.length
@@ -81,7 +91,6 @@ const MainEditorArea = memo(
         editor.addCommand(
           monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Tab,
           () => {
-            // 이전 탭으로 이동
             const tabIds = Object.keys(fileSystem.files)
             const currentIndex = tabIds.indexOf(activeFile?.id || '')
             const prevIndex =
@@ -106,7 +115,6 @@ const MainEditorArea = memo(
 
     return (
       <div className="flex h-full flex-col">
-        {/* 탭 리스트 */}
         <TabList
           tabs={tabs}
           activeTabId={fileSystem.activeFileId}
@@ -118,7 +126,6 @@ const MainEditorArea = memo(
           onTabCloseAll={handleTabCloseAll}
         />
 
-        {/* 에디터 영역 */}
         <div className="flex-1">
           {activeFile ? (
             <MonacoEditor
@@ -146,195 +153,296 @@ const MainEditorArea = memo(
 
 MainEditorArea.displayName = 'MainEditorArea'
 
-const EditorLayout = memo(
-  ({ projectId, fileTreeData, chatData }: EditorLayoutProps) => {
-    const params = useParams()
-    const actualProjectId = projectId || (params.projectId as string) || null
-    const sidebarConfig = DEFAULT_SIDEBAR_CONFIG
+const EditorLayout = memo((props: EditorLayoutProps) => {
+  const { projectId, fileTreeData, chatData, secondaryPanel } = props
+  const params = useParams()
+  const actualProjectId = projectId || (params.projectId as string) || null
 
-    const { layout, setLayout } = useLayout()
-    const { position } = usePosition()
-    const { primary, secondary, main } = useLayoutIndices()
+  const { position } = usePosition()
+  const { activeTab, toggleTab } = useActiveTab()
+  const { primarySize, secondarySize, setPrimarySize, setSecondarySize } =
+    useSidebarStore()
+  const isVisible = activeTab !== null
+  const isPrimaryLeft = position === 'left'
 
-    const { activeTab, toggleTab } = useActiveTab()
-    const isVisible = activeTab !== null
-    const isPrimaryLeft = position === 'left'
-    const primaryPosition = isPrimaryLeft ? 'left' : 'right'
+  // 패널 크기 실시간 추적 (Zustand store 값으로 초기화)
+  const [primaryLastSize, setPrimaryLastSize] = useState(
+    primarySize || DEFAULT_PANEL_SIZE,
+  )
+  const [secondaryLastSize, setSecondaryLastSize] = useState(
+    secondarySize || DEFAULT_PANEL_SIZE,
+  )
 
-    // 파일 시스템 연동 및 탭 관리
-    const fileSystem = useFileSystemIntegration(actualProjectId || '')
+  // 패널 refs
+  const panelGroupRef = useRef<ImperativePanelGroupHandle>(null)
+  const primaryPanelRef = useRef<ImperativePanelHandle>(null)
+  const secondaryPanelRef = useRef<ImperativePanelHandle>(null)
 
-    // 파일 시스템에서 직접 탭 데이터 생성
-    const tabs: FileTab[] = Object.values(fileSystem.files).map(file => ({
-      id: file.id,
-      name: file.name,
-      path: file.path,
-      isActive: file.id === fileSystem.activeFileId,
-    }))
+  // 파일 시스템 연동
+  const fileSystem = useFileSystemIntegration(actualProjectId || '')
+  const tabs: FileTab[] = Object.values(fileSystem.files).map(file => ({
+    id: file.id,
+    name: file.name,
+    path: file.path,
+    isActive: file.id === fileSystem.activeFileId,
+  }))
 
-    const handleTabClick = useCallback(
-      (tabId: string) => {
-        fileSystem.setActiveFileId(tabId)
-      },
-      [fileSystem],
-    )
+  // 탭 핸들러들
+  const handleTabClick = useCallback(
+    (tabId: string) => {
+      fileSystem.setActiveFileId(tabId)
+    },
+    [fileSystem],
+  )
 
-    const handleTabClose = useCallback(
-      (tabId: string) => {
-        fileSystem.closeFile(tabId)
-      },
-      [fileSystem],
-    )
+  const handleTabClose = useCallback(
+    (tabId: string) => {
+      fileSystem.closeFile(tabId)
+    },
+    [fileSystem],
+  )
 
-    const handleLayoutChange = (sizes: number[]) => setLayout(sizes)
+  const handleTabCopyPath = useCallback(
+    (tabId: string) => {
+      const file = fileSystem.files[tabId]
+      if (file) copyToClipboard(file.path)
+    },
+    [fileSystem.files],
+  )
 
-    // 탭 컨텍스트 메뉴 핸들러들
-    const handleTabCopyPath = useCallback(
-      (tabId: string) => {
-        const file = fileSystem.files[tabId]
-        if (file) {
-          copyToClipboard(file.path)
-        }
-      },
-      [fileSystem.files],
-    )
-
-    const handleTabCloseOthers = useCallback(
-      (tabId: string) => {
-        Object.keys(fileSystem.files).forEach(id => {
-          if (id !== tabId) {
-            fileSystem.closeFile(id)
-          }
+  const handleTabCloseOthers = useCallback(
+    (tabId: string) => {
+      Object.keys(fileSystem.files)
+        .filter(id => id !== tabId)
+        .forEach(id => {
+          fileSystem.closeFile(id)
         })
-      },
-      [fileSystem],
-    )
+    },
+    [fileSystem],
+  )
 
-    const handleTabCloseToRight = useCallback(
-      (tabId: string) => {
-        const tabIds = Object.keys(fileSystem.files)
-        const currentIndex = tabIds.indexOf(tabId)
-        if (currentIndex !== -1) {
-          tabIds.slice(currentIndex + 1).forEach(id => {
-            fileSystem.closeFile(id)
-          })
+  const handleTabCloseToRight = useCallback(
+    (tabId: string) => {
+      const tabIds = Object.keys(fileSystem.files)
+      const currentIndex = tabIds.indexOf(tabId)
+      if (currentIndex !== -1) {
+        tabIds.slice(currentIndex + 1).forEach(id => {
+          fileSystem.closeFile(id)
+        })
+      }
+    },
+    [fileSystem],
+  )
+
+  const handleTabCloseAll = useCallback(() => {
+    Object.keys(fileSystem.files).forEach(id => {
+      fileSystem.closeFile(id)
+    })
+  }, [fileSystem])
+
+  // 레이아웃 변화 시 패널 크기 추적 및 저장 (Zustand store 사용)
+  const handleLayoutChange = useCallback(
+    (sizes: number[]) => {
+      if (sizes.length >= 3) {
+        // Primary 패널 크기 추적 및 저장 (패널이 열려있을 때만)
+        if (isVisible && sizes[0] && sizes[0] > 0) {
+          setPrimaryLastSize(sizes[0])
+          setPrimarySize(sizes[0])
         }
-      },
-      [fileSystem],
-    )
+        // Secondary 패널 크기 추적 및 저장 (패널이 열려있을 때만)
+        if (secondaryPanel?.isVisible && sizes[2] && sizes[2] > 0) {
+          setSecondaryLastSize(sizes[2])
+          setSecondarySize(sizes[2])
+        }
 
-    const handleTabCloseAll = useCallback(() => {
-      Object.keys(fileSystem.files).forEach(id => {
-        fileSystem.closeFile(id)
-      })
-    }, [fileSystem])
+        // 패널이 0 크기가 되면 자동으로 collapse 처리
+        if (secondaryPanel?.isVisible && sizes[2] === 0) {
+          secondaryPanel.onToggle() // 상태를 false로 업데이트
+        }
+      }
+    },
+    [
+      isVisible,
+      secondaryPanel?.isVisible,
+      secondaryPanel?.onToggle,
+      setPrimarySize,
+      setSecondarySize,
+    ],
+  )
 
-    const primaryPanel = (
-      <ResizablePanel
-        defaultSize={isVisible ? (layout[primary] ?? 25) : 16}
-        maxSize={sidebarConfig.maxSize}
-        minSize={sidebarConfig.primaryMinSize}
-        order={primary}
-        collapsible
-        onCollapse={() => {
-          const newLayout = [...layout]
-          newLayout[primary] = 0
-          setLayout(newLayout)
-        }}
-        onExpand={() => {
-          const newLayout = [...layout]
-          newLayout[primary] = 25
-          setLayout(newLayout)
-        }}
-      >
-        <PanelLayout>
-          <PrimarySidebar
-            position={primaryPosition}
-            activeTab={activeTab}
-            toggleTab={toggleTab}
-            fileTreeData={fileTreeData}
-            chatData={chatData}
-            projectId={actualProjectId || ''}
-            onFileOpen={fileSystem.openFileFromTree}
-          />
-        </PanelLayout>
-      </ResizablePanel>
-    )
+  // 패널 상태 변화에 따른 실제 collapse/expand 처리
+  useEffect(() => {
+    if (!primaryPanelRef.current) return
 
-    const mainPanel = (
-      <ResizablePanel
-        defaultSize={layout[main] ?? 50}
-        minSize={30}
-        order={main}
-        className={cn('flex flex-col')}
-      >
-        <main className="flex h-full flex-col">
-          {actualProjectId ? (
-            <MainEditorArea
-              fileSystem={fileSystem}
-              tabs={tabs}
-              handleTabClick={handleTabClick}
-              handleTabClose={handleTabClose}
-              handleTabCopyPath={handleTabCopyPath}
-              handleTabCloseOthers={handleTabCloseOthers}
-              handleTabCloseToRight={handleTabCloseToRight}
-              handleTabCloseAll={handleTabCloseAll}
+    if (!isVisible) {
+      // Primary 패널이 닫힐 때 현재 크기 저장 (0이면 기본값 저장)
+      const currentSize = primaryPanelRef.current.getSize()
+      const sizeToSave = currentSize > 0 ? currentSize : DEFAULT_PANEL_SIZE
+      setPrimaryLastSize(sizeToSave)
+      setPrimarySize(sizeToSave)
+      primaryPanelRef.current.collapse()
+    } else {
+      // Primary 패널이 열릴 때 저장된 크기로 복원 (0이면 기본값)
+      const targetSize =
+        primaryLastSize > 0 ? primaryLastSize : DEFAULT_PANEL_SIZE
+      primaryPanelRef.current.resize(targetSize)
+    }
+  }, [isVisible, primaryLastSize, setPrimarySize])
+
+  useEffect(() => {
+    if (!secondaryPanelRef.current) return
+
+    if (!secondaryPanel?.isVisible) {
+      // Secondary 패널이 닫힐 때 현재 크기 저장 (0이면 기본값 저장)
+      const currentSize = secondaryPanelRef.current.getSize()
+      const sizeToSave = currentSize > 0 ? currentSize : DEFAULT_PANEL_SIZE
+      setSecondaryLastSize(sizeToSave)
+      setSecondarySize(sizeToSave)
+      secondaryPanelRef.current.collapse()
+    } else {
+      // Secondary 패널이 열릴 때 저장된 크기로 복원 (0이면 기본값)
+      const targetSize =
+        secondaryLastSize > 0 ? secondaryLastSize : DEFAULT_PANEL_SIZE
+      secondaryPanelRef.current.resize(targetSize)
+    }
+  }, [secondaryPanel?.isVisible, secondaryLastSize, setSecondarySize])
+
+  return (
+    <div className="flex h-full w-full flex-col">
+      <div className="flex h-full w-full">
+        {/* 왼쪽 고정 TabSwitcher */}
+        {isPrimaryLeft && (
+          <div className="w-12 flex-shrink-0 md:w-14 lg:w-16">
+            <TabSwitcher
+              tabs={TAB_DEFINITIONS}
+              activeTabKey={activeTab}
+              onTabClick={toggleTab}
+              position="left"
+              className="h-full"
             />
-          ) : (
-            <div className="flex h-full items-center justify-center p-8">
-              <div className="text-center">
-                <h2 className="mb-2 font-semibold text-lg">
-                  No project selected
-                </h2>
-                <p className="text-muted-foreground text-sm">
-                  Please select a project to start editing.
-                </p>
-              </div>
-            </div>
-          )}
-        </main>
-      </ResizablePanel>
-    )
+          </div>
+        )}
 
-    const secondaryPanel = (
-      <ResizablePanel
-        defaultSize={isVisible ? (layout[secondary] ?? 25) : 0}
-        maxSize={sidebarConfig.maxSize}
-        minSize={0}
-        order={secondary}
-        collapsible
-        onCollapse={() => {
-          const newLayout = [...layout]
-          newLayout[secondary] = 0
-          setLayout(newLayout)
-        }}
-        onExpand={() => {
-          const newLayout = [...layout]
-          newLayout[secondary] = 25
-          setLayout(newLayout)
-        }}
-      >
-        <PanelLayout>
-          <ChatPanel chatData={chatData} />
-        </PanelLayout>
-      </ResizablePanel>
-    )
+        {/* 공식 문서 권장사항: 단순한 패널 구조 */}
+        <ResizablePanelGroup
+          ref={panelGroupRef}
+          direction="horizontal"
+          className="h-full flex-1"
+          onLayout={handleLayoutChange}
+        >
+          {/* Primary 패널 - 단순한 구조 */}
+          <ResizablePanel
+            id="primary-panel"
+            ref={primaryPanelRef}
+            defaultSize={primarySize || DEFAULT_PANEL_SIZE}
+            minSize={DEFAULT_SIDEBAR_CONFIG.primaryMinSize}
+            maxSize={DEFAULT_SIDEBAR_CONFIG.maxSize}
+            collapsible
+            onCollapse={() => {
+              toggleTab(null)
+              // 실제로 패널 collapse
+              if (primaryPanelRef.current) {
+                primaryPanelRef.current.collapse()
+              }
+            }}
+            onExpand={() => {
+              const targetSize =
+                primaryLastSize > 0 ? primaryLastSize : DEFAULT_PANEL_SIZE
+              primaryPanelRef.current?.resize(targetSize)
+            }}
+          >
+            <PanelLayout>
+              <TogglePanels
+                activeTabKey={activeTab}
+                fileTreeData={fileTreeData}
+                chatData={chatData}
+                projectId={actualProjectId || ''}
+                onFileOpen={fileSystem.openFileFromTree}
+              />
+            </PanelLayout>
+          </ResizablePanel>
 
-    return (
-      <ResizablePanelGroup
-        direction="horizontal"
-        onLayout={handleLayoutChange}
-        className="h-full min-h-0 w-full items-stretch"
-      >
-        {isPrimaryLeft && primaryPanel}
-        <ResizableGrowHandle />
-        {mainPanel}
-        <ResizableGrowHandle />
-        {!isPrimaryLeft && primaryPanel}
-        {secondaryPanel}
-      </ResizablePanelGroup>
-    )
-  },
-)
+          {/* 핸들 - Primary 패널이 열려있을 때만 표시 */}
+          {isVisible && <ResizableGrowHandle />}
+
+          {/* 메인 패널 - 단순한 구조 */}
+          <ResizablePanel
+            id="main-panel"
+            defaultSize={MAIN_PANEL_SIZE}
+            minSize={30}
+            className="flex flex-col"
+          >
+            <main className="flex h-full flex-col">
+              {actualProjectId ? (
+                <MainEditorArea
+                  fileSystem={fileSystem}
+                  tabs={tabs}
+                  handleTabClick={handleTabClick}
+                  handleTabClose={handleTabClose}
+                  handleTabCopyPath={handleTabCopyPath}
+                  handleTabCloseOthers={handleTabCloseOthers}
+                  handleTabCloseToRight={handleTabCloseToRight}
+                  handleTabCloseAll={handleTabCloseAll}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center p-8">
+                  <div className="text-center">
+                    <h2 className="mb-2 font-semibold text-lg">
+                      No project selected
+                    </h2>
+                    <p className="text-muted-foreground text-sm">
+                      Please select a project to start editing.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </main>
+          </ResizablePanel>
+
+          {/* 핸들 - Secondary 패널이 열려있을 때만 표시 */}
+          {secondaryPanel.isVisible && <ResizableGrowHandle />}
+
+          {/* 세컨더리 패널 - 단순한 구조 */}
+          <ResizablePanel
+            id="secondary-panel"
+            ref={secondaryPanelRef}
+            defaultSize={secondarySize || DEFAULT_PANEL_SIZE}
+            minSize={DEFAULT_SIDEBAR_CONFIG.secondaryMinSize}
+            maxSize={DEFAULT_SIDEBAR_CONFIG.maxSize}
+            collapsible
+            onCollapse={() => {
+              // onCollapse에서는 토글하지 않음 (중복 방지)
+              console.log('Secondary panel collapsed')
+            }}
+            onExpand={() => {
+              const targetSize =
+                secondaryLastSize > 0 ? secondaryLastSize : DEFAULT_PANEL_SIZE
+              secondaryPanelRef.current?.resize(targetSize)
+            }}
+          >
+            <PanelLayout>
+              <ChatPanel chatData={chatData} />
+            </PanelLayout>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+
+        {/* 오른쪽 고정 TabSwitcher */}
+        {!isPrimaryLeft && (
+          <div className="w-12 flex-shrink-0 md:w-14 lg:w-16">
+            <TabSwitcher
+              tabs={TAB_DEFINITIONS}
+              activeTabKey={activeTab}
+              onTabClick={toggleTab}
+              position="right"
+              className="h-full"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+})
+
+EditorLayout.displayName = 'EditorLayout'
 
 export default EditorLayout
