@@ -12,7 +12,6 @@ export default function ChatTest() {
       <div className="h-screen">
         <ChatPanel
           roomId="test-room-1"
-          currentUserId="user1"
         />
       </div>
     </Suspense>

@@ -1,6 +1,8 @@
 'use client'
 
+import { useUser } from '@liveblocks/react'
 import { RefreshCw } from 'lucide-react'
+import { useAuth } from '@/app/providers/auth-provider'
 import { MessageInput } from '@/features/chat/components/message-input'
 import { MessageList } from '@/features/chat/components/message-list'
 import { useChatInfinite } from '@/features/chat/hooks/use-chat-infinite'
@@ -13,11 +15,7 @@ interface ChatPanelProps {
   className?: string
 }
 
-export const ChatPanel = ({
-  roomId,
-  currentUserName,
-  className,
-}: ChatPanelProps) => {
+export const ChatPanel = ({ roomId, className }: ChatPanelProps) => {
   const {
     messages,
     isLoading,
@@ -28,6 +26,8 @@ export const ChatPanel = ({
     refresh,
     sendMessage,
   } = useChatInfinite(roomId)
+
+  const { user } = useAuth()
 
   const handleSendMessage = async (content: string) => {
     try {
@@ -69,7 +69,7 @@ export const ChatPanel = ({
           isLoadingMore={isLoadingMore}
           hasMore={hasMore}
           error={error}
-          currentUserName={currentUserName}
+          currentUserName={user?.name || ''}
           onLoadMore={loadMore}
           onRetry={refresh}
         />
