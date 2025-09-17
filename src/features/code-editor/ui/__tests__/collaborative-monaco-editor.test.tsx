@@ -94,20 +94,25 @@ describe('CollaborativeMonacoEditor', () => {
   })
 
   it('renders Monaco Editor', () => {
-    render(<CollaborativeMonacoEditor />)
+    render(<CollaborativeMonacoEditor roomId="test-room" />)
 
     expect(screen.getByTestId('monaco-editor')).toBeInTheDocument()
   })
 
   it('renders with initial value', () => {
-    render(<CollaborativeMonacoEditor value="console.log('hello')" />)
+    render(
+      <CollaborativeMonacoEditor
+        roomId="test-room"
+        value="console.log('hello')"
+      />,
+    )
 
     expect(screen.getByTestId('monaco-editor')).toBeInTheDocument()
   })
 
   it('calls onChange when content changes', () => {
     const onChange = vi.fn()
-    render(<CollaborativeMonacoEditor onChange={onChange} />)
+    render(<CollaborativeMonacoEditor roomId="test-room" onChange={onChange} />)
 
     expect(screen.getByTestId('monaco-editor')).toBeInTheDocument()
   })

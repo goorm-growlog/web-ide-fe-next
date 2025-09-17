@@ -87,7 +87,27 @@ function CollaborativeEditorCore({
       sharedContent !== undefined &&
       sharedContent !== editorRef.current.getValue()
     ) {
-      editorRef.current.setValue(String(sharedContent))
+      const editor = editorRef.current
+      const newContent = String(sharedContent)
+
+      // 현재 커서 위치 저장
+      const currentPosition = editor.getPosition()
+
+      // executeEdits로 내용 업데이트 (커서 위치 유지)
+      const model = editor.getModel()
+      if (model) {
+        editor.executeEdits('remote-update', [
+          {
+            range: model.getFullModelRange(),
+            text: newContent,
+          },
+        ])
+      }
+
+      // 커서 위치 복원
+      if (currentPosition) {
+        editor.setPosition(currentPosition)
+      }
     }
   }, [sharedContent])
 
@@ -95,13 +115,22 @@ function CollaborativeEditorCore({
   useEffect(() => {
     if (!editorRef.current) return
 
+    console.log('Others:', others)
+    console.log('Others length:', others.length)
+
     const decorations = others
       .map(other => {
+        console.log('Other:', other)
+        console.log('Other presence:', other.presence)
+        console.log('Other cursor:', other.presence?.cursor)
+
         if (other.presence?.cursor) {
           const cursor = other.presence.cursor as { x: number; y: number }
           const userName =
             (other.presence.user as { name?: string })?.name ||
             `User ${String(other.connectionId).slice(-4)}`
+
+          console.log('Creating decoration for:', userName, 'at:', cursor)
 
           return {
             range: {
@@ -123,6 +152,7 @@ function CollaborativeEditorCore({
           decoration !== null,
       )
 
+    console.log('Decorations:', decorations)
     editorRef.current.deltaDecorations([], decorations)
   }, [others])
 

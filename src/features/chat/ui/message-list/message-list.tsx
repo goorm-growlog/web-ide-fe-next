@@ -121,7 +121,7 @@ const MessageList = memo(
               message={message}
               index={index}
               messages={messages}
-              currentUserId={currentUserId}
+              currentUserId={currentUserId || ''}
             />
           ))}
 

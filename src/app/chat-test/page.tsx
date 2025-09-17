@@ -18,8 +18,7 @@ const generateMockMessages = (count: number): ChatMessage[] => {
       content: `This is message ${i + 1} from ${user}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       type: 'TALK',
       user: {
-        id: user.toLowerCase(),
-        name: user,
+        name: user || 'Unknown User',
       },
       timestamp,
     })
@@ -57,7 +56,6 @@ export default function ChatTestPage() {
       content,
       type: 'TALK',
       user: {
-        id: 'current-user',
         name: 'Current User',
       },
       timestamp: new Date(),
@@ -85,7 +83,7 @@ export default function ChatTestPage() {
           </p>
         </div>
         <div className="flex-1">
-          <ChatPanel chatData={chatData} currentUserId="current-user" />
+          <ChatPanel chatData={chatData} currentUserId="alice" />
         </div>
       </div>
     </div>

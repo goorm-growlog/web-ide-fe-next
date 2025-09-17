@@ -27,8 +27,17 @@ const MessageItem = memo(
 
     // currentUserId가 제공되면 그것을 사용하고, 없으면 기본값 사용
     const isOwnMessage = currentUserId
-      ? message.user.id === currentUserId
+      ? message.user.name === currentUserId
       : false // Storybook에서 currentUserId가 없으면 기본적으로 false
+
+    // 디버깅을 위한 로그
+    console.log('🔍 MessageItem Debug:', {
+      messageId: message.id,
+      userName: message.user.name,
+      currentUserId,
+      isOwnMessage,
+      messageContent: `${message.content.substring(0, 30)}...`,
+    })
 
     /**
      * 메시지가 그룹의 첫 번째인지 확인하는 함수

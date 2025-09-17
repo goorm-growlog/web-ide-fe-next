@@ -33,7 +33,7 @@ describe('CollaborativeMonacoEditor Integration Tests', () => {
     }
 
     // When: 컴포넌트 렌더링
-    render(<CollaborativeMonacoEditor {...props} />)
+    render(<CollaborativeMonacoEditor roomId="test-room" {...props} />)
 
     // Then: 에디터가 렌더링되어야 함
     await waitFor(() => {
@@ -44,7 +44,7 @@ describe('CollaborativeMonacoEditor Integration Tests', () => {
   it('should handle content changes', async () => {
     // Given: onChange 핸들러와 함께 렌더링
     const onChange = vi.fn()
-    render(<CollaborativeMonacoEditor onChange={onChange} />)
+    render(<CollaborativeMonacoEditor roomId="test-room" onChange={onChange} />)
 
     // When: 에디터가 렌더링될 때까지 대기
     await waitFor(() => {

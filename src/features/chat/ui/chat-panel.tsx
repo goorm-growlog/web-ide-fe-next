@@ -41,6 +41,14 @@ const ChatPanel = memo(({ chatData, currentUserId }: ChatPanelProps) => {
     currentUserId: actualCurrentUserId,
   })
 
+  // currentUserId 전달 확인
+  console.log('🔍 ChatPanel currentUserId check:', {
+    currentUserId,
+    userFromAuth: user?.id,
+    actualCurrentUserId,
+    messagesSample: messages.slice(0, 3).map(m => ({ name: m.user.name })),
+  })
+
   const handleSendMessage = useCallback(
     (message: string) => {
       try {
@@ -73,7 +81,7 @@ const ChatPanel = memo(({ chatData, currentUserId }: ChatPanelProps) => {
           isLoadingMore={isLoadingMore}
           hasMore={hasMore}
           onLoadMore={loadMore}
-          currentUserId={actualCurrentUserId}
+          currentUserId={actualCurrentUserId || ''}
         />
       </div>
 

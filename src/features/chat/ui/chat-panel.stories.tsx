@@ -17,8 +17,7 @@ const generateMockMessages = (count: number): ChatMessage[] => {
       content: `This is message ${i + 1} from ${user}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       type: 'TALK',
       user: {
-        id: user.toLowerCase(),
-        name: user,
+        name: user || 'Unknown User',
       },
       timestamp,
     })
@@ -138,7 +137,6 @@ export const InteractiveInfiniteScroll: Story = {
           content,
           type: 'TALK',
           user: {
-            id: 'current-user',
             name: 'Current User',
           },
           timestamp: new Date(),
