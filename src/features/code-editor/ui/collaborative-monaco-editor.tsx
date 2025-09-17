@@ -58,18 +58,27 @@ function CollaborativeEditorCore({
           })
         }
       })
-
-      // 에디터 내용 변경 감지
-      editor.onDidChangeModelContent(() => {
-        const content = editor.getValue()
-        updateContent(content)
-        if (onChange) {
-          onChange(content)
-        }
-      })
     },
-    [updateMyPresence, updateContent, onChange],
+    [updateMyPresence],
   )
+
+  // 에디터 내용 변경 감지 (스토리지 로드 후에만 등록)
+  useEffect(() => {
+    if (!editorRef.current || sharedContent === undefined) return
+
+    const editor = editorRef.current
+    const disposable = editor.onDidChangeModelContent(() => {
+      const content = editor.getValue()
+      updateContent(content)
+      if (onChange) {
+        onChange(content)
+      }
+    })
+
+    return () => {
+      disposable.dispose()
+    }
+  }, [sharedContent, updateContent, onChange])
 
   // 공유 내용 변경 시 에디터 업데이트
   useEffect(() => {

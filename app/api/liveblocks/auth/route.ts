@@ -10,22 +10,20 @@ export const POST = async (request: NextRequest) => {
   const { room } = await request.json()
   const session = await auth()
 
-  if (!session?.user?.id) {
-    return new Response('Unauthorized', { status: 401 })
-  }
-
   if (!process.env.LIVEBLOCKS_SECRET_KEY) {
     return new Response('Server configuration error', { status: 500 })
   }
 
+  // 로그인하지 않은 사용자를 위한 기본 정보
+  const userId = session?.user?.id || `anonymous-${Date.now()}`
   const userInfo = {
-    name: session.user.name ?? session.user.email ?? 'Anonymous',
-    avatar: session.user.image ?? '',
+    name: session?.user?.name ?? session?.user?.email ?? 'Anonymous User',
+    avatar: session?.user?.image ?? '',
     color: '#6366f1', // 기본 색상
-    picture: session.user.image ?? '',
+    picture: session?.user?.image ?? '',
   }
 
-  const sessionToken = liveblocks.prepareSession(session.user.id, {
+  const sessionToken = liveblocks.prepareSession(userId, {
     userInfo,
   })
 
