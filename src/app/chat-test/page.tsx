@@ -83,7 +83,7 @@ export default function ChatTestPage() {
           </p>
         </div>
         <div className="flex-1">
-          <ChatPanel chatData={chatData} currentUserId="jaeyeopme" />
+          <ChatPanel chatData={chatData} currentUserName="jaeyeopme" />
         </div>
       </div>
     </div>
