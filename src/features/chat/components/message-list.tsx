@@ -1,10 +1,8 @@
 'use client'
 
-import { memo, useEffect } from 'react'
-import useInfiniteScroll from 'react-infinite-scroll-hook'
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import type { ChatMessage } from '@/entities/chat/model/types'
 import { MessageItem } from '@/entities/chat/ui/message-item'
-import { useAutoScroll } from '@/features/chat/hooks/use-auto-scroll'
 import { MessageError } from './message-error'
 import { MessageLoading } from './message-loading'
 
@@ -14,11 +12,19 @@ interface MessageListProps {
   isLoadingMore: boolean
   hasMore: boolean
   error: Error | null
-  currentUserId: string
+  currentUserName: string
   onLoadMore: () => void
   onRetry: () => void
 }
 
+/**
+ * 채팅 메시지 목록을 렌더링하는 컴포넌트
+ *
+ * 메시지가 없을 경우 빈 상태를 표시하고, 메시지가 있을 경우
+ * 각 메시지를 개별 아이템으로 렌더링합니다.
+ *
+ * @param messages - 렌더링할 채팅 메시지 배열
+ */
 export const MessageList = memo(
   ({
     messages,
@@ -26,69 +32,75 @@ export const MessageList = memo(
     isLoadingMore,
     hasMore,
     error,
-    currentUserId,
+    currentUserName,
     onLoadMore,
     onRetry,
   }: MessageListProps) => {
-    const [infiniteRef] = useInfiniteScroll({
-      loading: isLoadingMore,
-      hasNextPage: hasMore,
-      onLoadMore,
-      rootMargin: '0px 0px 400px 0px',
-      delayInMs: 100,
-    })
+    const infiniteRef = useRef<HTMLDivElement>(null)
+    const scrollContainerRef = useRef<HTMLDivElement>(null)
+    const isInitialMount = useRef(true)
+    const previousMessagesLength = useRef(0)
 
-    // 자동 스크롤 훅
-    const { containerRef, handleMessageChange } = useAutoScroll({
-      shouldAutoScroll: (isUserAtBottom, isUserMessage, isOtherUserMessage) => {
-        // 사용자 메시지이거나, 다른 사용자 메시지인데 사용자가 하단에 있을 때
-        return isUserMessage || (isOtherUserMessage && isUserAtBottom)
-      },
-    })
+    const messageKeys = useMemo(
+      () => messages.map((message, index) => `${message.timestamp}-${index}`),
+      [messages],
+    )
 
-    // 초기 로드 시 최하단으로 스크롤
+    // 하단으로 스크롤
+    const scrollToBottom = useCallback((smooth: boolean = true) => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTo({
+          top: scrollContainerRef.current.scrollHeight,
+          behavior: smooth ? 'smooth' : 'auto',
+        })
+      }
+    }, [])
+
+    // 최초 마운트 시에만 스크롤을 최하단으로 이동
     useEffect(() => {
-      if (!isLoading && messages.length > 0 && containerRef.current) {
-        // 초기 로드 시에는 강제로 최하단으로 스크롤
-        const scrollToBottom = () => {
-          if (containerRef.current) {
-            // 여러 방법으로 스크롤 시도
-            containerRef.current.scrollTop = containerRef.current.scrollHeight
-            containerRef.current.scrollTo({
-              top: containerRef.current.scrollHeight,
-              behavior: 'auto',
-            })
+      if (
+        isInitialMount.current &&
+        messages.length > 0 &&
+        previousMessagesLength.current === 0
+      ) {
+        // 최초 마운트 시에만 스크롤을 최하단으로 이동
+        scrollToBottom(false)
+        isInitialMount.current = false
+      }
+      previousMessagesLength.current = messages.length
+    }, [messages.length, scrollToBottom])
+
+    // IntersectionObserver를 사용한 무한 스크롤
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        entries => {
+          const entry = entries[0]
+          if (
+            entry?.isIntersecting &&
+            hasMore &&
+            !isLoadingMore &&
+            onLoadMore
+          ) {
+            console.log('🚀 IntersectionObserver: Calling onLoadMore!')
+            onLoadMore()
           }
-        }
+        },
+        {
+          rootMargin: '0px 0px 100px 0px',
+          threshold: 0.1,
+        },
+      )
 
-        // 즉시 스크롤
-        scrollToBottom()
-
-        // DOM 업데이트 후 다시 스크롤 (더 많은 시도)
-        setTimeout(scrollToBottom, 10)
-        setTimeout(scrollToBottom, 50)
-        setTimeout(scrollToBottom, 100)
-        setTimeout(scrollToBottom, 200)
-        setTimeout(scrollToBottom, 500)
+      if (infiniteRef.current) {
+        observer.observe(infiniteRef.current)
       }
-    }, [isLoading, messages.length, containerRef]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    // 메시지 변경 시 자동 스크롤 처리
-    useEffect(() => {
-      if (messages.length > 0) {
-        const lastMessage = messages[messages.length - 1]
-        if (lastMessage) {
-          const isUserMessage = lastMessage.sender.id === currentUserId
-          const isOtherUserMessage = !isUserMessage
-
-          handleMessageChange(
-            messages.length,
-            isUserMessage,
-            isOtherUserMessage,
-          )
+      return () => {
+        if (infiniteRef.current) {
+          observer.unobserve(infiniteRef.current)
         }
       }
-    }, [messages, currentUserId, handleMessageChange])
+    }, [hasMore, isLoadingMore, onLoadMore])
 
     // 초기 로딩
     if (isLoading) {
@@ -110,31 +122,41 @@ export const MessageList = memo(
     }
 
     return (
-      <div ref={containerRef} className="flex h-full flex-col overflow-y-auto">
-        {/* 무한 스크롤 트리거 (상단) */}
-        {hasMore && (
-          <div ref={infiniteRef}>
-            <MessageLoading />
+      <div ref={scrollContainerRef} className="h-full overflow-y-auto">
+        <div className="m-0 p-0">
+          {/* 무한 스크롤 트리거 (상단) */}
+          <div
+            ref={infiniteRef}
+            className="flex items-center justify-center py-4 text-muted-foreground text-sm"
+          >
+            {hasMore ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
+                더 많은 메시지 로딩 중...
+              </div>
+            ) : (
+              <div className="text-xs">모든 메시지를 불러왔습니다</div>
+            )}
           </div>
-        )}
 
-        {/* 메시지 목록 (최신 메시지가 아래) */}
-        <div className="flex flex-1 flex-col">
           {messages.map((message, index) => {
-            const isCurrentUser = message.sender.id === currentUserId
+            const isCurrentUser = message.sender.name === currentUserName
             const prevMessage = messages[index - 1]
             const showAvatar =
               !prevMessage || prevMessage.sender.id !== message.sender.id
 
             return (
               <MessageItem
-                key={message.id}
+                key={messageKeys[index]}
                 message={message}
                 isCurrentUser={isCurrentUser}
                 showAvatar={showAvatar}
               />
             )
           })}
+
+          {/* 마지막 메시지 하단 여백을 위한 빈 요소 */}
+          <div className="h-4" aria-hidden="true" />
         </div>
       </div>
     )

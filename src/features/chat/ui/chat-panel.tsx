@@ -16,13 +16,14 @@ import { TextInput } from '@/shared/ui/text-input'
 
 interface ChatPanelProps {
   chatData: ChatReturn
+  currentUserName?: string
 }
 
 /**
  * @todo 전역 상태 관리 스토어(Zustand/Redux)로 사용자 정보 관리
  * @todo 인증 시스템과 연동하여 실제 사용자 ID 가져오기
  */
-const ChatPanel = memo(({ chatData }: ChatPanelProps) => {
+const ChatPanel = memo(({ chatData, currentUserName }: ChatPanelProps) => {
   const { messages, sendMessage, isLoading, hasMore, loadMore, isLoadingMore } =
     chatData
 
@@ -58,6 +59,7 @@ const ChatPanel = memo(({ chatData }: ChatPanelProps) => {
           isLoadingMore={isLoadingMore}
           hasMore={hasMore}
           onLoadMore={loadMore}
+          currentUserName={currentUserName || ''}
         />
       </div>
 

@@ -10,6 +10,7 @@ interface MessageListProps {
   isLoadingMore?: boolean
   hasMore?: boolean
   onLoadMore?: () => void
+  currentUserName?: string
 }
 
 /**
@@ -21,7 +22,13 @@ interface MessageListProps {
  * @param messages - 렌더링할 채팅 메시지 배열
  */
 const MessageList = memo(
-  ({ messages, isLoadingMore, hasMore, onLoadMore }: MessageListProps) => {
+  ({
+    messages,
+    isLoadingMore,
+    hasMore,
+    onLoadMore,
+    currentUserName,
+  }: MessageListProps) => {
     const infiniteRef = useRef<HTMLLIElement>(null)
     const scrollContainerRef = useRef<HTMLDivElement>(null)
     const isInitialMount = useRef(true)
@@ -116,7 +123,7 @@ const MessageList = memo(
               message={message}
               index={index}
               messages={messages}
-              currentUserName={user?.name || ''}
+              currentUserName={currentUserName || user?.name || ''}
             />
           ))}
 

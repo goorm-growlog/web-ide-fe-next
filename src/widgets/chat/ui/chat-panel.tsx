@@ -9,13 +9,13 @@ import { Button } from '@/shared/ui/shadcn/button'
 
 interface ChatPanelProps {
   roomId: string
-  currentUserId: string
+  currentUserName: string
   className?: string
 }
 
 export const ChatPanel = ({
   roomId,
-  currentUserId,
+  currentUserName,
   className,
 }: ChatPanelProps) => {
   const {
@@ -69,7 +69,7 @@ export const ChatPanel = ({
           isLoadingMore={isLoadingMore}
           hasMore={hasMore}
           error={error}
-          currentUserId={currentUserId}
+          currentUserName={currentUserName}
           onLoadMore={loadMore}
           onRetry={refresh}
         />
