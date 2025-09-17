@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useRef } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import { FILE_TREE_API_CONSTANTS } from '@/entities/file-tree/api/constants'
 import { useFileActions } from '@/features/file-explorer/hooks/use-file-actions'
 import type { FileTreeReturn } from '@/features/file-explorer/types/client'
@@ -29,6 +29,44 @@ const FileExplorerPanel = memo(
       dialogRef,
     )
 
+    // 추가 단축키 구현
+    useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        // 현재 포커스된 아이템이 있는지 확인
+        const focusedItem = tree.getFocusedItem()
+
+        // ⌘⇧F: 새 파일 생성 (브라우저 기본 동작과 충돌 방지)
+        if (e.metaKey && e.key === 'F' && e.shiftKey) {
+          e.preventDefault()
+          contextMenu('newFile', focusedItem)
+        }
+
+        // ⌘⇧D: 새 폴더 생성 (브라우저 기본 동작과 충돌 방지)
+        if (e.metaKey && e.key === 'D' && e.shiftKey) {
+          e.preventDefault()
+          contextMenu('newFolder', focusedItem)
+        }
+
+        // ⌘⇧P: 경로 복사 (브라우저 기본 동작과 충돌 방지)
+        if (e.metaKey && e.key === 'P' && e.shiftKey) {
+          e.preventDefault()
+          contextMenu('copyPath', focusedItem)
+        }
+      }
+
+      // 트리 컨테이너에 키보드 이벤트 리스너 추가
+      const container = document.querySelector('[data-tree-container]')
+      if (container) {
+        container.addEventListener('keydown', handleKeyDown as EventListener)
+        return () => {
+          container.removeEventListener(
+            'keydown',
+            handleKeyDown as EventListener,
+          )
+        }
+      }
+    }, [tree, contextMenu])
+
     if (isLoading) return <FileTreeSkeleton />
 
     return (
@@ -40,7 +78,11 @@ const FileExplorerPanel = memo(
         참고: @headless-tree/core 공식 문서의 예제와 동일한 구조
         https://headless-tree.lukasbach.com/getstarted
       */}
-        <div {...tree.getContainerProps()} className="flex h-full flex-col">
+        <div
+          {...tree.getContainerProps()}
+          className="flex h-full flex-col"
+          data-tree-container
+        >
           <div className="flex-none">
             {tree.getItems().map(item => (
               <FileItemWithContextMenu

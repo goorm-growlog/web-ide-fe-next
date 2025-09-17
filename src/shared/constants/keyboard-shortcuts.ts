@@ -2,11 +2,11 @@
  * 파일 및 폴더 관련 키보드 단축키
  */
 export const FILE_SHORTCUTS = {
-  NEW_FILE: '⌘N',
-  NEW_FOLDER: '⌘⇧N',
+  NEW_FILE: '⌘⇧F',
+  NEW_FOLDER: '⌘⇧D',
   RENAME: 'F2',
   DELETE: '⌫',
-  COPY_PATH: '⌘⇧C',
+  COPY_PATH: '⌘⇧P',
 } as const
 
 /**

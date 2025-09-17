@@ -5,6 +5,8 @@ import {
   RoomProvider,
   useMutation,
   useOthers,
+  useRoom,
+  useSelf,
   useStorage,
   useUpdateMyPresence,
 } from '@liveblocks/react'
@@ -39,23 +41,66 @@ function CollaborativeEditorCore({
   }, [])
 
   const others = useOthers()
+  const self = useSelf()
+  const room = useRoom()
   const updateMyPresence = useUpdateMyPresence()
+
+  // 현재 사용자의 presence 확인
+  console.log('Current user self:', self)
+  console.log('Current user presence:', self?.presence)
+  console.log('Room object:', room)
+  console.log('Room id:', room?.id)
 
   // Monaco Editor 초기화
   const handleEditorDidMount = useCallback(
     (editor: editor.IStandaloneCodeEditor) => {
       editorRef.current = editor
 
+      // 초기 커서 위치 설정
+      const initialPosition = editor.getPosition()
+      if (initialPosition) {
+        console.log('Setting initial presence:', {
+          cursor: {
+            x: initialPosition.column,
+            y: initialPosition.lineNumber,
+          },
+        })
+
+        try {
+          updateMyPresence({
+            cursor: {
+              x: initialPosition.column,
+              y: initialPosition.lineNumber,
+            },
+          })
+          console.log('Initial presence update called successfully')
+        } catch (error) {
+          console.error('Failed to update initial presence:', error)
+        }
+      }
+
       // 커서 위치 업데이트
       editor.onDidChangeCursorPosition(() => {
         const position = editor.getPosition()
         if (position) {
-          updateMyPresence({
+          console.log('Updating presence:', {
             cursor: {
               x: position.column,
               y: position.lineNumber,
             },
           })
+
+          try {
+            updateMyPresence({
+              cursor: {
+                x: position.column,
+                y: position.lineNumber,
+              },
+            })
+            console.log('Presence update called successfully')
+          } catch (error) {
+            console.error('Failed to update presence:', error)
+          }
         }
       })
     },
