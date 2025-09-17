@@ -8,7 +8,7 @@ interface MessageItemProps {
   message: ChatMessage
   index: number
   messages: ChatMessage[]
-  currentUserId?: string // Storybook용 옵셔널 prop
+  currentUserName: string
 }
 
 /**
@@ -19,25 +19,15 @@ interface MessageItemProps {
  * @param messages - 전체 메시지 배열 (날짜 헤더 계산용)
  */
 const MessageItem = memo(
-  ({ message, index, messages, currentUserId }: MessageItemProps) => {
+  ({ message, index, messages, currentUserName }: MessageItemProps) => {
     const showDateHeader = useMemo(
       () => shouldShowDateHeader(messages, index),
       [messages, index],
     )
 
-    // currentUserId가 제공되면 그것을 사용하고, 없으면 기본값 사용
-    const isOwnMessage = currentUserId
-      ? message.user.name === currentUserId
-      : false // Storybook에서 currentUserId가 없으면 기본적으로 false
-
-    // 디버깅을 위한 로그
-    console.log('🔍 MessageItem Debug:', {
-      messageId: message.id,
-      userName: message.user.name,
-      currentUserId,
-      isOwnMessage,
-      messageContent: `${message.content.substring(0, 30)}...`,
-    })
+    const isOwnMessage = currentUserName
+      ? message.user.name === currentUserName
+      : false
 
     /**
      * 메시지가 그룹의 첫 번째인지 확인하는 함수

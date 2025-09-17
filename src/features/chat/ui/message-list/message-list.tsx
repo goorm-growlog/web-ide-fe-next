@@ -1,6 +1,7 @@
 'use client'
 
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
+import { useAuth } from '@/app/providers/auth-provider'
 import type { ChatMessage } from '@/features/chat/types/client'
 import { MessageItem } from '@/features/chat/ui/message-list/message-item'
 
@@ -9,7 +10,6 @@ interface MessageListProps {
   isLoadingMore?: boolean
   hasMore?: boolean
   onLoadMore?: () => void
-  currentUserId?: string // Storybook용 옵셔널 prop
 }
 
 /**
@@ -21,17 +21,12 @@ interface MessageListProps {
  * @param messages - 렌더링할 채팅 메시지 배열
  */
 const MessageList = memo(
-  ({
-    messages,
-    isLoadingMore,
-    hasMore,
-    onLoadMore,
-    currentUserId,
-  }: MessageListProps) => {
+  ({ messages, isLoadingMore, hasMore, onLoadMore }: MessageListProps) => {
     const infiniteRef = useRef<HTMLLIElement>(null)
     const scrollContainerRef = useRef<HTMLDivElement>(null)
     const isInitialMount = useRef(true)
     const previousMessagesLength = useRef(0)
+    const { user } = useAuth()
 
     const messageKeys = useMemo(
       () =>
@@ -121,7 +116,7 @@ const MessageList = memo(
               message={message}
               index={index}
               messages={messages}
-              currentUserId={currentUserId || ''}
+              currentUserName={user?.name || ''}
             />
           ))}
 
