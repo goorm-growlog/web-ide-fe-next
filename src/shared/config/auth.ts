@@ -80,6 +80,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         githubUser: token.githubUser,
         user: {
           ...session.user,
+          id:
+            session.user?.email ||
+            (token.githubUser as { id?: string })?.id ||
+            '', // 이메일을 우선 사용
           accessToken: token.accessToken as string,
         },
       }

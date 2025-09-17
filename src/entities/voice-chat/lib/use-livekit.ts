@@ -133,60 +133,50 @@ export function useLiveKit({
     }
   }, [])
 
-  // Room 연결
-  const connect = useCallback(async () => {
-    if (room || isConnecting) return
-
-    toast.info('Connecting to voice chat...')
-    setIsConnecting(true)
-    setError(null)
-
-    try {
-      // 더 빠른 반응을 위한 Room 설정 최적화
-      const newRoom = new Room({
-        // 빠른 상태 동기화를 위한 설정
-        publishDefaults: {
-          audioPreset: {
-            maxBitrate: 64000, // 빠른 전송을 위한 적절한 비트레이트
-          },
+  // Room 설정 생성
+  const createRoomConfig = useCallback(() => {
+    return new Room({
+      // 빠른 상태 동기화를 위한 설정
+      publishDefaults: {
+        audioPreset: {
+          maxBitrate: 64000, // 빠른 전송을 위한 적절한 비트레이트
         },
-        // 동적 품질 조정으로 더 빠른 반응
-        dynacast: true,
-        // 더 빈번한 상태 체크
-        reconnectPolicy: {
-          nextRetryDelayInMs: () => 1000, // 재연결 빠르게
-        },
-        // 🎯 더 민감한 음성 감지를 위한 설정
-        adaptiveStream: true, // 적응형 스트림으로 더 빠른 반응
-      })
+      },
+      // 동적 품질 조정으로 더 빠른 반응
+      dynacast: true,
+      // 더 빈번한 상태 체크
+      reconnectPolicy: {
+        nextRetryDelayInMs: () => 1000, // 재연결 빠르게
+      },
+      // 🎯 더 민감한 음성 감지를 위한 설정
+      adaptiveStream: true, // 적응형 스트림으로 더 빠른 반응
+    })
+  }, [])
 
-      // 토큰 요청
-      const response = await fetch('/api/livekit/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          roomName,
-          participantName: userName,
-          participantIdentity: `user_${userId}`,
-        }),
-      })
+  // 토큰 요청 함수
+  const requestToken = useCallback(async () => {
+    const response = await fetch('/api/livekit/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        roomName,
+        participantName: userName,
+        participantIdentity: `user_${userId}`,
+      }),
+    })
 
-      if (!response.ok) {
-        throw new Error('Failed to get access token')
-      }
+    if (!response.ok) {
+      throw new Error('Failed to get access token')
+    }
 
-      const { token } = await response.json()
+    return response.json()
+  }, [roomName, userName, userId])
 
-      // Room 연결
-      const url = process.env.NEXT_PUBLIC_LIVEKIT_URL
-      if (!url) {
-        throw new Error('NEXT_PUBLIC_LIVEKIT_URL is not configured')
-      }
-
-      // 연결 성공 토스트를 한 번만 표시하기 위한 플래그
+  // 이벤트 리스너 설정 함수
+  const setupEventListeners = useCallback(
+    (newRoom: Room) => {
       let connectionToastShown = false
 
-      // 이벤트 리스너를 연결 전에 설정
       newRoom.on(RoomEvent.Connected, () => {
         if (!connectionToastShown) {
           toast.success('Voice chat connected successfully!')
@@ -194,28 +184,11 @@ export function useLiveKit({
         }
       })
 
-      await newRoom.connect(url, token)
-
-      // 연결 후 상태 확인 (이벤트를 놓친 경우를 위한 fallback)
-      if (
-        newRoom.state === ConnectionState.Connected &&
-        !connectionToastShown
-      ) {
-        toast.success('Voice chat connected successfully!')
-        connectionToastShown = true
-      }
-      setRoom(newRoom)
-
-      // 오디오 자동 관리 설정
-      setupAudioHandling(newRoom)
-
-      // 개선된 이벤트 리스너 - 즉각적인 상태 업데이트
       newRoom.on(RoomEvent.ParticipantConnected, participant => {
-        // 새 참가자의 볼륨 설정 (저장된 값 또는 기본값 100% = 1.0)
         if (!participantVolumesRef.current.has(participant.identity)) {
           const storedVolumes = getStoredVolumes(projectId)
           const storedVolume = storedVolumes[participant.identity]
-          const savedVolume = storedVolume ? storedVolume / 100 : 1.0 // 0-100을 0-1로 변환
+          const savedVolume = storedVolume ? storedVolume / 100 : 1.0
           participantVolumesRef.current.set(participant.identity, savedVolume)
         }
         updateParticipants(newRoom)
@@ -225,14 +198,11 @@ export function useLiveKit({
         updateParticipants(newRoom)
       })
 
-      // 트랙 상태 변경 시 즉각적인 업데이트 - 원격 참가자 우선 처리
       newRoom.on(RoomEvent.TrackMuted, (publication, participant) => {
         if (publication.kind === Track.Kind.Audio) {
-          // 로컬 참가자인 경우 즉시 업데이트
           if (participant === newRoom.localParticipant) {
             setIsMicrophoneEnabled(false)
           } else {
-            // 원격 참가자 즉시 업데이트 (전체 업데이트 전에)
             setParticipants(prev =>
               prev.map(p =>
                 p.identity === participant.identity
@@ -241,18 +211,15 @@ export function useLiveKit({
               ),
             )
           }
-          // 전체 참가자 상태 업데이트 (백업)
           updateParticipants(newRoom)
         }
       })
 
       newRoom.on(RoomEvent.TrackUnmuted, (publication, participant) => {
         if (publication.kind === Track.Kind.Audio) {
-          // 로컬 참가자인 경우 즉시 업데이트
           if (participant === newRoom.localParticipant) {
             setIsMicrophoneEnabled(true)
           } else {
-            // 원격 참가자 즉시 업데이트 (전체 업데이트 전에)
             setParticipants(prev =>
               prev.map(p =>
                 p.identity === participant.identity
@@ -261,12 +228,10 @@ export function useLiveKit({
               ),
             )
           }
-          // 전체 참가자 상태 업데이트 (백업)
           updateParticipants(newRoom)
         }
       })
 
-      // 로컬 트랙 발행/해제 이벤트 - 더 빠른 반응
       newRoom.on(RoomEvent.LocalTrackPublished, () => {
         updateLocalParticipant(newRoom)
       })
@@ -275,15 +240,11 @@ export function useLiveKit({
         updateLocalParticipant(newRoom)
       })
 
-      // Speaking 상태 변경 - 실시간 업데이트 (최적화된 반응)
       newRoom.on(RoomEvent.ActiveSpeakersChanged, speakers => {
         const speakingIdentities = new Set(speakers.map(s => s.identity))
-
-        // 로컬 참가자 speaking 상태 즉시 업데이트
         const localIdentity = `user_${userId}`
         setIsSpeaking(speakingIdentities.has(localIdentity))
 
-        // 원격 참가자 speaking 상태 개별 즉시 업데이트
         setParticipants(prev => {
           let hasChanges = false
           const updated = prev.map(p => {
@@ -294,19 +255,15 @@ export function useLiveKit({
             }
             return p
           })
-
-          // 변경사항이 있을 때만 업데이트 (불필요한 리렌더링 방지)
           return hasChanges ? updated : prev
         })
       })
 
-      // 추가적인 원격 참가자 상태 변경 감지
       newRoom.on(RoomEvent.TrackPublished, (publication, participant) => {
         if (
           publication.kind === Track.Kind.Audio &&
           participant.identity !== newRoom.localParticipant?.identity
         ) {
-          // 원격 참가자가 오디오 트랙을 발행했을 때 즉시 반영
           setParticipants(prev =>
             prev.map(p =>
               p.identity === participant.identity
@@ -322,7 +279,6 @@ export function useLiveKit({
           publication.kind === Track.Kind.Audio &&
           participant.identity !== newRoom.localParticipant?.identity
         ) {
-          // 원격 참가자가 오디오 트랙을 해제했을 때 즉시 반영
           setParticipants(prev =>
             prev.map(p =>
               p.identity === participant.identity
@@ -333,7 +289,6 @@ export function useLiveKit({
         }
       })
 
-      // 네트워크 연결 상태 이벤트 리스너
       newRoom.on(RoomEvent.Disconnected, () => {
         toast.error('voice connection has been disconnected.')
       })
@@ -345,8 +300,37 @@ export function useLiveKit({
       newRoom.on(RoomEvent.Reconnected, () => {
         toast.success('voice connection has been restored.')
       })
+    },
+    [projectId, updateParticipants, updateLocalParticipant, userId],
+  )
 
-      // 초기 상태 설정 및 기존 참가자 볼륨 로드
+  // Room 연결
+  const connect = useCallback(async () => {
+    if (room || isConnecting) return
+
+    toast.info('Connecting to voice chat...')
+    setIsConnecting(true)
+    setError(null)
+
+    try {
+      const newRoom = createRoomConfig()
+      const { token } = await requestToken()
+
+      const url = process.env.NEXT_PUBLIC_LIVEKIT_URL
+      if (!url) {
+        throw new Error('NEXT_PUBLIC_LIVEKIT_URL is not configured')
+      }
+
+      setupEventListeners(newRoom)
+      await newRoom.connect(url, token)
+
+      if (newRoom.state === ConnectionState.Connected) {
+        toast.success('Voice chat connected successfully!')
+      }
+
+      setRoom(newRoom)
+      setupAudioHandling(newRoom)
+
       const existingParticipants = Array.from(
         newRoom.remoteParticipants.values(),
       )
@@ -354,7 +338,7 @@ export function useLiveKit({
       existingParticipants.forEach(participant => {
         if (!participantVolumesRef.current.has(participant.identity)) {
           const storedVolume = storedVolumes[participant.identity]
-          const savedVolume = storedVolume ? storedVolume / 100 : 1.0 // 0-100을 0-1로 변환
+          const savedVolume = storedVolume ? storedVolume / 100 : 1.0
           participantVolumesRef.current.set(participant.identity, savedVolume)
         }
       })
@@ -364,8 +348,6 @@ export function useLiveKit({
     } catch (err) {
       console.error('Failed to connect to room:', err)
       setError(err instanceof Error ? err.message : 'Connection failed')
-
-      // WebRTC 연결 실패 토스트 메시지
       toast.error('Failed to connect to voice server.')
     } finally {
       setIsConnecting(false)
@@ -373,11 +355,11 @@ export function useLiveKit({
   }, [
     room,
     isConnecting,
-    roomName,
-    userName,
-    userId,
-    projectId,
+    createRoomConfig,
+    requestToken,
+    setupEventListeners,
     setupAudioHandling,
+    projectId,
     updateParticipants,
     updateLocalParticipant,
   ])

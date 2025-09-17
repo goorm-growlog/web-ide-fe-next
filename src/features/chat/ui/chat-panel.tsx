@@ -1,8 +1,8 @@
 'use client'
 
 import { memo, useCallback } from 'react'
+import { useAuth } from '@/app/providers/auth-provider'
 import { CHAT_UI_TEXTS } from '@/features/chat/constants/ui-constants'
-import { useAutoScroll } from '@/features/chat/hooks/use-auto-scroll'
 import type { ChatReturn } from '@/features/chat/types/client'
 import { ChatSkeleton } from '@/features/chat/ui/chat-skeleton'
 import MessageList from '@/features/chat/ui/message-list/message-list'
@@ -13,26 +13,33 @@ import {
 import { logger } from '@/shared/lib/logger'
 import { cn } from '@/shared/lib/utils'
 import PanelLayout from '@/shared/ui/panel-layout'
-import { ScrollArea } from '@/shared/ui/shadcn/scroll-area'
 import { TextInput } from '@/shared/ui/text-input'
 
 interface ChatPanelProps {
   chatData: ChatReturn
+  currentUserId?: string // Storybook용 옵셔널 prop
 }
 
 /**
  * @todo 전역 상태 관리 스토어(Zustand/Redux)로 사용자 정보 관리
  * @todo 인증 시스템과 연동하여 실제 사용자 ID 가져오기
  */
-const ChatPanel = memo(({ chatData }: ChatPanelProps) => {
+const ChatPanel = memo(({ chatData, currentUserId }: ChatPanelProps) => {
+  const { user } = useAuth()
   const { messages, sendMessage, isLoading, hasMore, loadMore, isLoadingMore } =
     chatData
-  const { scrollAreaRef } = useAutoScroll(
-    messages,
-    loadMore,
+
+  // currentUserId가 제공되면 그것을 사용하고, 없으면 useAuth에서 가져온 user.id 사용
+  const actualCurrentUserId = currentUserId || user?.id
+
+  console.log('🎯 ChatPanel: Rendering with state', {
+    messagesCount: messages.length,
+    isLoading,
     hasMore,
     isLoadingMore,
-  )
+    loadMore: !!loadMore,
+    currentUserId: actualCurrentUserId,
+  })
 
   const handleSendMessage = useCallback(
     (message: string) => {
@@ -55,21 +62,20 @@ const ChatPanel = memo(({ chatData }: ChatPanelProps) => {
 
   return (
     <PanelLayout>
-      <ScrollArea
+      <div
         className={cn(
           SCROLLABLE_PANEL_CONTENT_STYLES,
           'flex-1 border-border not-last:border-b',
         )}
-        ref={scrollAreaRef}
-        onScroll={e => {
-          const target = e.currentTarget
-          if (target instanceof HTMLElement) {
-            // 스크롤 이벤트 처리
-          }
-        }}
       >
-        <MessageList messages={messages} isLoadingMore={isLoadingMore} />
-      </ScrollArea>
+        <MessageList
+          messages={messages}
+          isLoadingMore={isLoadingMore}
+          hasMore={hasMore}
+          onLoadMore={loadMore}
+          currentUserId={actualCurrentUserId}
+        />
+      </div>
 
       <TextInput
         placeholder={CHAT_UI_TEXTS.MESSAGE_PLACEHOLDER}

@@ -76,12 +76,23 @@ const useChat = ({ projectId, isConnected }: UseChatProps): ChatReturn => {
    */
   const loadChatHistory = useCallback(async () => {
     if (!projectId) {
-      logger.warn('No projectId provided for chat history')
+      logger.debug('🔄 loadChatHistory: projectId is null, skipping')
+      return
+    }
+
+    if (isLoading) {
+      logger.debug('🔄 loadChatHistory: Already loading, skipping')
       return
     }
 
     try {
-      logger.debug('Loading chat history for project:', projectId)
+      logger.debug('🔄 loadChatHistory: Starting to load chat history', {
+        projectId,
+        currentPage,
+        hasMore,
+        isLoading,
+      })
+
       const history = await getChatHistory(Number(projectId), {
         page: 0,
         size: 20,
@@ -89,41 +100,45 @@ const useChat = ({ projectId, isConnected }: UseChatProps): ChatReturn => {
 
       const historyMessages = transformHistoryToMessages(history.content)
 
-      logger.debug('Loaded chat history:', {
+      logger.debug('✅ loadChatHistory: Successfully loaded chat history', {
         projectId,
         messageCount: historyMessages.length,
         totalElements: history.totalElements,
         pageNumber: history.pageNumber,
         totalPages: history.totalPages,
-        hasMore: history.pageNumber < history.totalPages - 1,
+        hasMoreCalculation: `${history.pageNumber} < ${history.totalPages - 1} = ${history.pageNumber < history.totalPages - 1}`,
+        willSetHasMore: history.pageNumber < history.totalPages - 1,
       })
+
       setMessages(historyMessages)
       setCurrentPage(0)
-      const hasMoreMessages = history.pageNumber + 1 < history.totalPages
+      const hasMoreMessages = history.pageNumber < history.totalPages - 1
       setHasMore(hasMoreMessages)
+
+      logger.debug('📝 loadChatHistory: State updated', {
+        messagesCount: historyMessages.length,
+        currentPage: 0,
+        hasMore: hasMoreMessages,
+      })
     } catch (error) {
-      logger.error('Failed to load chat history:', error)
+      logger.error('❌ loadChatHistory: Failed to load chat history', error)
     }
-  }, [projectId, transformHistoryToMessages])
+  }, [projectId, transformHistoryToMessages, isLoading, currentPage, hasMore]) // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
-   * 추가 채팅 히스토리 불러오기 (무한 스크롤)
+   * 추가 채팅 히스토리 불러오기 실행 함수
    */
-  const loadMoreHistory = useCallback(async () => {
-    if (!projectId || !hasMore || isLoading || isLoadingMore) {
-      return
-    }
-
+  const executeLoadMore = useCallback(async () => {
     try {
+      logger.debug('🚀 loadMoreHistory: Starting to load more history', {
+        projectId,
+        currentPage,
+        nextPage: currentPage + 1,
+      })
+
       setIsLoadingMore(true)
 
       const nextPage = currentPage + 1
-      logger.debug(
-        'Loading more chat history for project:',
-        projectId,
-        'page:',
-        nextPage,
-      )
       const history = await getChatHistory(Number(projectId), {
         page: nextPage,
         size: 5,
@@ -131,33 +146,85 @@ const useChat = ({ projectId, isConnected }: UseChatProps): ChatReturn => {
 
       const newMessages = transformHistoryToMessages(history.content)
 
-      logger.debug('Loaded more chat history:', {
+      logger.debug('✅ loadMoreHistory: Successfully loaded more history', {
         projectId,
         page: nextPage,
         messageCount: newMessages.length,
         totalElements: history.totalElements,
+        totalPages: history.totalPages,
+        hasMoreCalculation: `${nextPage} < ${history.totalPages - 1} = ${nextPage < history.totalPages - 1}`,
+        willSetHasMore: nextPage < history.totalPages - 1,
       })
 
       // 과거 메시지를 앞쪽에 추가
       setMessages(prev => {
         const updated = [...newMessages, ...prev]
+        logger.debug('📝 loadMoreHistory: Messages updated', {
+          previousCount: prev.length,
+          newCount: newMessages.length,
+          totalCount: updated.length,
+        })
         return updated
       })
+
       setCurrentPage(nextPage)
-      const hasMoreMessages = nextPage + 1 < history.totalPages
+      const hasMoreMessages = nextPage < history.totalPages - 1
       setHasMore(hasMoreMessages)
+
+      logger.debug('📝 loadMoreHistory: State updated', {
+        currentPage: nextPage,
+        hasMore: hasMoreMessages,
+      })
     } catch (error) {
-      logger.error('Failed to load more chat history:', error)
+      logger.error(
+        '❌ loadMoreHistory: Failed to load more chat history',
+        error,
+      )
     } finally {
       setIsLoadingMore(false)
+      logger.debug('🏁 loadMoreHistory: Finished loading', {
+        isLoadingMore: false,
+      })
     }
+  }, [projectId, currentPage, transformHistoryToMessages])
+
+  /**
+   * 추가 채팅 히스토리 불러오기 (무한 스크롤)
+   */
+  const loadMoreHistory = useCallback(async () => {
+    logger.debug('🔄 loadMoreHistory: Function called', {
+      projectId,
+      hasMore,
+      isLoading,
+      isLoadingMore,
+      currentPage,
+    })
+
+    if (!projectId || !hasMore || isLoading || isLoadingMore) {
+      logger.debug('⏭️ loadMoreHistory: Skipping due to conditions', {
+        projectId: !!projectId,
+        hasMore,
+        isLoading,
+        isLoadingMore,
+        reason: !projectId
+          ? 'no projectId'
+          : !hasMore
+            ? 'no more data'
+            : isLoading
+              ? 'already loading'
+              : 'loading more',
+      })
+      return
+    }
+
+    await executeLoadMore()
   }, [
     projectId,
     hasMore,
     isLoading,
     isLoadingMore,
     currentPage,
-    transformHistoryToMessages,
+    executeLoadMore,
   ])
 
   /**

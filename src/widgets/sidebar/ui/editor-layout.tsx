@@ -1,6 +1,5 @@
 'use client'
 
-import type { editor } from 'monaco-editor'
 import { useParams } from 'next/navigation'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import type {
@@ -11,7 +10,7 @@ import type { ChatReturn } from '@/features/chat/types/client'
 import { ChatPanel } from '@/features/chat/ui/chat-panel'
 import { useFileSystemIntegration } from '@/features/code-editor/hooks/use-file-system-integration'
 import type { FileTab } from '@/features/code-editor/types'
-import { MonacoEditor } from '@/features/code-editor/ui/monaco-editor'
+import { CollaborativeMonacoEditor } from '@/features/code-editor/ui/collaborative-monaco-editor'
 import { TabList } from '@/features/code-editor/ui/tab-list'
 import type { FileTreeReturn } from '@/features/file-explorer/types/client'
 import { copyToClipboard } from '@/shared/lib/clipboard-utils'
@@ -56,6 +55,7 @@ const MainEditorArea = memo(
     handleTabCloseToRight,
     handleTabCloseAll,
     handleTabReorder,
+    actualProjectId,
   }: {
     fileSystem: ReturnType<typeof useFileSystemIntegration>
     tabs: FileTab[]
@@ -66,45 +66,9 @@ const MainEditorArea = memo(
     handleTabCloseToRight: (tabId: string) => void
     handleTabCloseAll: () => void
     handleTabReorder: (dragIndex: number, dropIndex: number) => void
+    actualProjectId: string | null
   }) => {
     const activeFile = fileSystem.getActiveFile()
-
-    const handleEditorMount = useCallback(
-      (
-        editor: editor.IStandaloneCodeEditor,
-        monaco: typeof import('monaco-editor'),
-      ) => {
-        // Monaco Editor 키보드 단축키 설정
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyW, () => {
-          if (activeFile) {
-            handleTabClose(activeFile.id)
-          }
-        })
-
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Tab, () => {
-          const tabIds = Object.keys(fileSystem.files)
-          const currentIndex = tabIds.indexOf(activeFile?.id || '')
-          const nextIndex = (currentIndex + 1) % tabIds.length
-          if (tabIds[nextIndex]) {
-            handleTabClick(tabIds[nextIndex])
-          }
-        })
-
-        editor.addCommand(
-          monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Tab,
-          () => {
-            const tabIds = Object.keys(fileSystem.files)
-            const currentIndex = tabIds.indexOf(activeFile?.id || '')
-            const prevIndex =
-              currentIndex === 0 ? tabIds.length - 1 : currentIndex - 1
-            if (tabIds[prevIndex]) {
-              handleTabClick(tabIds[prevIndex])
-            }
-          },
-        )
-      },
-      [activeFile, fileSystem.files, handleTabClose, handleTabClick],
-    )
 
     const handleEditorChange = useCallback(
       (value: string | undefined) => {
@@ -131,12 +95,11 @@ const MainEditorArea = memo(
 
         <div className="flex-1">
           {activeFile ? (
-            <MonacoEditor
+            <CollaborativeMonacoEditor
+              roomId={`project-${actualProjectId}-file-${activeFile.id}`}
               value={activeFile.content}
               language={activeFile.language}
               onChange={handleEditorChange}
-              onMount={handleEditorMount}
-              height="100%"
             />
           ) : (
             <div className="flex h-full items-center justify-center p-8">
@@ -394,6 +357,7 @@ const EditorLayout = memo((props: EditorLayoutProps) => {
                   handleTabCloseToRight={handleTabCloseToRight}
                   handleTabCloseAll={handleTabCloseAll}
                   handleTabReorder={handleTabReorder}
+                  actualProjectId={actualProjectId}
                 />
               ) : (
                 <div className="flex h-full items-center justify-center p-8">

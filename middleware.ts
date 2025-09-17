@@ -17,7 +17,9 @@ export default auth(req => {
     pathname.startsWith('/users') ||
     pathname.startsWith('/signin') ||
     pathname.startsWith('/signup') ||
-    pathname.startsWith('/reset-password')
+    pathname.startsWith('/reset-password') ||
+    pathname.startsWith('/chat-test') ||
+    pathname.startsWith('/stories')
   ) {
     return
   }

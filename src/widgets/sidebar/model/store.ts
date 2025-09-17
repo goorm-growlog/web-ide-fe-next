@@ -11,9 +11,9 @@ const INITIAL_STATE = {
   activeTab: 'files' as TabKey,
   openPanelsByTab: {
     files: ['files'] as PanelKey[],
-    search: [],
+    search: ['search'] as PanelKey[],
     invite: ['invite', 'members'] as PanelKey[],
-    settings: [],
+    settings: ['settings'] as PanelKey[],
   },
   position: 'left' as const,
   primarySize: 25,

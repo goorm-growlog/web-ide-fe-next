@@ -23,7 +23,7 @@ export const TabItem = ({
   onTabCloseAll,
 }: TabItemProps) => {
   return (
-    <div className="group relative flex h-6 w-32 flex-shrink-0 items-center border-border border-r bg-background">
+    <div className="group relative flex h-6 w-24 flex-shrink-0 items-center overflow-hidden border-border border-r bg-background">
       <ContextMenu>
         <ContextMenuTrigger asChild>
           <Button
@@ -33,7 +33,7 @@ export const TabItem = ({
               'flex h-full cursor-pointer items-center gap-1 px-1.5 py-0.5 text-xs',
               'transition-all duration-200',
               'hover:bg-muted/50',
-              'flex-1 justify-start',
+              'min-w-0 flex-1 justify-start',
               'rounded-none',
               tab.isActive && ['bg-primary/5', 'font-semibold text-primary'],
             )}
@@ -58,8 +58,14 @@ export const TabItem = ({
             </div>
 
             {/* 파일명 */}
-            <span className="flex-1 truncate text-left font-medium">
-              {tab.name}
+            <span
+              className="min-w-0 flex-1 overflow-hidden truncate text-left font-medium"
+              title={tab.name}
+              style={{ maxWidth: 'calc(100% - 36px)' }}
+            >
+              {tab.name.length > 12
+                ? `${tab.name.substring(0, 12)}...`
+                : tab.name}
             </span>
           </Button>
         </ContextMenuTrigger>
@@ -86,7 +92,7 @@ export const TabItem = ({
       <Button
         variant="ghost"
         size="sm"
-        className="absolute top-0 right-0 flex h-full w-6 cursor-pointer items-center justify-center rounded p-1 opacity-30 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring group-hover:opacity-70"
+        className="absolute top-0 right-0 z-10 flex h-full w-8 cursor-pointer items-center justify-center rounded p-1 opacity-30 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring group-hover:opacity-70"
         onClick={e => {
           e.stopPropagation()
           onTabClose(tab.id)
